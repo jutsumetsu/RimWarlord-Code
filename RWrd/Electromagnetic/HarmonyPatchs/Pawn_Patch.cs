@@ -36,25 +36,30 @@ namespace Electromagnetic.HarmonyPatchs
             }
         }
         //测试提交
-        [HarmonyPatch(typeof(StatWorker_MeleeDamageAmount), "GetMeleeDamage")]
-        public static void Postfix(StatRequest req, ref float __result)
+        [HarmonyPatch(typeof(StatWorker_MeleeDPS))]
+        [HarmonyPatch("GetMeleeDamage")]
+        class Patch2
         {
-            Pawn pawn = req.Thing as Pawn;
-            if (pawn != null)
+            [HarmonyPostfix]
+            public static void GetMeleeDamagePostFix(StatRequest req, ref float __result)
             {
-                Hediff_RWrd_PowerRoot root = pawn.GetRoot();
-                if (root != null)
+                Pawn pawn = req.Thing as Pawn;
+                if (pawn != null)
                 {
-                    int acr = root.energy.AvailableCompleteRealm();
-                    int pff = root.energy.PowerFlowFactor();
-                    if (acr >= 1)
+                    Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                    if (root != null)
                     {
-                        int num = acr * pff;
-                        __result *= num;
+                        int acr = root.energy.AvailableCompleteRealm();
+                        int pff = root.energy.PowerFlowFactor();
+                        if (acr >= 1 && pff >= 1)
+                        {
+                            int num = acr * pff;
+                            __result *= num;
+                            root.energy.damage = __result;
+                        }
                     }
                 }
             }
         }
-
     }
 }

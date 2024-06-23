@@ -8,14 +8,14 @@ using Verse.AI;
 
 namespace Electromagnetic.Core
 {
-    internal class JobDriver_RWrd_Specialized_Training : JobDriver
+    internal class JobDriver_RWrd_General_Training : JobDriver
     {
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
             Pawn pawn = this.pawn;
-            LocalTargetInfo targetA = this.job.targetA;
+            LocalTargetInfo target = this.job.GetTarget(TargetIndex.A);
             Job job = this.job;
-            return pawn.Reserve(targetA, job, 1, -1, null, errorOnFailed, false);
+            return ReservationUtility.Reserve(pawn, target, job, 1, -1, null, errorOnFailed);
         }
 
         protected override IEnumerable<Toil> MakeNewToils()
@@ -26,8 +26,7 @@ namespace Electromagnetic.Core
             int counter = this.TrainingCounter;
             this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
             this.FailOnBurningImmobile(TargetIndex.A);
-            this.FailOnThingHavingDesignation(TargetIndex.A, DesignationDefOf.Uninstall);
-            yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.InteractionCell, false);
+            yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.OnCell);
             Toil work = new Toil();
             work.tickAction = delegate ()
             {
@@ -78,7 +77,6 @@ namespace Electromagnetic.Core
                     work.actor.jobs.EndCurrentJob(JobCondition.Succeeded, true, true);
                 }
             };
-            work.FailOnCannotTouch(TargetIndex.A, PathEndMode.InteractionCell);
             work.defaultCompleteMode = ToilCompleteMode.Delay;
             work.defaultDuration = 4000;
             yield return work;

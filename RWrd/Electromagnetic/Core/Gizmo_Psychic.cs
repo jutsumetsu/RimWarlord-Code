@@ -93,23 +93,52 @@ namespace Electromagnetic.Core
         {
             Text.Font = GameFont.Small;
             Rect rect2 = new Rect(rect.x, rect.y, 60f, 25f);
-            Rect rect3 = new Rect(rect.x + 65f, rect.y, 40f, 25f);
+            Rect rect3 = new Rect(rect.x + 90f, rect.y, 40f, 25f);
             Rect rect4 = new Rect(rect.x + 140f, rect.y, 40f, 25f);
-            bool flag = b == 10;
+            Rect rect5 = new Rect(rect.x + 95f, rect.y, 40f, 25f);
+            Rect rect6 = new Rect(rect.x + 75f, rect.y, 60f, 25f);
+            Rect rect7 = new Rect(rect.x + 85f, rect.y, 40f, 25f);
+            Rect rect8 = new Rect(rect.x + 80f, rect.y, 40f, 25f);
+            Rect rect9 = new Rect(rect.x + 75f, rect.y, 40f, 25f);
             int c = (int)Math.Floor(a);
+            bool flag = b >= 10 && b < 20;
+            bool flag1 = c >= 2 && c < 10;
+            bool flag2 = c >= 10 && c < 100;
+            bool flag3 = c >= 100 && c < 1000;
+            bool flag4 = c >= 1000 && c < 10000;
             Widgets.Label(rect2, label);
             if (b < 10)
             {
-                Widgets.Label(rect3, b.ToString("F0"));
+                Widgets.Label(rect5, b.ToString("F0"));
                 Widgets.Label(rect4, "成");
             }
             else if (flag)
             {
-                Widgets.Label(rect3, a.ToString("最后境界"));
+                Widgets.Label(rect6, a.ToString("最后境界"));
+            }
+            else if (flag1)
+            {
+                Widgets.Label(rect5, c.ToString("F0"));
+                Widgets.Label(rect4, "级");
+            }
+            else if (flag2)
+            {
+                Widgets.Label(rect3, c.ToString("F0"));
+                Widgets.Label(rect4, "级");
+            }
+            else if (flag3)
+            {
+                Widgets.Label(rect7, c.ToString("F0"));
+                Widgets.Label(rect4, "级");
+            }
+            else if (flag4)
+            {
+                Widgets.Label(rect8, c.ToString("F0"));
+                Widgets.Label(rect4, "级");
             }
             else
             {
-                Widgets.Label(rect3, c.ToString("F0"));
+                Widgets.Label(rect9, c.ToString("F0"));
                 Widgets.Label(rect4, "级");
             }
         }

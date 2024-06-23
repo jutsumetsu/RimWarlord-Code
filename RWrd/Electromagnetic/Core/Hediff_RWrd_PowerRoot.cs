@@ -93,7 +93,7 @@ namespace Electromagnetic.Core
                     defaultLabel = "测试：提升完全境界",
                     action = delegate ()
                     {
-                        this.energy.SetCompleteRealm(1f);
+                        this.energy.SetCompleteRealm(100f);
                     }
                 };
                 yield return new Command_Action
@@ -243,7 +243,16 @@ namespace Electromagnetic.Core
                 float num = this.pawn.GetStatValue(StatDefOf.MeleeDPS);
                 float num2 = num * meleeAttackCounter;
                 int exp1 = (int)Math.Floor(num2);
-                this.energy.SetExp(exp1);
+                int exp2 = exp1 * 10;
+                int currentLevel = this.energy.currentRWrd.def.level;
+                if (currentLevel == 0)
+                {
+                    this.energy.SetExp(exp2);
+                }
+                else
+                {
+                    this.energy.SetExp(exp1);
+                }
                 meleeAttackCounter = 0;
             }
         }

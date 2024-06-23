@@ -76,10 +76,13 @@
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_ReduceEnergy.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_ReduceEnergy.cs" />
     <Compile Include="Electromagnetic\Abilities\RWrd_PsyCastBase.cs" />
+    <Compile Include="Electromagnetic\Core\AIUtility.cs" />
     <Compile Include="Electromagnetic\Core\Building_Training.cs" />
     <Compile Include="Electromagnetic\Core\Gizmo_Psychic.cs" />
     <Compile Include="Electromagnetic\Core\Hediff_RWrd_PowerRoot.cs" />
+    <Compile Include="Electromagnetic\Core\JobDriver_RWrd_General_Training.cs" />
     <Compile Include="Electromagnetic\Core\JobDriver_RWrd_Specialized_Training.cs" />
+    <Compile Include="Electromagnetic\Core\JobGiver_EMTraining.cs" />
     <Compile Include="Electromagnetic\Core\Pawn_EnergyTracker.cs" />
     <Compile Include="Electromagnetic\Core\PowerRootUtillity.cs" />
     <Compile Include="Electromagnetic\Core\RWrd_PsycastOrigin.cs" />

@@ -18,5 +18,7 @@ namespace Electromagnetic.Core
         public static TraitDef RWrd_Gifted;
         //建筑
         public static ThingDef RWrd_Building_TrainingSpot;
+        //Job
+        public static JobDef RWrd_General_Training;
     }
 }

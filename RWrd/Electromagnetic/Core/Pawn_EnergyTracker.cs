@@ -254,6 +254,7 @@ namespace Electromagnetic.Core
         public int powerflow = 0;
         public float energy = 0f;
         public float exp = 0f;
+        public float damage = 0f;
         //等级上下限
         public const int LevelMax = 99;
         public const int LevelMin = 0;
