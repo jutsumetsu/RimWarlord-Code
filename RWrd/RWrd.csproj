@@ -76,6 +76,7 @@
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_ReduceEnergy.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_ReduceEnergy.cs" />
     <Compile Include="Electromagnetic\Abilities\RWrd_PsyCastBase.cs" />
+    <Compile Include="Electromagnetic\Core\Building_Training.cs" />
     <Compile Include="Electromagnetic\Core\Gizmo_Psychic.cs" />
     <Compile Include="Electromagnetic\Core\Hediff_RWrd_PowerRoot.cs" />
     <Compile Include="Electromagnetic\Core\Pawn_EnergyTracker.cs" />
