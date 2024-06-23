@@ -166,6 +166,7 @@ namespace Electromagnetic.Core
                 PowerRootUtillity.RandomPowerRootSpawn(this.pawn, this, out rimWarlordDef, out rwrd_RouteDef);
                 this.energy.powerflow = UnityEngine.Random.Range(3, 51) * 10000;
                 this.energy.currentRWrd.def.MaxEnergy = this.energy.powerflow / 100;
+                this.energy.completerealm = UnityEngine.Random.Range(1, 11) * 0.1f;
                 while (this.energy.currentRWrd.def.level < rimWarlordDef.level)
                 {
                     this.energy.exp = this.energy.currentRWrd.def.EXP;
@@ -178,6 +179,7 @@ namespace Electromagnetic.Core
             {
                 this.energy.powerflow = UnityEngine.Random.Range(3, 51) * 10000;
                 this.energy.currentRWrd.def.MaxEnergy = this.energy.powerflow / 100;
+                this.energy.completerealm = 0.1f;
             }
             this.pawn.CheckLevelAndLimitingAbility();
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -146,6 +147,19 @@ namespace Electromagnetic.Core
                 }
             }
             return result;
+        }
+        //可用完全境界等级
+        public int AvailableCompleteRealm()
+        {
+            int acr = (int)Math.Floor(this.completerealm * 10);
+            return acr;
+        }
+        //力量流量乘数
+        public int PowerFlowFactor()
+        {
+            float num = this.powerflow / 100000;
+            int pff = (int)Math.Ceiling(num);
+            return pff;
         }
         //设置等级
         public void SetLevel()

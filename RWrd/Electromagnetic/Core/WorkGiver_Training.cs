@@ -7,7 +7,7 @@ using Verse.AI;
 
 namespace Electromagnetic.Core
 {
-    internal class WorkGiver_RWrd_Building_TrainingSpot : WorkGiver_Scanner
+    internal class WorkGiver_Training : WorkGiver_Scanner
     {
         public override ThingRequest PotentialWorkThingRequest
         {

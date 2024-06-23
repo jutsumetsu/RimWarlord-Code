@@ -45,13 +45,12 @@ namespace Electromagnetic.HarmonyPatchs
                 Hediff_RWrd_PowerRoot root = pawn.GetRoot();
                 if (root != null)
                 {
-                    float completeRealmValue = root.energy.completerealm;
-                    int powerFlowValue = root.energy.powerflow;
-                    if (completeRealmValue >= 0.1)
+                    int acr = root.energy.AvailableCompleteRealm();
+                    int pff = root.energy.PowerFlowFactor();
+                    if (acr >= 1)
                     {
-                        float num1 = (int)Math.Floor(completeRealmValue * 10);
-
-                        __result *= completeRealmValue;
+                        int num = acr * pff;
+                        __result *= num;
                     }
                 }
             }

@@ -42,7 +42,7 @@ namespace Electromagnetic.Core
             Rect rect5 = rect2;
             rect5.width = 180f;
             rect5.yMin = rect4.y + 25;
-            this.DrawUI3(rect5, this.energy.energy.CompleteRealm, this.CompleteRealmLabel.Translate());
+            this.DrawUI3(rect5, this.energy.energy.CompleteRealm, this.energy.energy.AvailableCompleteRealm(), this.CompleteRealmLabel.Translate());
             Rect rect6 = rect2;
             rect6.width = 180f;
             rect6.yMin = rect5.y + 25;
@@ -89,15 +89,29 @@ namespace Electromagnetic.Core
             }
         }
 
-        private void DrawUI3(Rect rect, float a, string label)
+        private void DrawUI3(Rect rect, float a, int b, string label)
         {
             Text.Font = GameFont.Small;
             Rect rect2 = new Rect(rect.x, rect.y, 60f, 25f);
             Rect rect3 = new Rect(rect.x + 65f, rect.y, 40f, 25f);
             Rect rect4 = new Rect(rect.x + 140f, rect.y, 40f, 25f);
+            bool flag = b == 10;
+            int c = (int)Math.Floor(a);
             Widgets.Label(rect2, label);
-            Widgets.Label(rect3, a.ToString("F0"));
-            Widgets.Label(rect4, "级");
+            if (b < 10)
+            {
+                Widgets.Label(rect3, b.ToString("F0"));
+                Widgets.Label(rect4, "成");
+            }
+            else if (flag)
+            {
+                Widgets.Label(rect3, a.ToString("最后境界"));
+            }
+            else
+            {
+                Widgets.Label(rect3, c.ToString("F0"));
+                Widgets.Label(rect4, "级");
+            }
         }
 
         private void DrawUI4(Rect rect, int a, string label)
