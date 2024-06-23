@@ -123,15 +123,6 @@ namespace Electromagnetic.Core
                 this.powerflow = (num2 > this.CurrentDef.MaxPowerFlow ? this.CurrentDef.MaxPowerFlow : num2);
             }
         }
-        
-        public bool IsExpTiming
-        {
-            get
-            {
-                bool flag = this.exp >= this.CurrentDef.EXP;
-                return !flag && this.energy >= this.CurrentDef.MaxEnergy;
-            }
-        }
         //升级检查
         public bool IsUpdateLevelTiming()
         {
