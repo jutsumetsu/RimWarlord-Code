@@ -79,9 +79,11 @@
     <Compile Include="Electromagnetic\Core\Building_Training.cs" />
     <Compile Include="Electromagnetic\Core\Gizmo_Psychic.cs" />
     <Compile Include="Electromagnetic\Core\Hediff_RWrd_PowerRoot.cs" />
+    <Compile Include="Electromagnetic\Core\JobDriver_RWrd_Specialized_Training.cs" />
     <Compile Include="Electromagnetic\Core\Pawn_EnergyTracker.cs" />
     <Compile Include="Electromagnetic\Core\PowerRootUtillity.cs" />
     <Compile Include="Electromagnetic\Core\RWrd_PsycastOrigin.cs" />
+    <Compile Include="Electromagnetic\Core\WorkGiver_Training.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\HarmonyInit.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\Pawn_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

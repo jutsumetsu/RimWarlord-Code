@@ -46,7 +46,13 @@ namespace Electromagnetic.HarmonyPatchs
                 if (root != null)
                 {
                     float completeRealmValue = root.energy.completerealm;
-                    __result *= completeRealmValue;
+                    int powerFlowValue = root.energy.powerflow;
+                    if (completeRealmValue >= 0.1)
+                    {
+                        float num1 = (int)Math.Floor(completeRealmValue * 10);
+
+                        __result *= completeRealmValue;
+                    }
                 }
             }
         }
