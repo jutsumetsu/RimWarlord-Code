@@ -28,7 +28,7 @@ namespace Electromagnetic.Core
         [NoTranslate]
         public List<string> tags;
         //能量上下限
-        public float MaxEnergy = 100f;
+        public float MaxEnergy;
         public float MinEnergy = 1f;
         //经验需求
         public float EXP = 0f;
