@@ -98,8 +98,9 @@ namespace Electromagnetic.HarmonyPatchs
                                     victim.HitPoints = 0;
                                     victim.Kill(new DamageInfo?(dinfo), null);
                                 }
+                                float EF = root.energy.energy / root.energy.currentRWrd.def.MaxEnergy;
                                 num += root.energy.currentRWrd.def.level;
-                                num *= acr * pff;
+                                num *= acr * pff * EF;
                                 __result = new DamageWorker.DamageResult();
                                 __result.totalDamageDealt = Mathf.Min(victim.HitPoints, GenMath.RoundRandom(num));
                                 victim.HitPoints -= Mathf.RoundToInt(__result.totalDamageDealt);
