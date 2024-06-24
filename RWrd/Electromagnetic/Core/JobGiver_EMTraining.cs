@@ -11,6 +11,7 @@ namespace Electromagnetic.Core
     {
         protected override Job TryGiveJob(Pawn pawn)
         {
+            Need need = pawn.needs.TryGetNeed<Need_Training>();
             IntVec3 intVec = AIUtility.FindRandomSpotOutsideColony(pawn, 16f, false, false);
             if (!intVec.IsValid)
             {
@@ -22,6 +23,10 @@ namespace Electromagnetic.Core
                 return null;
             }
             if (!pawn.IsHaveRoot())
+            {
+                return null;
+            }
+            if (need.CurLevel >= 0.99f)
             {
                 return null;
             }

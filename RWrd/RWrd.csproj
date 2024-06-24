@@ -87,6 +87,9 @@
     <Compile Include="Electromagnetic\Core\Pawn_EnergyTracker.cs" />
     <Compile Include="Electromagnetic\Core\PowerRootUtillity.cs" />
     <Compile Include="Electromagnetic\Core\RWrd_PsycastOrigin.cs" />
+    <Compile Include="Electromagnetic\Core\ThinkNode_ConditionalNeedTraining.cs" />
+    <Compile Include="Electromagnetic\Core\ThoughtWorker_NeedTrain.cs" />
+    <Compile Include="Electromagnetic\Core\TrainingCategory.cs" />
     <Compile Include="Electromagnetic\Core\WorkGiver_Training.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\HarmonyInit.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\Pawn_Patch.cs" />

@@ -22,6 +22,7 @@ namespace Electromagnetic.Core
         {
             JitterHandler jitterer = this.fieldJitterer.GetValue(this.pawn.Drawer) as JitterHandler;
             Hediff_RWrd_PowerRoot root = this.pawn.GetRoot();
+            Need need = this.pawn.needs.TryGetNeed<Need_Training>();
             int tick = this.ticktime;
             int counter = this.TrainingCounter;
             this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
@@ -51,6 +52,7 @@ namespace Electromagnetic.Core
                                 counter += 1;
                             }
                             root.energy.SetCompleteRealm(0.001f);
+                            need.CurLevel += 0.1f;
                         }
                         tick = this.ticktime;
                         if (counter >= 10)

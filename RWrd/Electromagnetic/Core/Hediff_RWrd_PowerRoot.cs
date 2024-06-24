@@ -180,6 +180,7 @@ namespace Electromagnetic.Core
                 this.energy.powerflow = UnityEngine.Random.Range(3, 51) * 10000;
                 this.energy.currentRWrd.def.MaxEnergy = this.energy.powerflow / 100;
                 this.energy.completerealm = 0.1f;
+                this.energy.trainDesireFactor = UnityEngine.Random.Range(1, 51);
             }
             this.pawn.CheckLevelAndLimitingAbility();
         }

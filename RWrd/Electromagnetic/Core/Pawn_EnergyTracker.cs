@@ -255,6 +255,7 @@ namespace Electromagnetic.Core
         public float energy = 0f;
         public float exp = 0f;
         public float damage = 0f;
+        public int trainDesireFactor = 1;
         //等级上下限
         public const int LevelMax = 99;
         public const int LevelMin = 0;
