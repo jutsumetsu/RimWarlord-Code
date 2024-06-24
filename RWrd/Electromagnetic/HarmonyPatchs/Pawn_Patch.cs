@@ -6,6 +6,7 @@ using Verse;
 using Verse.AI;
 using Electromagnetic.Core;
 using UnityEngine;
+using System.Net.NetworkInformation;
 
 namespace Electromagnetic.HarmonyPatchs
 {
@@ -36,6 +37,7 @@ namespace Electromagnetic.HarmonyPatchs
                 }
             }
         }
+        //测试提交
         [HarmonyPatch(typeof(DamageWorker))]
         [HarmonyPatch("Apply")]
         class Patch2
@@ -60,7 +62,7 @@ namespace Electromagnetic.HarmonyPatchs
                             int pff = root.energy.PowerFlowFactor();
                             if (acr >= 1 && pff >= 1)
                             {
-                                float num = dinfo.Amount;
+                                float num = dinfo.Amount * acr * pff;
                                 if (victim.def.category == ThingCategory.Building)
                                 {
                                     num *= dinfo.Def.buildingDamageFactor;
@@ -98,8 +100,6 @@ namespace Electromagnetic.HarmonyPatchs
                                     victim.HitPoints = 0;
                                     victim.Kill(new DamageInfo?(dinfo), null);
                                 }
-                                num += root.energy.currentRWrd.def.level;
-                                num *= acr * pff;
                                 __result = new DamageWorker.DamageResult();
                                 __result.totalDamageDealt = Mathf.Min(victim.HitPoints, GenMath.RoundRandom(num));
                                 victim.HitPoints -= Mathf.RoundToInt(__result.totalDamageDealt);
@@ -109,6 +109,7 @@ namespace Electromagnetic.HarmonyPatchs
                                     victim.Kill(new DamageInfo?(dinfo), null);
                                 }
                                 root.energy.damage = __result.totalDamageDealt;
+
                                 return false;
                             }
                         }
