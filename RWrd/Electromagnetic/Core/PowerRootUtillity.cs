@@ -66,29 +66,10 @@ namespace Electromagnetic.Core
             }
             else
             {
-                bool flag2 = num < 8;
-                if (flag2)
-                {
-                    num = UnityEngine.Random.Range(3, 7);
-                }
-                else
-                {
-                    bool flag3 = num < 10;
-                    if (flag3)
-                    {
-                        num = UnityEngine.Random.Range(8, 10);
-                    }
-                }
-            }
-            Log.Warning(num.ToString());
-            bool flag4 = num > 10;
-            if (flag4)
-            {
-                num = 10;
+                num = 3;
             }
             currentRWrd = RimWarlordDef.Dict.GetValueOrDefault(num);
             List<RWrd_RouteDef> allDefListForReading = DefDatabase<RWrd_RouteDef>.AllDefsListForReading;
-            allDefListForReading.Remove(RWrd_DefOf.Base);
             route =  allDefListForReading.RandomElement<RWrd_RouteDef>();
             root.route = route;
             foreach (AbilityDef def in route.AllAbilities)
