@@ -5,6 +5,7 @@ using RimWorld;
 using Verse;
 using Verse.AI;
 using Electromagnetic.Core;
+using UnityEngine;
 
 namespace Electromagnetic.HarmonyPatchs
 {
@@ -36,29 +37,84 @@ namespace Electromagnetic.HarmonyPatchs
             }
         }
         //测试提交
-        [HarmonyPatch(typeof(StatWorker_MeleeDPS))]
-        [HarmonyPatch("GetMeleeDamage")]
+        [HarmonyPatch(typeof(DamageWorker))]
+        [HarmonyPatch("Apply")]
         class Patch2
         {
-            [HarmonyPostfix]
-            public static void GetMeleeDamagePostFix(StatRequest req, ref float __result)
+            [HarmonyPrefix]
+            public static bool GetMeleeDamagePreFix(DamageInfo dinfo, Thing victim, ref DamageWorker.DamageResult __result)
             {
-                Pawn pawn = req.Thing as Pawn;
+                if (victim.SpawnedOrAnyParentSpawned)
+                {
+                    ImpactSoundUtility.PlayImpactSound(victim, dinfo.Def.impactSoundType, victim.MapHeld);
+                }
+                Pawn pawn = dinfo.Instigator as Pawn;
                 if (pawn != null)
                 {
-                    Hediff_RWrd_PowerRoot root = pawn.GetRoot();
-                    if (root != null)
+                    if (victim.def.useHitPoints && dinfo.Def.harmsHealth)
                     {
-                        int acr = root.energy.AvailableCompleteRealm();
-                        int pff = root.energy.PowerFlowFactor();
-                        if (acr >= 1 && pff >= 1)
+
+                        Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                        if (root != null)
                         {
-                            int num = acr * pff;
-                            __result *= num;
-                            root.energy.damage = __result;
+                            int acr = root.energy.AvailableCompleteRealm();
+                            int pff = root.energy.PowerFlowFactor();
+                            if (acr >= 1 && pff >= 1)
+                            {
+                                float num = dinfo.Amount * acr * pff;
+                                if (victim.def.category == ThingCategory.Building)
+                                {
+                                    num *= dinfo.Def.buildingDamageFactor;
+                                    if (victim.def.passability == Traversability.Impassable)
+                                    {
+                                        num *= dinfo.Def.buildingDamageFactorImpassable;
+                                    }
+                                    else
+                                    {
+                                        num *= dinfo.Def.buildingDamageFactorPassable;
+                                    }
+                                    if (dinfo.Def.scaleDamageToBuildingsBasedOnFlammability)
+                                    {
+                                        num *= Mathf.Max(0.05f, victim.GetStatValue(StatDefOf.Flammability, true, -1));
+                                    }
+                                    if ((pawn = (dinfo.Instigator as Pawn)) != null && pawn.IsShambler)
+                                    {
+                                        num *= 1.5f;
+                                    }
+                                    if (ModsConfig.BiotechActive && dinfo.Instigator != null && (dinfo.WeaponBodyPartGroup != null || (dinfo.Weapon != null && dinfo.Weapon.IsMeleeWeapon)) && victim.def.IsDoor)
+                                    {
+                                        num *= dinfo.Instigator.GetStatValue(StatDefOf.MeleeDoorDamageFactor, true, -1);
+                                    }
+                                }
+                                if (victim.def.category == ThingCategory.Plant)
+                                {
+                                    num *= dinfo.Def.plantDamageFactor;
+                                }
+                                else if (victim.def.IsCorpse)
+                                {
+                                    num *= dinfo.Def.corpseDamageFactor;
+                                }
+                                if (victim.HitPoints <= 0)
+                                {
+                                    victim.HitPoints = 0;
+                                    victim.Kill(new DamageInfo?(dinfo), null);
+                                }
+                                __result = new DamageWorker.DamageResult();
+                                __result.totalDamageDealt = Mathf.Min(victim.HitPoints, GenMath.RoundRandom(num));
+                                victim.HitPoints -= Mathf.RoundToInt(__result.totalDamageDealt);
+                                if (victim.HitPoints <= 0)
+                                {
+                                    victim.HitPoints = 0;
+                                    victim.Kill(new DamageInfo?(dinfo), null);
+                                }
+                                root.energy.damage = __result.totalDamageDealt;
+
+                                return false;
+                            }
                         }
                     }
                 }
+                return true;
             }
         }
     }
