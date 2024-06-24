@@ -37,7 +37,6 @@ namespace Electromagnetic.HarmonyPatchs
                 }
             }
         }
-        //测试提交
         [HarmonyPatch(typeof(DamageWorker))]
         [HarmonyPatch("Apply")]
         class Patch2
