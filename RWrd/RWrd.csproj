@@ -83,6 +83,7 @@
     <Compile Include="Electromagnetic\Core\JobDriver_RWrd_General_Training.cs" />
     <Compile Include="Electromagnetic\Core\JobDriver_RWrd_Specialized_Training.cs" />
     <Compile Include="Electromagnetic\Core\JobGiver_EMTraining.cs" />
+    <Compile Include="Electromagnetic\Core\Need_Training.cs" />
     <Compile Include="Electromagnetic\Core\Pawn_EnergyTracker.cs" />
     <Compile Include="Electromagnetic\Core\PowerRootUtillity.cs" />
     <Compile Include="Electromagnetic\Core\RWrd_PsycastOrigin.cs" />

@@ -43,24 +43,15 @@ namespace Electromagnetic.Core
                             int currentLevel = root.energy.currentRWrd.def.level;
                             if (currentLevel == 0)
                             {
-                                root.energy.SetExp(1000);
+                                root.energy.SetExp(200);
                                 counter += 1;
                             }
                             else
                             {
-                                root.energy.SetExp(100);
+                                root.energy.SetExp(25);
                                 counter += 1;
                             }
                             root.energy.SetCompleteRealm(0.001f);
-                            if (jitterer != null)
-                            {
-                                jitterer.AddOffset(Rand.Range(0.25f, 0.75f), this.pawn.Rotation.AsAngle);
-                                if (Rand.Value > 0.7f)
-                                {
-                                    work.handlingFacing = true;
-                                    this.pawn.Rotation = Rot4.Random;
-                                }
-                            }
                         }
                         tick = this.ticktime;
                         if (counter >= 10)
@@ -70,6 +61,18 @@ namespace Electromagnetic.Core
                         else
                         {
                             this.CanFunction = true;
+                        }
+                    }
+                    if (this.pawn.IsHashIntervalTick(100))
+                    {
+                        if (jitterer != null)
+                        {
+                            jitterer.AddOffset(Rand.Range(0.25f, 0.75f), this.pawn.Rotation.AsAngle);
+                            if (Rand.Value > 0.7f)
+                            {
+                                work.handlingFacing = true;
+                                this.pawn.Rotation = Rot4.Random;
+                            }
                         }
                     }
                 }
@@ -85,7 +88,7 @@ namespace Electromagnetic.Core
             yield break;
         }
 
-        private int ticktime = 300;
+        private int ticktime = 2500;
         private bool CanFunction = true;
         private int TrainingCounter = 0;
         private FieldInfo fieldJitterer = AccessTools.Field(typeof(Pawn_DrawTracker), "jitterer");
