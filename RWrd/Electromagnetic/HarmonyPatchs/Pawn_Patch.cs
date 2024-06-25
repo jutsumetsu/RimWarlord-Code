@@ -58,11 +58,13 @@ namespace Electromagnetic.HarmonyPatchs
                             int acr = root.energy.AvailableCompleteRealm();
                             int pff = root.energy.PowerFlowFactor();
                             int level = root.energy.CurrentDef.level;
+                            float cr = root.energy.completerealm;
                             if (acr >= 1 && pff >= 1)
                             {
                                 float multiplier = acr + pff;
                                 float num = __instance.verbProps.AdjustedMeleeDamageAmount(__instance, __instance.CasterPawn);
                                 float armorPenetration = __instance.verbProps.AdjustedArmorPenetration(__instance, __instance.CasterPawn);
+                                armorPenetration += cr;
                                 num = Rand.Range(num * 0.8f, num * 1.2f);
                                 num += level;
                                 num *= multiplier;
@@ -122,6 +124,69 @@ namespace Electromagnetic.HarmonyPatchs
                 }
 
                 return true;
+            }
+        }
+        //部位血量加成
+        [HarmonyPatch(typeof(BodyPartDef))]
+        [HarmonyPatch(nameof(BodyPartDef.GetMaxHealth))]
+        class Patch3
+        {
+            [HarmonyPostfix]
+            public static void BodyPartFix(Pawn pawn, ref float __result)
+            {
+                if (pawn.IsHaveRoot())
+                {
+                    Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                    int pff = root.energy.PowerFlowFactor();
+                    int level = root.energy.CurrentDef.level + 1;
+                    int multiplier = pff + level;
+                    __result *= multiplier;
+                }
+            }
+        }
+        [HarmonyPatch(typeof(StatExtension))]
+        [HarmonyPatch(nameof(StatExtension.GetStatValue))]
+        class Patch4
+        {
+            [HarmonyPostfix]
+            public static void StatFix(Thing thing, StatDef stat, ref float __result)
+            {
+                if (thing.GetType() == typeof(Pawn))
+                {
+                    Pawn pawn = thing as Pawn;
+                    if (pawn.IsHaveRoot())
+                    {
+                        Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                        float cr = root.energy.completerealm;
+                        float num = __result + cr;
+                        int level = root.energy.CurrentDef.level;
+                        int lf = level + 1;
+                        bool flag = stat.ToString() == nameof(StatDefOf.ShootingAccuracyPawn);
+                        bool flag1 = stat.ToString() == nameof(StatDefOf.ShootingAccuracyFactor_Touch);
+                        bool flag2 = stat.ToString() == nameof(StatDefOf.ShootingAccuracyFactor_Short);
+                        bool flag3 = stat.ToString() == nameof(StatDefOf.ShootingAccuracyFactor_Medium);
+                        bool flag4 = stat.ToString() == nameof(StatDefOf.ShootingAccuracyFactor_Long);
+                        bool flag5 = stat.ToString() == nameof(StatDefOf.MeleeHitChance);
+                        bool flag6 = stat.ToString() == nameof(StatDefOf.CarryingCapacity);
+                        bool flag7 = stat.ToString() == nameof(StatDefOf.GlobalLearningFactor);
+                        bool flag8 = stat.ToString() == nameof(StatDefOf.ImmunityGainSpeed);
+                        bool flag9 = stat.ToString() == nameof(StatDefOf.HuntingStealth);
+                        bool flag10 = stat.ToString() == nameof(StatDefOf.MedicalSurgerySuccessChance);
+                        bool flag11 = stat.ToString() == nameof(StatDefOf.MedicalTendQuality);
+                        if (flag || flag1 || flag2 || flag3 || flag4 || flag10)
+                        {
+                            __result = Math.Min(num, 1);
+                        }
+                        if (flag5 || flag9 || flag11)
+                        {
+                            __result = num;
+                        }
+                        if (flag6 || flag7 || flag8)
+                        {
+                            __result *= lf;
+                        }
+                    }
+                }
             }
         }
     }
