@@ -7,6 +7,7 @@ using Verse.AI;
 using Electromagnetic.Core;
 using UnityEngine;
 using System.Net.NetworkInformation;
+using System.Linq;
 
 namespace Electromagnetic.HarmonyPatchs
 {
@@ -37,24 +38,21 @@ namespace Electromagnetic.HarmonyPatchs
                 }
             }
         }
-        //Thing伤害patch
-        [HarmonyPatch(typeof(DamageWorker))]
-        [HarmonyPatch("Apply")]
+        // Pawn伤害patch
+        [HarmonyPatch(typeof(Verb_MeleeAttackDamage))]
+        [HarmonyPatch("DamageInfosToApply")]
         class Patch2
         {
             [HarmonyPrefix]
-            public static bool GetThingMeleeDamagePreFix(DamageInfo dinfo, Thing victim, ref DamageWorker.DamageResult __result)
+            public static bool DamageInfosToApply_Prefix(Verb_MeleeAttackDamage __instance, LocalTargetInfo target, ref IEnumerable<DamageInfo> __result)
             {
-                /*if (victim.SpawnedOrAnyParentSpawned)
+                try
                 {
-                    ImpactSoundUtility.PlayImpactSound(victim, dinfo.Def.impactSoundType, victim.MapHeld);
-                }*/
-                Pawn pawn = dinfo.Instigator as Pawn;
-                if (pawn != null)
-                {
-                    if (victim.def.useHitPoints && dinfo.Def.harmsHealth)
+                    if (__instance.CasterIsPawn && __instance.CasterPawn != null)
                     {
-                        Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                        Pawn casterPawn = __instance.CasterPawn;
+
+                        Hediff_RWrd_PowerRoot root = casterPawn.GetRoot();
                         if (root != null)
                         {
                             int acr = root.energy.AvailableCompleteRealm();
@@ -62,85 +60,64 @@ namespace Electromagnetic.HarmonyPatchs
                             int level = root.energy.CurrentDef.level;
                             if (acr >= 1 && pff >= 1)
                             {
-                                float num = dinfo.Amount;
-                                if (victim.def.category == ThingCategory.Building)
-                                {
-                                    num *= dinfo.Def.buildingDamageFactor;
-                                    if (victim.def.passability == Traversability.Impassable)
-                                    {
-                                        num *= dinfo.Def.buildingDamageFactorImpassable;
-                                    }
-                                    else
-                                    {
-                                        num *= dinfo.Def.buildingDamageFactorPassable;
-                                    }
-                                    if (dinfo.Def.scaleDamageToBuildingsBasedOnFlammability)
-                                    {
-                                        num *= Mathf.Max(0.05f, victim.GetStatValue(StatDefOf.Flammability, true, -1));
-                                    }
-                                    if ((pawn = (dinfo.Instigator as Pawn)) != null && pawn.IsShambler)
-                                    {
-                                        num *= 1.5f;
-                                    }
-                                    if (ModsConfig.BiotechActive && dinfo.Instigator != null && (dinfo.WeaponBodyPartGroup != null || (dinfo.Weapon != null && dinfo.Weapon.IsMeleeWeapon)) && victim.def.IsDoor)
-                                    {
-                                        num *= dinfo.Instigator.GetStatValue(StatDefOf.MeleeDoorDamageFactor, true, -1);
-                                    }
-                                }
-                                if (victim.def.category == ThingCategory.Plant)
-                                {
-                                    num *= dinfo.Def.plantDamageFactor;
-                                }
-                                else if (victim.def.IsCorpse)
-                                {
-                                    num *= dinfo.Def.corpseDamageFactor;
-                                }
+                                float multiplier = acr * pff;
+                                float num = __instance.verbProps.AdjustedMeleeDamageAmount(__instance, __instance.CasterPawn);
+                                float armorPenetration = __instance.verbProps.AdjustedArmorPenetration(__instance, __instance.CasterPawn);
+                                num = Rand.Range(num * 0.8f, num * 1.2f);
                                 num += level;
-                                num *= acr * pff;
-                                __result = new DamageWorker.DamageResult();
-                                __result.totalDamageDealt = Mathf.Min(victim.HitPoints, GenMath.RoundRandom(num));
-                                victim.HitPoints -= Mathf.RoundToInt(__result.totalDamageDealt);
-                                if (victim.HitPoints <= 0)
-                                {
-                                    victim.HitPoints = 0;
-                                    victim.Kill(new DamageInfo?(dinfo), null);
-                                }
-                                root.energy.damage = __result.totalDamageDealt;
+                                num *= multiplier;
 
+
+                                List<DamageInfo> damageInfos = new List<DamageInfo>();
+                                DamageDef def = __instance.verbProps.meleeDamageDef;
+                                ThingDef source = __instance.EquipmentSource != null ? __instance.EquipmentSource.def : casterPawn.def;
+                                Vector3 direction = (target.Thing.Position - casterPawn.Position).ToVector3();
+                                DamageInfo damageInfo = new DamageInfo(def, num, armorPenetration, -1f, casterPawn, null, source, DamageInfo.SourceCategory.ThingOrUnknown, null, false, true, QualityCategory.Normal, true);
+                                damageInfo.SetBodyRegion(BodyPartHeight.Undefined, BodyPartDepth.Outside);
+                                damageInfos.Add(damageInfo);
+
+                                if (__instance.tool != null && __instance.tool.extraMeleeDamages != null)
+                                {
+                                    foreach (ExtraDamage extraDamage in __instance.tool.extraMeleeDamages)
+                                    {
+                                        if (Rand.Chance(extraDamage.chance))
+                                        {
+                                            float extraDamageAmount = Rand.Range(extraDamage.amount * 0.8f, extraDamage.amount * 1.2f);
+                                            DamageInfo extraDamageInfo = new DamageInfo(extraDamage.def, extraDamageAmount, extraDamage.AdjustedArmorPenetration(__instance, __instance.CasterPawn), -1f, casterPawn, null, source, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true);
+                                            extraDamageInfo.SetBodyRegion(BodyPartHeight.Undefined, BodyPartDepth.Outside);
+                                            damageInfos.Add(extraDamageInfo);
+                                        }
+                                    }
+                                }
+                                bool surpriseAttack = Traverse.Create(__instance).Field("surpriseAttack").GetValue<bool>();
+                                if (surpriseAttack)
+                                {
+                                    IEnumerable<ExtraDamage> surpriseDamages = __instance.verbProps.surpriseAttack?.extraMeleeDamages ?? Enumerable.Empty<ExtraDamage>();
+                                    surpriseDamages = surpriseDamages.Concat(__instance.tool?.surpriseAttack?.extraMeleeDamages ?? Enumerable.Empty<ExtraDamage>());
+
+                                    foreach (ExtraDamage extraDamage in surpriseDamages)
+                                    {
+                                        int surpriseDamageAmount = GenMath.RoundRandom(extraDamage.AdjustedDamageAmount(__instance, __instance.CasterPawn));
+                                        DamageInfo surpriseDamageInfo = new DamageInfo(extraDamage.def, surpriseDamageAmount, extraDamage.AdjustedArmorPenetration(__instance, __instance.CasterPawn), -1f, casterPawn, null, source, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true);
+                                        surpriseDamageInfo.SetBodyRegion(BodyPartHeight.Undefined, BodyPartDepth.Outside);
+                                        damageInfos.Add(surpriseDamageInfo);
+                                    }
+                                }
+
+
+                                __result = damageInfos;
                                 return false;
                             }
                         }
+
                     }
                 }
-                return true;
-            }
-        }
-        //Pawn伤害patch
-        [HarmonyPatch(typeof(DamageWorker_AddInjury))]
-        [HarmonyPatch("Apply")]
-        class Patch3
-        {
-            [HarmonyPrefix]
-            public static void GetPawnMeleeDamagePreFix(DamageInfo dinfo, Thing thing, ref DamageWorker.DamageResult __result)
-            {
-                if (dinfo.Instigator != null && thing != null)
+                catch (Exception ex)
                 {
-                    Pawn instigator = dinfo.Instigator as Pawn;
-                    Hediff_RWrd_PowerRoot root = instigator.GetRoot();
-                    if (root != null)
-                    {
-                        int acr = root.energy.AvailableCompleteRealm();
-                        int pff = root.energy.PowerFlowFactor();
-                        int level = root.energy.CurrentDef.level;
-                        if (acr >= 1 && pff >= 1)
-                        {
-                            float multiplier = acr * pff;
-                            float num_cache = dinfo.Amount + level;
-                            dinfo.SetAmount(num_cache * multiplier);
-                            __result.totalDamageDealt *= multiplier;
-                        }
-                    }
+                    Log.Error($"Exception in Patch_Verb_MeleeAttackDamage: {ex}");
                 }
+
+                return true;
             }
         }
     }
