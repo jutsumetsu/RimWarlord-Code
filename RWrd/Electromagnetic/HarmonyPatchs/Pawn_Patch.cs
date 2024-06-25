@@ -60,13 +60,17 @@ namespace Electromagnetic.HarmonyPatchs
                             int level = root.energy.CurrentDef.level;
                             if (acr >= 1 && pff >= 1)
                             {
-                                float multiplier = acr * pff;
+                                float multiplier = acr + pff;
                                 float num = __instance.verbProps.AdjustedMeleeDamageAmount(__instance, __instance.CasterPawn);
                                 float armorPenetration = __instance.verbProps.AdjustedArmorPenetration(__instance, __instance.CasterPawn);
                                 num = Rand.Range(num * 0.8f, num * 1.2f);
                                 num += level;
                                 num *= multiplier;
-
+                                if (target.Thing.GetType() == typeof(Pawn))
+                                {
+                                    Pawn pawn = target.Thing as Pawn;
+                                    root.energy.damage = num;
+                                }
 
                                 List<DamageInfo> damageInfos = new List<DamageInfo>();
                                 DamageDef def = __instance.verbProps.meleeDamageDef;

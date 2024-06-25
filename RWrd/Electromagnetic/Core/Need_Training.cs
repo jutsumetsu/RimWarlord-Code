@@ -36,7 +36,7 @@ namespace Electromagnetic.Core
         {
             get
             {
-                if (this.Disabled)
+                if (this.Disabled || this.IsBattle)
                 {
                     return 0;
                 }
@@ -69,6 +69,13 @@ namespace Electromagnetic.Core
                 return this.pawn.jobs.curDriver.GetType() == typeof(JobDriver_RWrd_General_Training) || this.pawn.jobs.curDriver.GetType() == typeof(JobDriver_RWrd_Specialized_Training);
             }
         }
+        private bool IsBattle
+        {
+            get
+            {
+                return this.pawn.jobs.curDriver.GetType() == typeof(JobDriver_AttackMelee);
+            }
+        }
         public Need_Training(Pawn pawn) : base(pawn)
         {
             this.threshPercents = new List<float>();
@@ -95,7 +102,7 @@ namespace Electromagnetic.Core
                 if (!this.Disabled)
                 {
                     JobDriver jobDriver = this.pawn.jobs.curDriver;
-                    if (!this.IsTraining && jobDriver.GetType() != typeof(JobDriver_AttackMelee))
+                    if (!this.IsTraining && !this.IsBattle)
                     {
                         Hediff_RWrd_PowerRoot root = this.pawn.GetRoot();
                         float num = 0.00005f * root.energy.trainDesireFactor;

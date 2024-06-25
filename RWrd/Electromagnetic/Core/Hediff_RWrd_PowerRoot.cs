@@ -242,7 +242,7 @@ namespace Electromagnetic.Core
             else
             {
                 float num = this.energy.damage;
-                float num2 = num * meleeAttackCounter;
+                float num2 = num * meleeAttackCounter / 10;
                 int exp1 = (int)Math.Floor(num2);
                 int exp2 = exp1 * 10;
                 int currentLevel = this.energy.currentRWrd.def.level;
@@ -254,6 +254,7 @@ namespace Electromagnetic.Core
                 {
                     this.energy.SetExp(exp1);
                 }
+                this.energy.damage = 0;
                 meleeAttackCounter = 0;
             }
         }
