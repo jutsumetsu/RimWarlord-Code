@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 
 namespace Electromagnetic.Core
 {
@@ -93,7 +94,8 @@ namespace Electromagnetic.Core
             {
                 if (!this.Disabled)
                 {
-                    if (!this.IsTraining)
+                    JobDriver jobDriver = this.pawn.jobs.curDriver;
+                    if (!this.IsTraining && jobDriver.GetType() != typeof(JobDriver_AttackMelee))
                     {
                         Hediff_RWrd_PowerRoot root = this.pawn.GetRoot();
                         float num = 0.00005f * root.energy.trainDesireFactor;

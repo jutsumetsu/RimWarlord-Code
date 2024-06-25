@@ -147,7 +147,7 @@ namespace Electromagnetic.Core
         {
             Text.Font = GameFont.Small;
             Rect rect2 = new Rect(rect.x, rect.y, 60f, 25f);
-            Rect rect3 = new Rect(rect.x + 65f, rect.y, 55f, 25f);
+            Rect rect3 = new Rect(rect.x + 65f, rect.y, 70f, 25f);
             Rect rect4 = new Rect(rect.x + 140f, rect.y, 40f, 25f);
             Widgets.Label(rect2, label);
             Widgets.Label(rect3, a.ToString("F0"));

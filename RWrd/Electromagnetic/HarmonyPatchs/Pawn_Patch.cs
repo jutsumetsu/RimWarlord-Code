@@ -37,28 +37,29 @@ namespace Electromagnetic.HarmonyPatchs
                 }
             }
         }
+        //Thing伤害patch
         [HarmonyPatch(typeof(DamageWorker))]
         [HarmonyPatch("Apply")]
         class Patch2
         {
             [HarmonyPrefix]
-            public static bool GetMeleeDamagePreFix(DamageInfo dinfo, Thing victim, ref DamageWorker.DamageResult __result)
+            public static bool GetThingMeleeDamagePreFix(DamageInfo dinfo, Thing victim, ref DamageWorker.DamageResult __result)
             {
-                if (victim.SpawnedOrAnyParentSpawned)
+                /*if (victim.SpawnedOrAnyParentSpawned)
                 {
                     ImpactSoundUtility.PlayImpactSound(victim, dinfo.Def.impactSoundType, victim.MapHeld);
-                }
+                }*/
                 Pawn pawn = dinfo.Instigator as Pawn;
                 if (pawn != null)
                 {
                     if (victim.def.useHitPoints && dinfo.Def.harmsHealth)
                     {
-
                         Hediff_RWrd_PowerRoot root = pawn.GetRoot();
                         if (root != null)
                         {
                             int acr = root.energy.AvailableCompleteRealm();
                             int pff = root.energy.PowerFlowFactor();
+                            int level = root.energy.CurrentDef.level;
                             if (acr >= 1 && pff >= 1)
                             {
                                 float num = dinfo.Amount;
@@ -94,10 +95,10 @@ namespace Electromagnetic.HarmonyPatchs
                                 {
                                     num *= dinfo.Def.corpseDamageFactor;
                                 }
-                                num += root.energy.currentRWrd.def.level;
+                                num += level;
                                 num *= acr * pff;
                                 __result = new DamageWorker.DamageResult();
-                                __result.totalDamageDealt = (float)Mathf.Min(victim.HitPoints, GenMath.RoundRandom(num));
+                                __result.totalDamageDealt = Mathf.Min(victim.HitPoints, GenMath.RoundRandom(num));
                                 victim.HitPoints -= Mathf.RoundToInt(__result.totalDamageDealt);
                                 if (victim.HitPoints <= 0)
                                 {
@@ -112,6 +113,34 @@ namespace Electromagnetic.HarmonyPatchs
                     }
                 }
                 return true;
+            }
+        }
+        //Pawn伤害patch
+        [HarmonyPatch(typeof(DamageWorker_AddInjury))]
+        [HarmonyPatch("Apply")]
+        class Patch3
+        {
+            [HarmonyPrefix]
+            public static void GetPawnMeleeDamagePreFix(DamageInfo dinfo, Thing thing, ref DamageWorker.DamageResult __result)
+            {
+                if (dinfo.Instigator != null && thing != null)
+                {
+                    Pawn instigator = dinfo.Instigator as Pawn;
+                    Hediff_RWrd_PowerRoot root = instigator.GetRoot();
+                    if (root != null)
+                    {
+                        int acr = root.energy.AvailableCompleteRealm();
+                        int pff = root.energy.PowerFlowFactor();
+                        int level = root.energy.CurrentDef.level;
+                        if (acr >= 1 && pff >= 1)
+                        {
+                            float multiplier = acr * pff;
+                            float num_cache = dinfo.Amount + level;
+                            dinfo.SetAmount(num_cache * multiplier);
+                            __result.totalDamageDealt *= multiplier;
+                        }
+                    }
+                }
             }
         }
     }
