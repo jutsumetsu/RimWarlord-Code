@@ -74,8 +74,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_ReduceEnergy.cs" />
+    <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_SpawnMoteCast.cs" />
+    <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_SpawnMoteCasting.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_ReduceEnergy.cs" />
+    <Compile Include="Electromagnetic\Abilities\CompProperties_SpawnMoteCast.cs" />
+    <Compile Include="Electromagnetic\Abilities\CompProperties_SpawnMoteCasting.cs" />
     <Compile Include="Electromagnetic\Abilities\RWrd_PsyCastBase.cs" />
+    <Compile Include="Electromagnetic\Abilities\RWrd_Verb_Cast.cs" />
     <Compile Include="Electromagnetic\Core\AIUtility.cs" />
     <Compile Include="Electromagnetic\Core\Building_Training.cs" />
     <Compile Include="Electromagnetic\Core\Gizmo_Psychic.cs" />
