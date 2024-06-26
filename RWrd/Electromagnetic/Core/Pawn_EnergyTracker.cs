@@ -212,8 +212,8 @@ namespace Electromagnetic.Core
         {
             Scribe_Values.Look<float>(ref this.energy, "energy", 0f, false);
             Scribe_Values.Look<float>(ref this.exp, "exp", 0f, false);
-            Scribe_Values.Look<float>(ref this.completerealm, "complete realm", 0f, false);
-            Scribe_Values.Look<int>(ref this.powerflow, "power flow", 0, false);
+            Scribe_Values.Look<float>(ref this.completerealm, "completerealm", 0f, false);
+            Scribe_Values.Look<int>(ref this.powerflow, "powerflow", 0, false);
             Scribe_Deep.Look<RimWarlord>(ref this.currentRWrd, "currentRWrd", Array.Empty<object>());
             Scribe_Values.Look<bool>(ref this.canSelfDestruct, "canSelfDestruct", false, false);
         }

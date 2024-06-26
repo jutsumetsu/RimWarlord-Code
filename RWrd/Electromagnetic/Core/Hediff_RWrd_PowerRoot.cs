@@ -245,9 +245,8 @@ namespace Electromagnetic.Core
         public override void Tick()
         {
             base.Tick();
-            this.energy.currentRWrd.def.MaxEnergy = this.energy.PowerFlow / 100;
-            this.GetPCMList();
             JobDriver jobDriver = this.pawn.jobs.curDriver;
+            this.energy.currentRWrd.def.MaxEnergy = this.energy.PowerFlow / 100;
             if (Find.TickManager.TicksGame % 360 == 0)
             {
                 bool flag3 = !this.energy.OnMaxLevel;
@@ -278,34 +277,36 @@ namespace Electromagnetic.Core
             {
                 this.energy.SetEnergy(120);
             }
-            if (jobDriver.GetType() == typeof(JobDriver_AttackMelee))
+            if (jobDriver != null)
             {
-                int numMeleeAttacksMade = Traverse.Create(jobDriver).Field("numMeleeAttacksMade").GetValue<int>();
-                if (numMeleeAttacksMade > this.meleeAttackCounter)
+                if (jobDriver.GetType() == typeof(JobDriver_AttackMelee))
                 {
-                    meleeAttackCounter++;
-                }
-            }
-            else
-            {
-                float num = this.energy.damage;
-                float num2 = num * meleeAttackCounter / 10;
-                int exp1 = (int)Math.Floor(num2);
-                int exp2 = exp1 * 10;
-                int currentLevel = this.energy.currentRWrd.def.level;
-                if (currentLevel == 0)
-                {
-                    this.energy.SetExp(exp2);
+                    int numMeleeAttacksMade = Traverse.Create(jobDriver).Field("numMeleeAttacksMade").GetValue<int>();
+                    if (numMeleeAttacksMade > this.meleeAttackCounter)
+                    {
+                        meleeAttackCounter++;
+                    }
                 }
                 else
                 {
-                    this.energy.SetExp(exp1);
+                    float num = this.energy.damage;
+                    float num2 = num * meleeAttackCounter / 10;
+                    int exp1 = (int)Math.Floor(num2);
+                    int exp2 = exp1 * 10;
+                    int currentLevel = this.energy.currentRWrd.def.level;
+                    if (currentLevel == 0)
+                    {
+                        this.energy.SetExp(exp2);
+                    }
+                    else
+                    {
+                        this.energy.SetExp(exp1);
+                    }
+                    this.energy.damage = 0;
+                    meleeAttackCounter = 0;
                 }
-                this.energy.damage = 0;
-                meleeAttackCounter = 0;
             }
         }
-        public int Level = 0;
         public int meleeAttackCounter = 0;
 
         public Pawn_EnergyTracker energy;
