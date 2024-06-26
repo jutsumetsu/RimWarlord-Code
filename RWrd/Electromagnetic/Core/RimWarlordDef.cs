@@ -36,8 +36,6 @@ namespace Electromagnetic.Core
         public int MaxPowerFlow = 100000000;
         public float MaxCompleteRealm = 10000;
 
-        public HediffDef PowerBuff;
-
         public List<StatModifier> statOffsets;
         public List<StatModifier> statFactors;
 

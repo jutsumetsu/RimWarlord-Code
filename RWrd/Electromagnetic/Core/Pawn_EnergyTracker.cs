@@ -171,44 +171,16 @@ namespace Electromagnetic.Core
                 bool flag2 = this.IsUpdateLevelTiming() ;
                 if (flag2)
                 {
-                    this.OnPreSetLevel();
                     this.currentRWrd = nextRWrd ;
                     this.OnPostSetLevel() ;
                     this.exp = 0f;
                 }
             }
         }
-        //增加新力量BUFF并检查等级技能限制
+        //检查等级技能限制
         private void OnPostSetLevel()
         {
-            HediffDef powerBuff = this.CurrentDef.PowerBuff;
-            bool flag = powerBuff == null;
-            if (!flag)
-            {
-                bool flag2 = this.pawn.health.hediffSet.HasHediff(powerBuff, false);
-                if (!flag2)
-                {
-                    this.pawn.health.AddHediff(powerBuff, null, null, null);
-                    this.pawn.CheckLevelAndLimitingAbility();
-                }
-            }
-        }
-        //删除原有力量BUFF
-        private void OnPreSetLevel()
-        {
-            List<HediffDef> list = new List<HediffDef>();
-            foreach (RimWarlordDef rimWarlordDef in DefDatabase<RimWarlordDef>.AllDefsListForReading)
-            {
-                list.Add(rimWarlordDef.PowerBuff);
-            }
-            for (int i = 0; i < this.pawn.health.hediffSet.hediffs.Count; i++)
-            {
-                bool flag = list.Contains(this.pawn.health.hediffSet.hediffs[i].def);
-                if (flag)
-                {
-                    this.pawn.health.RemoveHediff(this.pawn.health.hediffSet.hediffs[i]);
-                }
-            }
+            this.pawn.CheckLevelAndLimitingAbility();
         }
         //获取下一级参数
         public RimWarlord GetNextRWrd()

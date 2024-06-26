@@ -90,6 +90,7 @@
     <Compile Include="Electromagnetic\Core\JobDriver_RWrd_General_Training.cs" />
     <Compile Include="Electromagnetic\Core\JobDriver_RWrd_Specialized_Training.cs" />
     <Compile Include="Electromagnetic\Core\JobGiver_EMTraining.cs" />
+    <Compile Include="Electromagnetic\Core\ModDetector.cs" />
     <Compile Include="Electromagnetic\Core\Need_Training.cs" />
     <Compile Include="Electromagnetic\Core\Pawn_EnergyTracker.cs" />
     <Compile Include="Electromagnetic\Core\PowerRootUtillity.cs" />
@@ -99,7 +100,9 @@
     <Compile Include="Electromagnetic\Core\TrainingCategory.cs" />
     <Compile Include="Electromagnetic\Core\WorkGiver_Training.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\HarmonyInit.cs" />
+    <Compile Include="Electromagnetic\HarmonyPatchs\HealthPatch.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\Pawn_Patch.cs" />
+    <Compile Include="Electromagnetic\HarmonyPatchs\PostFix_EBFEndpoints_GetMaxHealthWithEBF.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Electromagnetic\Core\RimWarlord.cs" />
     <Compile Include="Electromagnetic\Core\RimWarlordDef.cs" />

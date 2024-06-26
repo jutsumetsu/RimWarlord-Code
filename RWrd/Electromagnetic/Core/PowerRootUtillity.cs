@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Electromagnetic.Abilities;
 using RimWorld;
 using Verse;
+using Verse.AI.Group;
 
 namespace Electromagnetic.Core
 {
@@ -62,11 +63,28 @@ namespace Electromagnetic.Core
             bool flag = num < 5;
             if (flag)
             {
-                num = UnityEngine.Random.Range(1, 3);
+                num = UnityEngine.Random.Range(0, 3);
             }
             else
             {
-                num = 3;
+                bool flag2 = num < 8;
+                if (flag2)
+                {
+                    num = UnityEngine.Random.Range(3, 7);
+                }
+                else
+                {
+                    bool flag3 = num < 10;
+                    if (flag3)
+                    {
+                        num = UnityEngine.Random.Range(8, 10);
+                    }
+                }
+            }
+            bool flag4 = num > 10;
+            if (flag4)
+            {
+                num = 10;
             }
             currentRWrd = RimWarlordDef.Dict.GetValueOrDefault(num);
             List<RWrd_RouteDef> allDefListForReading = DefDatabase<RWrd_RouteDef>.AllDefsListForReading;
@@ -106,6 +124,12 @@ namespace Electromagnetic.Core
                 }
             }
             return list;
+        }
+        //检查是否能满足长期需求
+        public static bool LordPreventsGettingTraining(Pawn pawn)
+        {
+            Lord lord = pawn.GetLord();
+            return lord != null && !lord.CurLordToil.AllowSatisfyLongNeeds;
         }
     }
 }

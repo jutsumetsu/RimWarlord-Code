@@ -22,17 +22,14 @@ namespace Electromagnetic.HarmonyPatchs
             {
                 if (__instance.RaceProps.Humanlike)
                 {
-                    if (Find.TickManager.TicksGame % 600 == 0)
+                    bool flag = __instance.IsHaveRoot();
+                    if (!flag)
                     {
-                        bool flag = __instance.IsHaveRoot();
-                        if (!flag)
+                        bool flag2 = __instance.story.traits.HasTrait(RWrd_DefOf.RWrd_Gifted);
+                        if (flag2)
                         {
-                            bool flag2 = __instance.story.traits.HasTrait(RWrd_DefOf.RWrd_Gifted);
-                            if (flag2)
-                            {
-                                Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, __instance, null);
-                                __instance.health.AddHediff(hediff, null, null, null);
-                            }
+                            Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, __instance, null);
+                            __instance.health.AddHediff(hediff, null, null, null);
                         }
                     }
                 }
@@ -160,7 +157,11 @@ namespace Electromagnetic.HarmonyPatchs
                         float cr = root.energy.completerealm;
                         float num = __result + cr;
                         int level = root.energy.CurrentDef.level;
+                        int pff = root.energy.PowerFlowFactor();
                         int lf = level + 1;
+                        int multiplier = pff + lf;
+                        float num2 = __result - lf * 0.1f;
+                        float num3 = __result - cr;
                         bool flag = stat.ToString() == nameof(StatDefOf.ShootingAccuracyPawn);
                         bool flag1 = stat.ToString() == nameof(StatDefOf.ShootingAccuracyFactor_Touch);
                         bool flag2 = stat.ToString() == nameof(StatDefOf.ShootingAccuracyFactor_Short);
@@ -173,17 +174,57 @@ namespace Electromagnetic.HarmonyPatchs
                         bool flag9 = stat.ToString() == nameof(StatDefOf.HuntingStealth);
                         bool flag10 = stat.ToString() == nameof(StatDefOf.MedicalSurgerySuccessChance);
                         bool flag11 = stat.ToString() == nameof(StatDefOf.MedicalTendQuality);
+                        bool flag12 = stat.ToString() == nameof(StatDefOf.ArmorRating_Sharp);
+                        bool flag13 = stat.ToString() == nameof(StatDefOf.ArmorRating_Blunt);
+                        bool flag14 = stat.ToString() == nameof(StatDefOf.ArmorRating_Heat);
+                        bool flag15 = stat.ToString() == nameof(StatDefOf.MeleeDodgeChance);
+                        bool flag16 = stat.ToString() == nameof(StatDefOf.ComfyTemperatureMax);
+                        bool flag17 = stat.ToString() == nameof(StatDefOf.ComfyTemperatureMin);
+                        bool flag18 = stat.ToString() == nameof(StatDefOf.MeleeCooldownFactor);
+                        bool flag19 = stat.ToString() == nameof(StatDefOf.InjuryHealingFactor);
+                        bool flag20 = stat.ToString() == nameof(StatDefOf.ToxicResistance);
+                        bool flag21 = stat.ToString() == nameof(StatDefOf.IncomingDamageFactor);
+                        bool flag22 = stat.ToString() == nameof(StatDefOf.MaxHitPoints);
                         if (flag || flag1 || flag2 || flag3 || flag4 || flag10)
                         {
                             __result = Math.Min(num, 1);
                         }
-                        if (flag5 || flag9 || flag11)
+                        if (flag5 || flag9 || flag11 || flag12 || flag13 || flag14)
                         {
                             __result = num;
                         }
-                        if (flag6 || flag7 || flag8)
+                        if (flag6 || flag7 || flag8 || flag20)
                         {
                             __result *= lf;
+                        }
+                        if (flag15)
+                        {
+                            __result += Math.Min(cr, 0.5f);
+                            __result = Math.Min(__result, 0.85f);
+                        }
+                        if (flag16)
+                        {
+                            __result = 100 + 50 * lf;
+                        }
+                        if (flag17)
+                        {
+                            __result = -50 - 50 * lf;
+                        }
+                        if (flag18)
+                        {
+                            __result = Math.Max(num2, 0.05f);
+                        }
+                        if (flag19)
+                        {
+                            __result = (int)Math.Ceiling(lf / 2f) * 5;
+                        }
+                        if (flag21)
+                        {
+                            __result = Math.Max(num3, 0.1f);
+                        }
+                        if (flag22)
+                        {
+                            __result *= multiplier;
                         }
                     }
                 }

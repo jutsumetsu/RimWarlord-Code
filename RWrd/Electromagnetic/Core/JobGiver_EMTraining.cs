@@ -26,6 +26,10 @@ namespace Electromagnetic.Core
             {
                 return null;
             }
+            if (PowerRootUtillity.LordPreventsGettingTraining(pawn))
+            {
+                return null;
+            }
             if (need.CurLevel >= 0.99f)
             {
                 return null;

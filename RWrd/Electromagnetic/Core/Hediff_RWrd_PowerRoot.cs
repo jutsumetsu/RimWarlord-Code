@@ -110,22 +110,8 @@ namespace Electromagnetic.Core
         public override void PostRemoved()
         {
             this.pawn.CheckLevelAndLimitingAbility();
-            this.RemovePowerHediffs();
             this.RemoveRWrdAbilities();
             base.PostRemoved();
-        }
-        //移除力量BUFF
-        private void RemovePowerHediffs()
-        {
-            foreach (RimWarlordDef rimWarlordDef in DefDatabase<RimWarlordDef>.AllDefsListForReading)
-            {
-                Hediff firstHediffOfDef = this.pawn.health.hediffSet.GetFirstHediffOfDef(rimWarlordDef.PowerBuff, false);
-                bool flag = firstHediffOfDef != null;
-                if (flag)
-                {
-                    this.pawn.health.RemoveHediff(firstHediffOfDef);
-                }
-            }
         }
         //移除武神技能
         private void RemoveRWrdAbilities()
@@ -143,6 +129,52 @@ namespace Electromagnetic.Core
             {
                 this.pawn.abilities.RemoveAbility(a.def);
             });
+        }
+        private IEnumerable<PawnCapacityModifier> GetPCMList()
+        {
+            int lf = this.energy.CurrentDef.level + 1;
+            int lf2 = lf + 1;
+            float cr = this.energy.completerealm;
+            yield return new PawnCapacityModifier
+            {
+                capacity = PawnCapacityDefOf.Consciousness,
+                offset = Math.Min(lf, 50),
+            };
+            yield return new PawnCapacityModifier
+            {
+                capacity = PawnCapacityDefOf.Moving,
+                offset = Math.Min(lf, 50),
+            };
+            yield return new PawnCapacityModifier
+            {
+                capacity = PawnCapacityDefOf.Sight,
+                offset = Math.Min(lf2, 50),
+            };
+            yield return new PawnCapacityModifier
+            {
+                capacity = PawnCapacityDefOf.Hearing,
+                offset = Math.Min(lf2, 50),
+            };
+            yield return new PawnCapacityModifier
+            {
+                capacity = PawnCapacityDefOf.BloodFiltration,
+                offset = Math.Min(lf2, 50),
+            };
+            yield return new PawnCapacityModifier
+            {
+                capacity = PawnCapacityDefOf.BloodPumping,
+                offset = Math.Min(lf2, 50),
+            };
+            yield return new PawnCapacityModifier
+            {
+                capacity = PawnCapacityDefOf.Breathing,
+                offset = Math.Min(lf2, 50),
+            };
+            yield return new PawnCapacityModifier
+            {
+                capacity = PawnCapacityDefOf.Manipulation,
+                offset = cr,
+            };
         }
         public override void PostMake()
         {
@@ -183,6 +215,10 @@ namespace Electromagnetic.Core
                 this.energy.trainDesireFactor = UnityEngine.Random.Range(1, 51);
             }
             this.pawn.CheckLevelAndLimitingAbility();
+            foreach (PawnCapacityModifier pawnCapacityModifier in this.GetPCMList())
+            {
+                this.CurStage.capMods.Add(pawnCapacityModifier);
+            }
         }
         public override void ExposeData()
         {
@@ -210,6 +246,7 @@ namespace Electromagnetic.Core
         {
             base.Tick();
             this.energy.currentRWrd.def.MaxEnergy = this.energy.PowerFlow / 100;
+            this.GetPCMList();
             JobDriver jobDriver = this.pawn.jobs.curDriver;
             if (Find.TickManager.TicksGame % 360 == 0)
             {
@@ -222,6 +259,16 @@ namespace Electromagnetic.Core
             if (this.energy.IsUpdateLevelTiming())
             {
                 this.energy.SetLevel();
+            }
+            foreach (PawnCapacityModifier pcm in this.CurStage.capMods)
+            {
+                foreach (PawnCapacityModifier pawnCapacityModifier in this.GetPCMList())
+                {
+                    if (pcm.capacity == pawnCapacityModifier.capacity)
+                    {
+                        pcm.offset = pawnCapacityModifier.offset;
+                    }
+                }
             }
             if (Find.TickManager.TicksGame % 360000 == 0)
             {

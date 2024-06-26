@@ -67,7 +67,7 @@ namespace Electromagnetic.Core
         private void DrawUI2(Rect rect, float a, float b, int c, string label, string label2)
         {
             Text.Font = GameFont.Small;
-            Rect rect2 = new Rect(rect.x, rect.y, 85f, 25f);
+            Rect rect2 = new Rect(rect.x, rect.y, 90f, 25f);
             Rect rect3 = new Rect(rect.x + 85f, rect.y, 40f, 25f);
             Rect rect4 = new Rect(rect.x + 140f, rect.y, 40f, 25f);
             Rect rect5 = new Rect(rect.x + 65f, rect.y, 40f, 25f);
