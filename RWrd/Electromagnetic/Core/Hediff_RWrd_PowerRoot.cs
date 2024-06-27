@@ -67,7 +67,6 @@ namespace Electromagnetic.Core
                     action = delegate ()
                     {
                         this.energy.SetExp(this.energy.CurrentDef.EXP);
-                        this.energy.SetEnergy(this.energy.CurrentDef.MaxEnergy);
                         this.energy.SetLevel();
                         this.pawn.CheckLevelAndLimitingAbility();
                     }
@@ -247,13 +246,9 @@ namespace Electromagnetic.Core
             base.Tick();
             JobDriver jobDriver = this.pawn.jobs.curDriver;
             this.energy.currentRWrd.def.MaxEnergy = this.energy.PowerFlow / 100;
-            if (Find.TickManager.TicksGame % 360 == 0)
+            if (Find.TickManager.TicksGame % 60 == 0)
             {
-                bool flag3 = !this.energy.OnMaxLevel;
-                if (flag3)
-                {
-                    this.pawn.CheckLevelAndLimitingAbility();
-                }
+                this.pawn.CheckLevelAndLimitingAbility();
             }
             if (this.energy.IsUpdateLevelTiming())
             {
@@ -273,9 +268,9 @@ namespace Electromagnetic.Core
             {
                 this.energy.SetPowerFlow(100);
             }
-            if (Find.TickManager.TicksGame % 60 == 0)
+            if (Find.TickManager.TicksGame % 180 == 0)
             {
-                this.energy.SetEnergy(120);
+                this.energy.SetEnergy(300);
             }
             if (jobDriver != null)
             {

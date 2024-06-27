@@ -22,10 +22,10 @@ namespace Electromagnetic.Core
         //检查等级技能限制
         public static void CheckLevelAndLimitingAbility(this Pawn pawn)
         {
-            bool flag = pawn.health.hediffSet.HasHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, false);
+            bool flag = pawn.IsHaveRoot();
             if (flag)
             {
-                Hediff_RWrd_PowerRoot firstHediff = pawn.health.hediffSet.GetFirstHediff<Hediff_RWrd_PowerRoot>();
+                Hediff_RWrd_PowerRoot firstHediff = pawn.GetRoot();
                 int level = firstHediff.energy.currentRWrd.def.level;
                 string route = firstHediff.Route;
                 List<Ability> list = new List<Ability>();
@@ -104,17 +104,30 @@ namespace Electromagnetic.Core
             foreach (RWrd_RouteLevel rwrd_RouteLevel in route.routeLevels)
             {
                 string text = rwrd_RouteLevel.levelDef.defName + "：";
-                bool flag = rwrd_RouteLevel.level > level;
-                text += (flag ? "(Disabled)" : "(Enabled");
+                bool flag;
+                if (rwrd_RouteLevel.level > level)
+                {
+                    flag = true;
+                }
+                else
+                {
+                    flag = false;
+                }
                 foreach (AbilityDef abilityDef in rwrd_RouteLevel.abilities)
                 {
-                    text = text + abilityDef.defName + "，";
                     Ability ability = pawn.abilities.GetAbility(abilityDef, false);
                     bool flag2 = ability == null;
-                    if (flag2)
+                    if (!flag2)
                     {
                         list.Add(ability);
+                        CompAbilityEffect_ReduceEnergy compAbilityEffect_ReduceEnergy = ability.CompOfType<CompAbilityEffect_ReduceEnergy>();
+                        if (compAbilityEffect_ReduceEnergy != null && -compAbilityEffect_ReduceEnergy.Props.rEnergy > root.energy.energy)
+                        {
+                            flag = true;
+                        }
                         ability.CompOfType<CompAbilityEffect_ReduceEnergy>().disabled = flag;
+                        text += (flag ? "(Disabled)" : "(Enabled)");
+                        text = text + abilityDef.defName + "，";
                     }
                 }
                 bool godMode = DebugSettings.godMode;

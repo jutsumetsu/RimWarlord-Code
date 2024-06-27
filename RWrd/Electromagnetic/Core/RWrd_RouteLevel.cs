@@ -47,6 +47,15 @@ namespace Electromagnetic.Core
                 }
             }
         }
+        public IEnumerable<string> ConfigErrors()
+        {
+            bool flag = this.abilities == null && this.abilityList.NullOrEmpty();
+            if (flag)
+            {
+                yield return "No Abilities Found For Level " + this.level.ToString();
+            }
+            yield break;
+        }
         public int level;
 
         public RimWarlordDef levelDef;

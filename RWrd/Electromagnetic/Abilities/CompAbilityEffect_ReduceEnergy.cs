@@ -72,6 +72,7 @@ namespace Electromagnetic.Abilities
         {
             bool shouldHideGizmo = this.ShouldHideGizmo;
             bool result;
+            bool flag = this.parent.pawn.GetRoot() != null;
             if (shouldHideGizmo)
             {
                 reason = "力量不足，无法使用技能";

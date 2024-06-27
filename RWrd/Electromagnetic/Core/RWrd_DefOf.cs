@@ -16,9 +16,13 @@ namespace Electromagnetic.Core
         public static HediffDef Hediff_RWrd_PowerRoot;
         public static RWrd_RouteDef Base;
         public static TraitDef RWrd_Gifted;
+        //能力
+        public static AbilityDef RWrd_Ability_CellRecombination;
         //建筑
         public static ThingDef RWrd_Building_TrainingSpot;
         //Job
         public static JobDef RWrd_General_Training;
+        //Hediff
+        public static HediffDef RWrd_Regenerating;
     }
 }

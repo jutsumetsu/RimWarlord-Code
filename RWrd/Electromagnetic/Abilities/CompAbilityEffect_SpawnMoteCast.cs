@@ -23,7 +23,7 @@ namespace Electromagnetic.Abilities
         }
         private static float MoteCastFadeTime = 0.4f;
         private static float MoteCastScale = 1f;
-        private static Vector3 MoteCastOffset = new Vector3(0f, 0f, 0f);
+        private static Vector3 MoteCastOffset = new Vector3(0f, 0f, 1f);
         private int tick = 0;
         private bool happend = false;
     }

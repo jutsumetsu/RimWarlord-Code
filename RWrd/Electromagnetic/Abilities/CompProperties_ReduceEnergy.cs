@@ -9,7 +9,7 @@ namespace Electromagnetic.Abilities
     {
         public CompProperties_ReduceEnergy()
         {
-            this.compClass = typeof(CompProperties_ReduceEnergy);
+            this.compClass = typeof(CompAbilityEffect_ReduceEnergy);
         }
         public int rEnergy;
         public int level;

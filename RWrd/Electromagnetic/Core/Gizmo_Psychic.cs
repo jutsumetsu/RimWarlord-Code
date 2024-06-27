@@ -28,7 +28,7 @@ namespace Electromagnetic.Core
 
         public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
         {
-            Rect rect = new Rect(topLeft.x - 4, topLeft.y - 28, this.GetWidth(maxWidth), 110f);
+            Rect rect = new Rect(topLeft.x - 4, topLeft.y - 21, this.GetWidth(maxWidth), 110f);
             Rect rect2 = rect.ContractedBy(2f);
             Widgets.DrawWindowBackground(rect);
             Rect rect3 = rect2;
