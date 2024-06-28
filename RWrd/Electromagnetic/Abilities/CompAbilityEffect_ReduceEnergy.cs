@@ -40,7 +40,7 @@ namespace Electromagnetic.Abilities
                 if (flag)
                 {
                     ((Hediff_RWrd_PowerRoot)hediff).energy.SetEnergy((float)this.Props.rEnergy);
-                    ((Hediff_RWrd_PowerRoot)hediff).energy.SetExp(0.3f * (float)(-(float)this.Props.rEnergy));
+                    ((Hediff_RWrd_PowerRoot)hediff).energy.SetExp(0.1f * (float)(-(float)this.Props.rEnergy));
                     break;
                 }
             }

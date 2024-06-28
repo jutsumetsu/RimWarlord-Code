@@ -87,6 +87,11 @@ namespace Electromagnetic.Core
                 num = 10;
             }
             currentRWrd = RimWarlordDef.Dict.GetValueOrDefault(num);
+            /*RimWarlordDef tempRWrd;
+            if (!RimWarlordDef.Dict.TryGetValue(num, out tempRWrd))
+            {
+                tempRWrd = default(RimWarlordDef);
+            }*/
             List<RWrd_RouteDef> allDefListForReading = DefDatabase<RWrd_RouteDef>.AllDefsListForReading;
             route =  allDefListForReading.RandomElement<RWrd_RouteDef>();
             root.route = route;

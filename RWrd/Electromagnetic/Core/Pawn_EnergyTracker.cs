@@ -35,6 +35,11 @@ namespace Electromagnetic.Core
             this.powerflow = 0;
             this.canSelfDestruct = false;
             this.currentRWrd = new RimWarlord(RimWarlordDef.Dict.GetValueOrDefault(0), this.pawn);
+            /*RimWarlordDef def;
+            if (!RimWarlordDef.Dict.TryGetValue(0, out def))
+            {
+                def = default(RimWarlordDef);
+            }*/
             this.OnPostSetLevel();
         }
         //能量
