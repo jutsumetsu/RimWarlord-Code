@@ -24,7 +24,18 @@ namespace Electromagnetic.Abilities
                 bool flag5 = flag4;
                 if (flag5)
                 {
-                    list.RandomElement<Hediff_Injury>().Heal(30f);
+                    if (this.pawn.IsHaveRoot())
+                    {
+                        Hediff_RWrd_PowerRoot root = this.pawn.GetRoot();
+                        int level = root.energy.CurrentDef.level;
+                        int lf1 = Math.Max(level - 50, 0);
+                        int lf2 = lf1 * 2;
+                        list.RandomElement<Hediff_Injury>().Heal(30f + lf2);
+                    }
+                    else
+                    {
+                        list.RandomElement<Hediff_Injury>().Heal(30f);
+                    }
                     flag3 = true;
                 }
                 else
