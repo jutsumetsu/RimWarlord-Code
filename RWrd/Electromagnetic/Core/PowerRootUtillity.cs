@@ -12,7 +12,14 @@ namespace Electromagnetic.Core
         //是否拥有力量之源
         public static bool IsHaveRoot(this Pawn pawn)
         {
-            return pawn.health.hediffSet.HasHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, false);
+            if (pawn == null)
+            {
+                return false;
+            }
+            else
+            {
+                return pawn.health.hediffSet.HasHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, false);
+            }
         }
         //获取角色力量之源数据
         public static Hediff_RWrd_PowerRoot GetRoot(this Pawn pawn)
