@@ -17,7 +17,7 @@ namespace Electromagnetic.Core
         }
         public override float GetWidth(float maxWidth)
         {
-            return 180f;
+            return 176f;
         }
         public Gizmo_Psychic(Pawn pawn, Hediff_RWrd_PowerRoot energy)
         {
@@ -28,7 +28,7 @@ namespace Electromagnetic.Core
 
         public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
         {
-            Rect rect = new Rect(topLeft.x - 4, topLeft.y - 21, this.GetWidth(maxWidth), 110f);
+            Rect rect = new Rect(topLeft.x - 4, topLeft.y, this.GetWidth(maxWidth), 89f);
             Rect rect2 = rect.ContractedBy(2f);
             Widgets.DrawWindowBackground(rect);
             Rect rect3 = rect2;
@@ -37,15 +37,15 @@ namespace Electromagnetic.Core
             this.DrawUI(rect3, this.energy.energy.energy, this.energy.energy.currentRWrd.def.MaxEnergy, this.EnergyLabel.Translate());
             Rect rect4 = rect2;
             rect4.width = 180f;
-            rect4.yMin = rect2.y + 35;
+            rect4.yMin = rect2.y + 30;
             this.DrawUI2(rect4, this.energy.energy.Exp, this.energy.energy.currentRWrd.def.EXP, this.energy.energy.currentRWrd.def.level, this.energy.energy.currentRWrd.def.label, this.ExpLabel.Translate());
             Rect rect5 = rect2;
             rect5.width = 180f;
-            rect5.yMin = rect4.y + 25;
+            rect5.yMin = rect4.y + 18;
             this.DrawUI3(rect5, this.energy.energy.CompleteRealm, this.energy.energy.AvailableCompleteRealm(), this.CompleteRealmLabel.Translate());
             Rect rect6 = rect2;
             rect6.width = 180f;
-            rect6.yMin = rect5.y + 25;
+            rect6.yMin = rect5.y + 18;
             this.DrawUI4(rect6, this.energy.energy.PowerFlow, this.PowerFlowLabel.Translate());
             float num = this.energy.energy.energy / this.energy.energy.currentRWrd.def.MaxEnergy;
             Rect position = new Rect(rect2.x + 125f, rect2.y + 8f, 50f, 60f);
@@ -59,7 +59,7 @@ namespace Electromagnetic.Core
             Text.Font = GameFont.Small;
             Rect rect2 = new Rect(rect.x, rect.y, 60f, 25f);
             Rect rect3 = new Rect(rect.x + 60f, rect.y, 100f, 25f);
-            Rect rect4 = new Rect(rect.x, rect.y + 24f, 172f, 10f);
+            Rect rect4 = new Rect(rect.x, rect.y + 20f, 172f, 10f);
             Widgets.Label(rect2, label);
             Widgets.Label(rect3, a.ToString("F0") + " / " + b.ToString("F0"));
             Widgets.FillableBar(rect4, a / b, Gizmo_Psychic.FullBarTex, Gizmo_Psychic.EmptyBarTex, false);
