@@ -264,6 +264,13 @@ namespace Electromagnetic.Core
                     }
                 }
             }
+            if (this.CurStage.capMods.Count == 0)
+            {
+                foreach (PawnCapacityModifier pawnCapacityModifier in this.GetPCMList())
+                {
+                    this.CurStage.capMods.Add(pawnCapacityModifier);
+                }
+            }
             if (Find.TickManager.TicksGame % 360000 == 0)
             {
                 this.energy.SetPowerFlow(100);
