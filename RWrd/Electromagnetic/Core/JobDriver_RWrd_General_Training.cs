@@ -51,7 +51,7 @@ namespace Electromagnetic.Core
                                 root.energy.SetExp(25);
                                 counter += 1;
                             }
-                            root.energy.SetCompleteRealm(0.001f);
+                            root.energy.SetCompleteRealm(0.0001f);
                             need.CurLevel += 0.1f;
                         }
                         tick = this.ticktime;
