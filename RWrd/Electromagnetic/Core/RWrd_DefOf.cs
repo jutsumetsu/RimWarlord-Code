@@ -27,5 +27,7 @@ namespace Electromagnetic.Core
         public static JobDef RWrd_General_Training;
         //Hediff
         public static HediffDef RWrd_Regenerating;
+        public static HediffDef RWrd_ElectricInternalEnergy;
+        public static HediffDef RWrd_HeavenLock;
     }
 }

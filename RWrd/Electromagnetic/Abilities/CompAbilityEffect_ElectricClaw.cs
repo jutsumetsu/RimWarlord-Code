@@ -24,8 +24,7 @@ namespace Electromagnetic.Abilities
             {
                 return new FleckDef[]
                 {
-                    RWrd_DefOf.RWrd_ElectricClawAttractFleck,
-                    RWrd_DefOf.RWrd_ElectricClawFleck
+                    RWrd_DefOf.RWrd_ElectricClawAttractFleck
                 };
             }
         }
@@ -70,16 +69,12 @@ namespace Electromagnetic.Abilities
                 IntVec3 position = this.parent.pawn.Position;
                 pawn.Position = position;
             }
-            Hediff_RWrd_PowerRoot root = this.parent.pawn.GetRoot();
-            float num = this.Props.damage + root.energy.CurrentDef.level;
-            int acr = root.energy.AvailableCompleteRealm();
-            int pff = root.energy.PowerFlowFactor();
-            float multiplier = acr + pff;
-            multiplier = (int)Math.Floor(multiplier / 2);
-            num *= multiplier;
-            FleckCreationData dataStatic2 = FleckMaker.GetDataStatic(target.Cell.ToVector3(), map, effectSet[1], 1f);
-            map.flecks.CreateFleck(dataStatic2);
-            pawn.TakeDamage(new DamageInfo(DamageDefOf.Flame, num, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true));
+            Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.RWrd_ElectricInternalEnergy, pawn, null);
+            HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();
+            hediffComp_Disappears.ticksToDisappear = 120;
+            Hediff_TargetBase hediff1 = hediff as Hediff_TargetBase;
+            hediff1.root = this.parent.pawn.GetRoot();
+            pawn.health.AddHediff(hediff1, null, null, null);
         }
         public static double PointsAngleTool(IntVec3 p1, IntVec3 p2)
         {
