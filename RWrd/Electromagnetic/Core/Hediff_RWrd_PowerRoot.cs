@@ -214,10 +214,10 @@ namespace Electromagnetic.Core
                 this.energy.trainDesireFactor = UnityEngine.Random.Range(1, 51);
             }
             this.pawn.CheckLevelAndLimitingAbility();
-            foreach (PawnCapacityModifier pawnCapacityModifier in this.GetPCMList())
+            /*foreach (PawnCapacityModifier pawnCapacityModifier in this.GetPCMList())
             {
                 this.CurStage.capMods.Add(pawnCapacityModifier);
-            }
+            }*/
         }
         public override void ExposeData()
         {
@@ -271,6 +271,16 @@ namespace Electromagnetic.Core
                     this.CurStage.capMods.Add(pawnCapacityModifier);
                 }
             }
+            /*if (Find.TickManager.TicksGame % 300 == 0)
+            {
+                string txt = this.pawn.Name + ": ";
+                foreach (PawnCapacityModifier pcm in this.CurStage.capMods)
+                {
+                    txt = txt + pcm.capacity.defName + "-";
+                    txt = txt + pcm.offset.ToString() + " ";
+                }
+                Log.Message(txt);
+            }*/
             if (Find.TickManager.TicksGame % 360000 == 0)
             {
                 this.energy.SetPowerFlow(100);

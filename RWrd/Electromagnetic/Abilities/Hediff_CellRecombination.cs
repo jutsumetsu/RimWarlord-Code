@@ -9,7 +9,7 @@ using Verse;
 
 namespace Electromagnetic.Abilities
 {
-    public class Hediff_CellRecombination : HediffWithComps
+    public class Hediff_CellRecombination : Hediff_TargetBase
     {
         public override void PostTick()
         {
@@ -24,10 +24,10 @@ namespace Electromagnetic.Abilities
                 bool flag5 = flag4;
                 if (flag5)
                 {
-                    if (this.pawn.IsHaveRoot())
+                    if (this.root != null)
                     {
-                        Hediff_RWrd_PowerRoot root = this.pawn.GetRoot();
-                        int level = root.energy.CurrentDef.level;
+                        Log.Message(root.pawn.Name);
+                        int level = this.root.energy.CurrentDef.level;
                         int lf1 = Math.Max(level - 50, 0);
                         int lf2 = lf1 * 2;
                         list.RandomElement<Hediff_Injury>().Heal(30f + lf2);

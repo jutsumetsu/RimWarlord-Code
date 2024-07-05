@@ -8,6 +8,7 @@ using Electromagnetic.Core;
 using UnityEngine;
 using System.Net.NetworkInformation;
 using System.Linq;
+using Electromagnetic.Abilities;
 
 namespace Electromagnetic.HarmonyPatchs
 {
@@ -59,6 +60,7 @@ namespace Electromagnetic.HarmonyPatchs
                             if (acr >= 1 && pff >= 1)
                             {
                                 float multiplier = acr + pff;
+                                multiplier = (int)Math.Floor(multiplier / 2);
                                 float num = __instance.verbProps.AdjustedMeleeDamageAmount(__instance, __instance.CasterPawn);
                                 float armorPenetration = __instance.verbProps.AdjustedArmorPenetration(__instance, __instance.CasterPawn);
                                 armorPenetration += cr;
@@ -67,7 +69,7 @@ namespace Electromagnetic.HarmonyPatchs
                                 num *= multiplier;
                                 if (target.Thing.GetType() == typeof(Pawn))
                                 {
-                                    Pawn pawn = target.Thing as Pawn;
+                                    Pawn pawn = target.Pawn;
                                     root.energy.damage = num;
                                 }
 
@@ -230,5 +232,65 @@ namespace Electromagnetic.HarmonyPatchs
                 }
             }
         }
+       /* [HarmonyPatch(typeof(CompAbilityEffect_GiveHediff))]
+        [HarmonyPatch("ApplyInner")]
+        class Patch5
+        {
+            [HarmonyPrefix]
+            public static bool hediffPatch(CompAbilityEffect_GiveHediff __instance, Pawn target, Pawn other)
+            {
+                Pawn caster = __instance.parent.pawn;
+
+                if (caster.IsHaveRoot() && __instance.Props.hediffDef.hediffClass == typeof(Hediff_TargetBase))
+                {
+                    Log.Message("patch success");
+                    if (target != null)
+                    {
+                        bool TryResist = Traverse.Create(__instance).Field("TryResist").GetValue<bool>();
+                        if (TryResist)
+                        {
+                            MoteMaker.ThrowText(target.DrawPos, target.Map, "Resisted".Translate(), -1f);
+                            return false;
+                        }
+                        if (__instance.Props.replaceExisting)
+                        {
+                            Hediff firstHediffOfDef = target.health.hediffSet.GetFirstHediffOfDef(__instance.Props.hediffDef, false);
+                            if (firstHediffOfDef != null)
+                            {
+                                target.health.RemoveHediff(firstHediffOfDef);
+                            }
+                        }
+                        Hediff hediff = HediffMaker.MakeHediff(__instance.Props.hediffDef, target, __instance.Props.onlyBrain ? target.health.hediffSet.GetBrain() : null);
+                        HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();
+                        if (hediffComp_Disappears != null)
+                        {
+                            hediffComp_Disappears.ticksToDisappear = __instance.GetDurationSeconds(target).SecondsToTicks();
+                        }
+                        if (__instance.Props.severity >= 0f)
+                        {
+                            hediff.Severity = __instance.Props.severity;
+                        }
+                        HediffComp_Link hediffComp_Link = hediff.TryGetComp<HediffComp_Link>();
+                        if (hediffComp_Link != null)
+                        {
+                            hediffComp_Link.other = other;
+                            hediffComp_Link.drawConnection = (target == __instance.parent.pawn);
+                        }
+                        if (caster.IsHaveRoot())
+                        {
+                            Hediff_TargetBase hediff_TargetBase = hediff as Hediff_TargetBase;
+                            hediff_TargetBase.root = caster.GetRoot();
+                        }
+                        else
+                        {
+                            target.health.AddHediff(hediff, null, null, null);
+                        }
+                    }
+                    return false;
+                }
+
+                return true;
+            }
+        }*/
     }
 }

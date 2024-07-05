@@ -18,6 +18,9 @@ namespace Electromagnetic.Core
         public static TraitDef RWrd_Gifted;
         //能力
         public static AbilityDef RWrd_Ability_CellRecombination;
+        //特效
+        public static FleckDef RWrd_ElectricClawAttractFleck;
+        public static FleckDef RWrd_ElectricClawFleck;
         //建筑
         public static ThingDef RWrd_Building_TrainingSpot;
         //Job
