@@ -63,7 +63,7 @@ namespace Electromagnetic.Core
             {
                 yield return new Command_Action
                 {
-                    defaultLabel = "测试：直接升级",
+                    defaultLabel = "升级",
                     action = delegate ()
                     {
                         this.energy.SetExp(this.energy.CurrentDef.EXP);
@@ -73,7 +73,7 @@ namespace Electromagnetic.Core
                 };
                 yield return new Command_Action
                 {
-                    defaultLabel = "测试：提升力量",
+                    defaultLabel = "提升力量",
                     action = delegate ()
                     {
                         this.energy.SetExp(1000f);
@@ -81,7 +81,7 @@ namespace Electromagnetic.Core
                 };
                 yield return new Command_Action
                 {
-                    defaultLabel = "测试：加能量",
+                    defaultLabel = "增加能量",
                     action = delegate ()
                     {
                         this.energy.SetEnergy(1000f);
@@ -89,7 +89,7 @@ namespace Electromagnetic.Core
                 };
                 yield return new Command_Action
                 {
-                    defaultLabel = "测试：提升完全境界",
+                    defaultLabel = "提升完全境界",
                     action = delegate ()
                     {
                         this.energy.SetCompleteRealm(0.1f);
@@ -97,10 +97,22 @@ namespace Electromagnetic.Core
                 };
                 yield return new Command_Action
                 {
-                    defaultLabel = "测试：提升力量流量",
+                    defaultLabel = "提升力量流量",
                     action = delegate ()
                     {
                         this.energy.SetPowerFlow(10000);
+                    }
+                };
+                yield return new Command_Action
+                {
+                    defaultLabel = "重载默认技能树",
+                    action = delegate ()
+                    {
+                        pawn.RemoveAbilities(RWrd_DefOf.Base);
+                        RWrd_DefOf.Base.AllAbilities.ForEach(delegate (AbilityDef a)
+                        {
+                            this.pawn.abilities.GainAbility(a);
+                        });
                     }
                 };
             }

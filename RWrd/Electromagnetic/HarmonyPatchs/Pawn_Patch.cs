@@ -187,6 +187,7 @@ namespace Electromagnetic.HarmonyPatchs
                         bool flag20 = stat.ToString() == nameof(StatDefOf.ToxicResistance);
                         bool flag21 = stat.ToString() == nameof(StatDefOf.IncomingDamageFactor);
                         bool flag22 = stat.ToString() == nameof(StatDefOf.MaxHitPoints);
+                        bool flag23 = stat.ToString() == nameof(StatDefOf.NegotiationAbility);
                         if (flag || flag1 || flag2 || flag3 || flag4 || flag10)
                         {
                             __result = Math.Min(num, 1);
@@ -227,6 +228,13 @@ namespace Electromagnetic.HarmonyPatchs
                         if (flag22)
                         {
                             __result *= multiplier;
+                        }
+                        if (flag23)
+                        {
+                            if (level >= 10)
+                            {
+                                __result += 0.8f;
+                            }
                         }
                     }
                 }

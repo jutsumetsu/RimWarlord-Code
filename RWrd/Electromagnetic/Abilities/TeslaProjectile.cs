@@ -34,6 +34,15 @@ namespace Electromagnetic.Abilities
         {
             get
             {
+                Pawn pawn = (Pawn)base.Launcher;
+                if (pawn.IsHaveRoot())
+                {
+                    Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                    int level = root.energy.CurrentDef.level;
+                    int num = this.def.projectile.GetDamageAmount(1f, null);
+                    num += level;
+                    return num;
+                }
                 return this.def.projectile.GetDamageAmount(1f, null);
             }
         }
@@ -45,7 +54,7 @@ namespace Electromagnetic.Abilities
         {
             bool isRanged = this.def.projectile.damageDef.isRanged;
             this.def.projectile.damageDef.isRanged = true;
-            base.Impact(hitThing, false);
+            base.Impact(hitThing, true);
             this.def.projectile.damageDef.isRanged = isRanged;
             bool flag = this.mainLauncher == null;
             if (flag)
@@ -82,13 +91,6 @@ namespace Electromagnetic.Abilities
                         BattleLogEntry_RangedImpact battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(this.launcher, hitThing, this.intendedTarget.Thing, this.equipmentDef, this.def, this.targetCoverDef);
                         Find.BattleLog.Add(battleLogEntry_RangedImpact);
                         DamageInfo damageInfo = this.GetDamageInfo(hitThing);
-                        Pawn pawn = (Pawn)base.Launcher;
-                        if (pawn.IsHaveRoot())
-                        {
-                            Hediff_RWrd_PowerRoot root = pawn.GetRoot();
-                            int level = root.energy.CurrentDef.level;
-                            damageInfo.SetAmount(damageInfo.Amount + level);
-                        }
                         hitThing.TakeDamage(damageInfo).AssociateWithLog(battleLogEntry_RangedImpact);
                         bool flag7 = this.Props.addFire && hitThing.TryGetComp<CompAttachBase>() != null && hitThing.Map != null;
                         if (flag7)

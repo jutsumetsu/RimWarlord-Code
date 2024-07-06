@@ -73,6 +73,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Electromagnetic\Abilities\AttackType.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_ElectricClaw.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_GiveTargetHediff.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_HeavenLock.cs" />
@@ -87,12 +88,17 @@
     <Compile Include="Electromagnetic\Abilities\CompProperties_SpawnMoteCast.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_SpawnMoteCasting.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_SpawnMoteSinging.cs" />
+    <Compile Include="Electromagnetic\Abilities\HediffCompProperties_Draw_RWrd.cs" />
+    <Compile Include="Electromagnetic\Abilities\HediffCompProperties_Shield_RWrd.cs" />
+    <Compile Include="Electromagnetic\Abilities\HediffComp_Draw_RWrd.cs" />
+    <Compile Include="Electromagnetic\Abilities\HediffComp_Shield_RWrd.cs" />
     <Compile Include="Electromagnetic\Abilities\Hediff_CellRecombination.cs" />
     <Compile Include="Electromagnetic\Abilities\Hediff_ElectricInternalEnergy.cs" />
     <Compile Include="Electromagnetic\Abilities\Hediff_HeavenLock.cs" />
     <Compile Include="Electromagnetic\Abilities\Hediff_TargetBase.cs" />
     <Compile Include="Electromagnetic\Abilities\RWrd_PsyCastBase.cs" />
     <Compile Include="Electromagnetic\Abilities\RWrd_Verb_Cast.cs" />
+    <Compile Include="Electromagnetic\Abilities\ShieldsSystem_RWrd.cs" />
     <Compile Include="Electromagnetic\Abilities\TeslaChainingProps.cs" />
     <Compile Include="Electromagnetic\Abilities\TeslaProjectile.cs" />
     <Compile Include="Electromagnetic\Core\AIUtility.cs" />

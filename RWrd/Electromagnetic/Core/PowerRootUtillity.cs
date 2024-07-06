@@ -150,6 +150,27 @@ namespace Electromagnetic.Core
             }
             return list;
         }
+        //移除技能
+        public static List<Ability> RemoveAbilities(this Pawn pawn, RWrd_RouteDef route)
+        {
+            List<Ability> list = new List<Ability>();
+            Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+            int level = root.energy.CurrentDef.level;
+            foreach (RWrd_RouteLevel rwrd_RouteLevel in route.routeLevels)
+            {
+                string text = rwrd_RouteLevel.levelDef.defName + "：";
+                foreach (AbilityDef abilityDef in rwrd_RouteLevel.abilities)
+                {
+                    Ability ability = pawn.abilities.GetAbility(abilityDef, false);
+                    bool flag2 = ability == null;
+                    if (!flag2)
+                    {
+                        pawn.abilities.RemoveAbility(abilityDef);
+                    }
+                }
+            }
+            return list;
+        }
         //检查是否能满足长期需求
         public static bool LordPreventsGettingTraining(Pawn pawn)
         {
