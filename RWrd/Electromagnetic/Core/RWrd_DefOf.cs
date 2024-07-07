@@ -22,6 +22,7 @@ namespace Electromagnetic.Core
         //特效
         public static FleckDef RWrd_ElectricClawAttractFleck;
         public static FleckDef RWrd_ElectricClawFleck;
+        public static FleckDef RWrd_ThunderPunchFleck;
         //建筑
         public static ThingDef RWrd_Building_TrainingSpot;
         //Job

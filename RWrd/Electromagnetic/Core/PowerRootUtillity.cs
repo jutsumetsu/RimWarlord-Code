@@ -137,6 +137,17 @@ namespace Electromagnetic.Core
                         {
                             flag = true;
                         }
+                        else
+                        {
+                            if (rwrd_RouteLevel.level > level)
+                            {
+                                flag = true;
+                            }
+                            else
+                            {
+                                flag = false;
+                            }
+                        }
                         ability.CompOfType<CompAbilityEffect_ReduceEnergy>().disabled = flag;
                         text += (flag ? "(Disabled)" : "(Enabled)");
                         text = text + abilityDef.defName + "，";
