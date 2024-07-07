@@ -81,9 +81,11 @@
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_SpawnMoteCast.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_SpawnMoteCasting.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_SpawnMoteSinging.cs" />
+    <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_WindBlade.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityElectricClaw.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityGiveTargetHediff.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityHeavenLock.cs" />
+    <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityWindBlade.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_ReduceEnergy.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_SpawnMoteCast.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_SpawnMoteCasting.cs" />

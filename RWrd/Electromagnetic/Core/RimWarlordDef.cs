@@ -28,8 +28,8 @@ namespace Electromagnetic.Core
         [NoTranslate]
         public List<string> tags;
         //能量上下限
-        public float MaxEnergy;
-        public float MinEnergy = 1f;
+        public float MaxEnergy = 5000f;
+        public float MinEnergy = 0f;
         //经验需求
         public float EXP = 0f;
         //完全境界和力量流量上限
