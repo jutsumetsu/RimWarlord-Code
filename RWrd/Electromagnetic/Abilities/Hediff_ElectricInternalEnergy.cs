@@ -41,7 +41,7 @@ namespace Electromagnetic.Abilities
             Pawn pawn = this.pawn;
             Hediff_RWrd_PowerRoot root = this.root;
             FleckDef[] effectSet = this.EffectSet;
-            float num = 30 + root.energy.CurrentDef.level;
+            float num = 20 + root.energy.CurrentDef.level;
             int acr = root.energy.AvailableCompleteRealm();
             int pff = root.energy.PowerFlowFactor();
             float multiplier = acr + pff;
