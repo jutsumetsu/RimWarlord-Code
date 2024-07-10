@@ -32,7 +32,7 @@ namespace Electromagnetic.Abilities
             base.CompTick();
         }
         private static float MoteCastFadeTime = 0f;
-        private static float MoteCastScale = 3f;
+        private static float MoteCastScale = 5f;
         private static Vector3 MoteCastOffset = new Vector3(0f, 0f, 0f);
     }
 }
