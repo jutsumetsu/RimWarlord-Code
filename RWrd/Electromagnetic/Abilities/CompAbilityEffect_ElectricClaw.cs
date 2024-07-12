@@ -39,7 +39,7 @@ namespace Electromagnetic.Abilities
             dataStatic.rotation = (float)CompAbilityEffect_ElectricClaw.PointsAngleTool(this.parent.pawn.Position, pawn.Position);
             map.flecks.CreateFleck(dataStatic);
             pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, false);
-            pawn.stances.stunner.StunFor(120, this.parent.pawn, false, false);
+            pawn.stances.stunner.StunFor(60, this.parent.pawn, false, false);
             if (this.parent.pawn.Rotation == Rot4.North)
             {
                 IntVec3 position = this.parent.pawn.Position;
@@ -69,6 +69,7 @@ namespace Electromagnetic.Abilities
                 IntVec3 position = this.parent.pawn.Position;
                 pawn.Position = position;
             }
+            pawn.stances.stunner.StunFor(60, this.parent.pawn, false, false);
             Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.RWrd_ElectricInternalEnergy, pawn, null);
             HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();
             hediffComp_Disappears.ticksToDisappear = 120;

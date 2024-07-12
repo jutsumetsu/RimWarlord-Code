@@ -34,7 +34,7 @@ namespace Electromagnetic.Core
             Rect rect3 = rect2;
             rect3.width = 180f;
             rect3.height = rect.height / 2f;
-            this.DrawUI(rect3, this.energy.energy.energy, this.energy.energy.currentRWrd.def.MaxEnergy, this.EnergyLabel.Translate());
+            this.DrawUI(rect3, this.energy.energy.energy, this.energy.energy.CurrentDef.MaxEnergy, this.EnergyLabel.Translate());
             Rect rect4 = rect2;
             rect4.width = 180f;
             rect4.yMin = rect2.y + 30;

@@ -26,7 +26,6 @@ namespace Electromagnetic.Abilities
                 {
                     if (this.root != null)
                     {
-                        Log.Message(root.pawn.Name);
                         int level = this.root.energy.CurrentDef.level;
                         int lf1 = Math.Max(level - 50, 0);
                         int lf2 = lf1 * 2;
