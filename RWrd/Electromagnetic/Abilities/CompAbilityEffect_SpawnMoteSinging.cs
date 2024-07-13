@@ -20,6 +20,7 @@ namespace Electromagnetic.Abilities
             Pawn pawn = this.parent.pawn;
             ThingDef moteCastDef = this.Props.moteCastDef;
             bool casting = this.parent.Casting;
+            //生成读条特效
             if (casting)
             {
                 bool flag = this.Props.moteCastDef != null;

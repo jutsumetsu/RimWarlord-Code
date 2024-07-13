@@ -8,6 +8,7 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityEffect_SpawnMoteCast : CompAbilityEffect
     {
+        //绑定Properties
         public new CompProperties_SpawnMoteCast Props
         {
             get
@@ -17,6 +18,7 @@ namespace Electromagnetic.Abilities
         }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
+            //生成技能触发特效
             Pawn pawn = this.parent.pawn;
             ThingDef moteCastDef = this.Props.moteCastDef;
             MoteMaker.MakeAttachedOverlay(pawn, moteCastDef, CompAbilityEffect_SpawnMoteCast.MoteCastOffset, CompAbilityEffect_SpawnMoteCast.MoteCastScale, this.parent.verb.verbProps.warmupTime - CompAbilityEffect_SpawnMoteCast.MoteCastFadeTime);

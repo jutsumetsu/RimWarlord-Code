@@ -11,6 +11,7 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityEffect_ElectricClaw : CompAbilityEffect
     {
+        //绑定Properties
         public new CompProperties_AbilityElectricClaw Props
         {
             get
@@ -18,6 +19,7 @@ namespace Electromagnetic.Abilities
                 return (CompProperties_AbilityElectricClaw)this.props;
             }
         }
+        //特效组
         public virtual FleckDef[] EffectSet
         {
             get
@@ -34,12 +36,14 @@ namespace Electromagnetic.Abilities
             Map map = this.parent.pawn.Map;
             Pawn pawn = (Pawn)((Thing)target);
             FleckDef[] effectSet = this.EffectSet;
+            //生成技能释放特效
             FleckCreationData dataStatic = FleckMaker.GetDataStatic(this.parent.pawn.DrawPos, map, effectSet[0], 3f);
-            float tick = Find.TickManager.TicksGame;
             dataStatic.rotation = (float)CompAbilityEffect_ElectricClaw.PointsAngleTool(this.parent.pawn.Position, pawn.Position);
             map.flecks.CreateFleck(dataStatic);
+            //暂停目标动作并击晕
             pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, false);
             pawn.stances.stunner.StunFor(60, this.parent.pawn, false, false);
+            //判断电爪抓人方向并设置目标位置
             if (this.parent.pawn.Rotation == Rot4.North)
             {
                 IntVec3 position = this.parent.pawn.Position;
@@ -69,6 +73,7 @@ namespace Electromagnetic.Abilities
                 IntVec3 position = this.parent.pawn.Position;
                 pawn.Position = position;
             }
+            //继续击晕并赋予目标电极内力Hediff
             pawn.stances.stunner.StunFor(60, this.parent.pawn, false, false);
             Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.RWrd_ElectricInternalEnergy, pawn, null);
             HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();
@@ -77,6 +82,7 @@ namespace Electromagnetic.Abilities
             hediff1.root = this.parent.pawn.GetRoot();
             pawn.health.AddHediff(hediff1, null, null, null);
         }
+        //角度工具
         public static double PointsAngleTool(IntVec3 p1, IntVec3 p2)
         {
             return Math.Atan2((double)(p2.x - p1.x), (double)(p2.z - p1.z)) * 180.0 / 3.141592653589793;

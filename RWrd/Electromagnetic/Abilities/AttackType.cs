@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Electromagnetic.Abilities
 {
+    //攻击类型
     public enum AttackType
     {
         None,

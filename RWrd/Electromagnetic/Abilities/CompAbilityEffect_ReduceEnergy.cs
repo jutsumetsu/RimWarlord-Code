@@ -53,9 +53,11 @@ namespace Electromagnetic.Abilities
             bool flag = !this.Initialized;
             if (flag)
             {
+                //初始化
                 this.Initialize(this.props);
             }
             bool flag2 = this.tick % 2000 == 0;
+            //在失去力量后移除技能
             if (flag2)
             {
                 bool flag3 = this.parent.pawn.GetRoot() == null;
@@ -72,7 +74,6 @@ namespace Electromagnetic.Abilities
         {
             bool shouldHideGizmo = this.ShouldHideGizmo;
             bool result;
-            bool flag = this.parent.pawn.GetRoot() != null;
             if (shouldHideGizmo)
             {
                 reason = "力量不足，无法使用技能";

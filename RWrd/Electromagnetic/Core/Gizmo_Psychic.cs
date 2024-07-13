@@ -15,10 +15,12 @@ namespace Electromagnetic.Core
                 return !flag;
             }
         }
+        //UI宽度
         public override float GetWidth(float maxWidth)
         {
             return 176f;
         }
+        //获取信息
         public Gizmo_Psychic(Pawn pawn, Hediff_RWrd_PowerRoot energy)
         {
             this.Order = -110f;
@@ -32,17 +34,21 @@ namespace Electromagnetic.Core
             Rect rect2 = rect.ContractedBy(2f);
             Widgets.DrawWindowBackground(rect);
             Rect rect3 = rect2;
+            //能量显示
             rect3.width = 180f;
             rect3.height = rect.height / 2f;
             this.DrawUI(rect3, this.energy.energy.energy, this.energy.energy.CurrentDef.MaxEnergy, this.EnergyLabel.Translate());
+            //等级显示
             Rect rect4 = rect2;
             rect4.width = 180f;
             rect4.yMin = rect2.y + 30;
             this.DrawUI2(rect4, this.energy.energy.Exp, this.energy.energy.currentRWrd.def.EXP, this.energy.energy.currentRWrd.def.level, this.energy.energy.currentRWrd.def.label, this.ExpLabel.Translate());
+            //完全境界显示
             Rect rect5 = rect2;
             rect5.width = 180f;
             rect5.yMin = rect4.y + 18;
             this.DrawUI3(rect5, this.energy.energy.CompleteRealm, this.energy.energy.AvailableCompleteRealm(), this.CompleteRealmLabel.Translate());
+            //力量流量显示
             Rect rect6 = rect2;
             rect6.width = 180f;
             rect6.yMin = rect5.y + 18;
@@ -53,23 +59,31 @@ namespace Electromagnetic.Core
             Text.Anchor = TextAnchor.UpperLeft;
             return new GizmoResult(GizmoState.Clear);
         }
-
+        //绘制能量显示及能量条
         private void DrawUI(Rect rect, float a, float b, string label)
         {
             Text.Font = GameFont.Small;
+            //能量值标签位置
             Rect rect2 = new Rect(rect.x, rect.y, 60f, 25f);
+            //数值位置
             Rect rect3 = new Rect(rect.x + 60f, rect.y, 100f, 25f);
+            //能量条位置
             Rect rect4 = new Rect(rect.x, rect.y + 20f, 172f, 10f);
             Widgets.Label(rect2, label);
             Widgets.Label(rect3, a.ToString("F0") + " / " + b.ToString("F0"));
             Widgets.FillableBar(rect4, a / b, Gizmo_Psychic.FullBarTex, Gizmo_Psychic.EmptyBarTex, false);
         }
+        //绘制等级显示
         private void DrawUI2(Rect rect, float a, float b, int c, string label, string label2)
         {
             Text.Font = GameFont.Small;
+            //等级标签位置
             Rect rect2 = new Rect(rect.x, rect.y, 90f, 25f);
+            //磁场转动匹数位置
             Rect rect3 = new Rect(rect.x + 85f, rect.y, 40f, 25f);
+            //经验值标签位置
             Rect rect4 = new Rect(rect.x + 140f, rect.y, 40f, 25f);
+            //电推伏特位置
             Rect rect5 = new Rect(rect.x + 65f, rect.y, 40f, 25f);
             Widgets.Label(rect2, label);
             Widgets.Label(rect4, label2);
@@ -88,17 +102,25 @@ namespace Electromagnetic.Core
                 Widgets.Label(rect5, num.ToString("F0"));
             }
         }
-
+        //绘制完全境界显示
         private void DrawUI3(Rect rect, float a, int b, string label)
         {
             Text.Font = GameFont.Small;
+            //完全境界标签位置
             Rect rect2 = new Rect(rect.x, rect.y, 60f, 25f);
+            //百级以内完全境界数值位置
             Rect rect3 = new Rect(rect.x + 90f, rect.y, 40f, 25f);
+            //完全境界级数标签位置
             Rect rect4 = new Rect(rect.x + 140f, rect.y, 40f, 25f);
+            //最后境界前及十以内完全境界数值位置
             Rect rect5 = new Rect(rect.x + 95f, rect.y, 40f, 25f);
+            //最后境界数值位置
             Rect rect6 = new Rect(rect.x + 75f, rect.y, 60f, 25f);
+            //千级以内完全境界数值位置
             Rect rect7 = new Rect(rect.x + 85f, rect.y, 40f, 25f);
+            //万级以内完全境界数值位置
             Rect rect8 = new Rect(rect.x + 80f, rect.y, 40f, 25f);
+            //一万级完全境界数值位置
             Rect rect9 = new Rect(rect.x + 75f, rect.y, 40f, 25f);
             int c = (int)Math.Floor(a);
             bool flag = b >= 10 && b < 20;
@@ -142,12 +164,15 @@ namespace Electromagnetic.Core
                 Widgets.Label(rect4, "级");
             }
         }
-
+        //绘制力量流量显示
         private void DrawUI4(Rect rect, int a, string label)
         {
             Text.Font = GameFont.Small;
+            //力量流量标签位置
             Rect rect2 = new Rect(rect.x, rect.y, 60f, 25f);
+            //力量流量数值位置
             Rect rect3 = new Rect(rect.x + 65f, rect.y, 70f, 25f);
+            //力量流量单位标签位置
             Rect rect4 = new Rect(rect.x + 140f, rect.y, 40f, 25f);
             Widgets.Label(rect2, label);
             Widgets.Label(rect3, a.ToString("F0"));

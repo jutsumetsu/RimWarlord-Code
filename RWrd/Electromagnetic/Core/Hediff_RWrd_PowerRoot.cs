@@ -30,7 +30,7 @@ namespace Electromagnetic.Core
                 });
             }
         }
-
+        //获取UI
         public override IEnumerable<Gizmo> GetGizmos()
         {
             bool flag = this.energy != null;
@@ -141,6 +141,7 @@ namespace Electromagnetic.Core
                 this.pawn.abilities.RemoveAbility(a.def);
             });
         }
+        //身体机能加成列表
         private IEnumerable<PawnCapacityModifier> GetPCMList()
         {
             int lf = this.energy.CurrentDef.level + 1;
@@ -190,10 +191,12 @@ namespace Electromagnetic.Core
         public override void PostMake()
         {
             base.PostMake();
+            //获取默认技能树能力
             RWrd_DefOf.Base.AllAbilities.ForEach(delegate (AbilityDef a)
             {
                 this.pawn.abilities.GainAbility(a);
             });
+            //赋予EnergyTracker
             bool flag = this.energy == null;
             if (flag)
             {
@@ -204,12 +207,14 @@ namespace Electromagnetic.Core
             bool flag3 = this.pawn.Faction != Faction.OfPlayer;
             if (flag3)
             {
+                //NPC生成
                 RimWarlordDef rimWarlordDef = null;
                 RWrd_RouteDef rwrd_RouteDef = null;
                 PowerRootUtillity.RandomPowerRootSpawn(this.pawn, this, out rimWarlordDef, out rwrd_RouteDef);
                 this.energy.powerflow = UnityEngine.Random.Range(3, 51) * 10000;
                 this.energy.currentRWrd.def.MaxEnergy = this.energy.powerflow / 100;
                 float prenum = this.pawn.ageTracker.AgeBiologicalTicks / 3600000f;
+                //年龄限制完全境界
                 int age = (int)Math.Floor(prenum);
                 if (age < 30)
                 {
@@ -237,6 +242,7 @@ namespace Electromagnetic.Core
             }
             else
             {
+                //殖民者生成
                 this.energy.powerflow = UnityEngine.Random.Range(3, 51) * 10000;
                 this.energy.currentRWrd.def.MaxEnergy = this.energy.powerflow / 100;
                 this.energy.completerealm = UnityEngine.Random.Range(1, 4) * 0.1f;
@@ -248,6 +254,7 @@ namespace Electromagnetic.Core
                 this.CurStage.capMods.Add(pawnCapacityModifier);
             }*/
         }
+        //保存数据
         public override void ExposeData()
         {
             base.ExposeData();
@@ -274,60 +281,57 @@ namespace Electromagnetic.Core
         {
             base.Tick();
             JobDriver jobDriver = this.pawn.jobs.curDriver;
+            //最大能量赋值
             this.energy.currentRWrd.def.MaxEnergy = this.energy.PowerFlow / 100;
             if (Find.TickManager.TicksGame % 60 == 0)
             {
                 this.pawn.CheckLevelAndLimitingAbility();
+                foreach (PawnCapacityModifier pcm in this.CurStage.capMods)
+                {
+                    foreach (PawnCapacityModifier pawnCapacityModifier in this.GetPCMList())
+                    {
+                        if (pcm.capacity == pawnCapacityModifier.capacity)
+                        {
+                            //更新机能加成
+                            pcm.offset = pawnCapacityModifier.offset;
+                        }
+                    }
+                }
             }
             if (this.energy.IsUpdateLevelTiming())
             {
                 this.energy.SetLevel();
             }
-            foreach (PawnCapacityModifier pcm in this.CurStage.capMods)
-            {
-                foreach (PawnCapacityModifier pawnCapacityModifier in this.GetPCMList())
-                {
-                    if (pcm.capacity == pawnCapacityModifier.capacity)
-                    {
-                        pcm.offset = pawnCapacityModifier.offset;
-                    }
-                }
-            }
             if (this.CurStage.capMods.Count == 0)
             {
                 foreach (PawnCapacityModifier pawnCapacityModifier in this.GetPCMList())
                 {
+                    //重新添加机能加成
                     this.CurStage.capMods.Add(pawnCapacityModifier);
                 }
             }
-            /*if (Find.TickManager.TicksGame % 300 == 0)
-            {
-                string txt = this.pawn.Name + ": ";
-                foreach (PawnCapacityModifier pcm in this.CurStage.capMods)
-                {
-                    txt = txt + pcm.capacity.defName + "-";
-                    txt = txt + pcm.offset.ToString() + " ";
-                }
-                Log.Message(txt);
-            }*/
             if (Find.TickManager.TicksGame % 360000 == 0)
             {
+                //随时间增加力量流量
                 this.energy.SetPowerFlow(100);
             }
             if (Find.TickManager.TicksGame % 180 == 0)
             {
                 if (this.pawn.Faction != Faction.OfPlayer)
                 {
+                    //NPC能量回复
                     this.energy.SetEnergy(100);
                 }
                 else
                 {
                     if (this.pawn.Drafted)
                     {
+                        //战斗状态下能量回复
                         this.energy.SetEnergy(100);
                     }
                     else
                     {
+                        //脱战状态下能量回复
                         this.energy.SetEnergy(300);
                     }
                 }
@@ -339,6 +343,7 @@ namespace Electromagnetic.Core
                     int numMeleeAttacksMade = Traverse.Create(jobDriver).Field("numMeleeAttacksMade").GetValue<int>();
                     if (numMeleeAttacksMade > this.meleeAttackCounter)
                     {
+                        //攻击次数计数器
                         meleeAttackCounter++;
                     }
                 }
@@ -351,10 +356,12 @@ namespace Electromagnetic.Core
                     int currentLevel = this.energy.currentRWrd.def.level;
                     if (currentLevel == 0)
                     {
+                        //电推经验获取
                         this.energy.SetExp(exp2);
                     }
                     else
                     {
+                        //磁场转动经验获取
                         this.energy.SetExp(exp1);
                     }
                     this.energy.damage = 0;

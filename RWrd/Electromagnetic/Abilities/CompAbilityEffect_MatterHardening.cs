@@ -15,6 +15,7 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityEffect_MatterHardening : CompAbilityEffect
     {
+        //绑定Properties
         public new CompProperties_AbilityMatterHardening Props
         {
             get

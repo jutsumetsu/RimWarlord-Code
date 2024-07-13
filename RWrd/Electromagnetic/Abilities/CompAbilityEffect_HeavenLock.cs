@@ -11,6 +11,7 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityEffect_HeavenLock : CompAbilityEffect
     {
+        //绑定Properties
         public new CompProperties_AbilityHeavenLock Props
         {
             get
@@ -18,6 +19,7 @@ namespace Electromagnetic.Abilities
                 return (CompProperties_AbilityHeavenLock)this.props;
             }
         }
+        //设置天锁削弱程度
         private static IEnumerable<PawnCapacityModifier> GetPCMList(float factor)
         {
             yield return new PawnCapacityModifier
@@ -61,14 +63,18 @@ namespace Electromagnetic.Abilities
         {
             base.Apply(target, dest);
             Pawn pawn = (Pawn)((Thing)target);
+            //判断目标是否是磁场强者
             if (pawn.IsHaveRoot())
             {
                 Hediff_RWrd_PowerRoot root1 = this.parent.pawn.GetRoot();
                 Hediff_RWrd_PowerRoot root2 = pawn.GetRoot();
+                //双方磁场力量差距
                 int num = root1.energy.CurrentDef.level - root2.energy.CurrentDef.level;
+                //判断自己是否强于目标
                 if (num > 0)
                 {
                     int num1 = root2.energy.CurrentDef.level + 1;
+                    //削弱乘数
                     int ff = Math.Min(num, num1);
                     Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.RWrd_HeavenLock, pawn, null);
                     /*hediff.CurStage.capMods = new List<PawnCapacityModifier>();*/
@@ -94,6 +100,7 @@ namespace Electromagnetic.Abilities
                     }
                     try
                     {
+                        //给予天锁or移除天锁
                         Hediff firstHediffOfDef = pawn.health.hediffSet.GetFirstHediffOfDef(RWrd_DefOf.RWrd_HeavenLock, false);
                         if (firstHediffOfDef != null)
                         {

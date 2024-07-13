@@ -10,6 +10,7 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityEffect_GiveTargetHediff : CompAbilityEffect_WithDuration
     {
+        //绑定Properties
         public new CompProperties_AbilityGiveTargetHediff Props
         {
             get
@@ -42,6 +43,7 @@ namespace Electromagnetic.Abilities
                     MoteMaker.ThrowText(target.DrawPos, target.Map, "Resisted".Translate(), -1f);
                     return;
                 }
+                //替换现有Hediff
                 if (this.Props.replaceExisting)
                 {
                     Hediff firstHediffOfDef = target.health.hediffSet.GetFirstHediffOfDef(this.Props.hediffDef, false);
@@ -66,6 +68,7 @@ namespace Electromagnetic.Abilities
                     hediffComp_Link.other = other;
                     hediffComp_Link.drawConnection = (target == this.parent.pawn);
                 }
+                //传入力量之源参数
                 Hediff_TargetBase hediff1 = hediff as Hediff_TargetBase;
                 hediff1.root = this.parent.pawn.GetRoot();
                 target.health.AddHediff(hediff1, null, null, null);

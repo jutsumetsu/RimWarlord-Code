@@ -12,6 +12,7 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityEffect_WindBlade : CompAbilityEffect
     {
+        //绑定Properties
         public new CompProperties_AbilityWindBlade Props
         {
             get
@@ -26,6 +27,7 @@ namespace Electromagnetic.Abilities
                 return this.parent.pawn;
             }
         }
+        //检测可用格子
         private bool canusecell(IntVec3 c)
         {
             ShootLine shootLine;
@@ -38,6 +40,7 @@ namespace Electromagnetic.Abilities
             bool flag2 = flag;
             if (flag2)
             {
+                //生成风刃特效
                 FleckCreationData dataStatic = FleckMaker.GetDataStatic(this.Pawn.DrawPos, this.Pawn.Map, this.Props.SpawnFleck, 6f);
                 float num = (target.CenterVector3.ToIntVec3() - this.Pawn.Position).AngleFlat;
                 dataStatic.rotation = 0f;
@@ -50,6 +53,7 @@ namespace Electromagnetic.Abilities
             int num2 = 30;
             if (Pawn.IsHaveRoot())
             {
+                //计算伤害
                 Hediff_RWrd_PowerRoot root = Pawn.GetRoot();
                 num2 += root.energy.CurrentDef.level;
                 int acr = root.energy.AvailableCompleteRealm();
@@ -61,6 +65,7 @@ namespace Electromagnetic.Abilities
             GenExplosion.DoExplosion(position, this.parent.pawn.MapHeld, this.Props.range, named, this.Pawn, num2, -1f, null, null, null, null, null, 1f, 1, null, false, null, 0f, 1, 0f, false, null, null, null, false, 1.6f, 0f, false, null, 1f, null, this.AffectedCells(target));
             base.Apply(target, dest);
         }
+        //影响的格子
         private List<IntVec3> AffectedCells(LocalTargetInfo target)
         {
             this.tmpCells.Clear();
@@ -107,6 +112,7 @@ namespace Electromagnetic.Abilities
             }
             return result;
         }
+        //绘制影响区域预览
         public override void DrawEffectPreview(LocalTargetInfo target)
         {
             GenDraw.DrawFieldEdges(this.AffectedCells(target));

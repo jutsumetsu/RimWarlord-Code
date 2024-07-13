@@ -19,6 +19,7 @@ namespace Electromagnetic.Abilities
             if (flag2)
             {
                 bool flag3 = false;
+                //伤势列表
                 List<Hediff_Injury> list = this.pawn.health.hediffSet.hediffs.OfType<Hediff_Injury>().ToList<Hediff_Injury>();
                 bool flag4 = list.Any<Hediff_Injury>();
                 bool flag5 = flag4;
@@ -26,6 +27,7 @@ namespace Electromagnetic.Abilities
                 {
                     if (this.root != null)
                     {
+                        //随机治愈伤势
                         int level = this.root.energy.CurrentDef.level;
                         int lf1 = Math.Max(level - 50, 0);
                         int lf2 = lf1 * 2;
@@ -39,6 +41,7 @@ namespace Electromagnetic.Abilities
                 }
                 else
                 {
+                    //缺失部位列表
                     List<BodyPartRecord> nonMissingParts = this.pawn.health.hediffSet.GetNotMissingParts(BodyPartHeight.Undefined, BodyPartDepth.Undefined, null, null).ToList<BodyPartRecord>();
                     List<BodyPartRecord> list2 = (from x in this.pawn.def.race.body.AllParts
                                                   where this.pawn.health.hediffSet.PartIsMissing(x) && nonMissingParts.Contains(x.parent) && !this.pawn.health.hediffSet.AncestorHasDirectlyAddedParts(x)
@@ -47,6 +50,7 @@ namespace Electromagnetic.Abilities
                     bool flag7 = flag6;
                     if (flag7)
                     {
+                        //再生缺失部位
                         BodyPartRecord part = list2.RandomElement<BodyPartRecord>();
                         List<Hediff_MissingPart> source = this.pawn.health.hediffSet.hediffs.OfType<Hediff_MissingPart>().ToList<Hediff_MissingPart>();
                         this.pawn.health.RestorePart(part, null, true);
@@ -56,6 +60,7 @@ namespace Electromagnetic.Abilities
                                                                      select x;
                         foreach (Hediff_MissingPart hediff_MissingPart in enumerable)
                         {
+                            //赋予再生Hediff
                             Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.RWrd_Regenerating, this.pawn, hediff_MissingPart.Part);
                             hediff.Severity = hediff_MissingPart.Part.def.GetMaxHealth(this.pawn) - 1f;
                             this.pawn.health.AddHediff(hediff, null, null, null);
@@ -67,6 +72,7 @@ namespace Electromagnetic.Abilities
                 bool flag9 = flag8;
                 if (flag9)
                 {
+                    //生成治愈十字特效
                     FleckMaker.ThrowMetaIcon(this.pawn.Position, this.pawn.Map, FleckDefOf.HealingCross, 0.42f);
                 }
             }
