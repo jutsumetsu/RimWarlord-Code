@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace Electromagnetic.Core
@@ -70,8 +72,50 @@ namespace Electromagnetic.Core
                 return result;
             }
         }
+        public override void PostLoad()
+        {
+            base.PostLoad();
+            LongEventHandler.ExecuteWhenFinished(delegate
+            {
+                bool flag = !this.background.NullOrEmpty();
+                if (flag)
+                {
+                    this.backgroundImage = ContentFinder<Texture2D>.Get(this.background, true);
+                }
+                bool flag3 = this.width > 0 && this.height > 0;
+                if (flag3)
+                {
+                    Texture2D texture2D = new Texture2D(this.width, this.height);
+                    texture2D.Apply();
+                    bool flag4 = this.backgroundImage == null;
+                    if (flag4)
+                    {
+                        this.backgroundImage = texture2D;
+                    }
+                }
+            });
+        }
+        public int MaxLevel
+        {
+            get
+            {
+                int result;
+                List<int> list = new List<int>();
+                foreach (RWrd_RouteNode node in this.routeNodes)
+                {
+                    list.Add(node.level);
+                }
+                result = list.Max();
+                return result;
+            }
+        }
         public List<RWrd_RouteNode> routeNodes = new List<RWrd_RouteNode>();
         private List<AbilityDef> cachedAbilities;
         private Dictionary<int, List<AbilityDef>> nodes = new Dictionary<int, List<AbilityDef>>();
+        public string background;
+        [Unsaved(false)]
+        public Texture2D backgroundImage;
+        public int width;
+        public int height;
     }
 }

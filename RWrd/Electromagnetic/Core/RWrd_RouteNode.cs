@@ -105,6 +105,7 @@ namespace Electromagnetic.Core
         public int number;
         public int requiredLevel = 0;
         public float requiredCompleteRealm = 0;
+        public int level;
         public List <AbilityDef> requiredAbilities = new List <AbilityDef>();
         public List<AbilityDef> abilities = new List<AbilityDef>();
     }
