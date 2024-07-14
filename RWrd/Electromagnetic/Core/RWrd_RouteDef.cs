@@ -72,19 +72,6 @@ namespace Electromagnetic.Core
                 return result;
             }
         }
-        // 获取道途最大等级
-        public int MaxLevel
-        {
-            get
-            {
-                if (routeNodes != null && routeNodes.Count > 0)
-                {
-                    return routeNodes.Max(node => node.requiredLevel);
-                }
-                return 0; 
-            }
-        }
-
         public override void PostLoad()
         {
             base.PostLoad();
@@ -94,7 +81,7 @@ namespace Electromagnetic.Core
                 if (flag)
                 {
                     this.backgroundImage = ContentFinder<Texture2D>.Get(this.background, true);
-                }               
+                }
                 bool flag3 = this.width > 0 && this.height > 0;
                 if (flag3)
                 {
@@ -104,11 +91,24 @@ namespace Electromagnetic.Core
                     if (flag4)
                     {
                         this.backgroundImage = texture2D;
-                    }                    
+                    }
                 }
             });
         }
-
+        public int MaxLevel
+        {
+            get
+            {
+                int result;
+                List<int> list = new List<int>();
+                foreach (RWrd_RouteNode node in this.routeNodes)
+                {
+                    list.Add(node.level);
+                }
+                result = list.Max();
+                return result;
+            }
+        }
         public List<RWrd_RouteNode> routeNodes = new List<RWrd_RouteNode>();
         private List<AbilityDef> cachedAbilities;
         private Dictionary<int, List<AbilityDef>> nodes = new Dictionary<int, List<AbilityDef>>();

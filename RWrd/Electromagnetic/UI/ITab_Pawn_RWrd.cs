@@ -193,7 +193,7 @@ namespace Electromagnetic.UI
 
                 foreach (var node in routeNodes)
                 {
-                    int level = node.requiredLevel;
+                    int level = node.level;
                     List<AbilityDef> abilities = node.abilities;
 
                     // 为每个等级创建一个矩形区域

@@ -89,9 +89,9 @@
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityGiveTargetHediff.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityHeavenLock.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityHeavyNucleiKick.cs" />
+    <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityMatterHardening.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityThunderPunch.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityWindBlade.cs" />
-    <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityMatterHardening.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_ReduceEnergy.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_SpawnMoteCast.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_SpawnMoteCasting.cs" />

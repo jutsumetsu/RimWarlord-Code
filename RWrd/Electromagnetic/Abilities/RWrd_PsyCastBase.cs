@@ -122,10 +122,18 @@ namespace Electromagnetic.Abilities
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look<float>(ref this.proficiency, "proficiency", 0f, false);
+            Scribe_Values.Look<float>(ref this.mastery, "mastery", 0f, false);
         }
-        public float proficiency = 0;
-        public float MaxProficiency = 100;
+        public void SetMastery(float num)
+        {
+            if (num > 0)
+            {
+                float num2 = this.mastery + num;
+                this.mastery = (num2 > this.MaxMastery ? this.MaxMastery : num2);
+            }
+        }
+        public float mastery = 0;
+        public float MaxMastery = 100;
         private Mote moteCast;
         private static float MoteCastFadeTime = 0.4f;
         private static float MoteCastScale = 1f;

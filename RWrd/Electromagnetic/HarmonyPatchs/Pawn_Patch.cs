@@ -188,11 +188,7 @@ namespace Electromagnetic.HarmonyPatchs
                         bool flag21 = stat.ToString() == nameof(StatDefOf.IncomingDamageFactor);
                         bool flag22 = stat.ToString() == nameof(StatDefOf.MaxHitPoints);
                         bool flag23 = stat.ToString() == nameof(StatDefOf.NegotiationAbility);
-                        if (flag || flag1 || flag2 || flag3 || flag4 || flag10)
-                        {
-                            __result = Math.Min(num, 1);
-                        }
-                        if (flag5 || flag9 || flag11 || flag12 || flag13 || flag14)
+                        if (flag || flag1 || flag2 || flag3 || flag4 || flag5 || flag9 || flag10 || flag11 || flag12 || flag13 || flag14)
                         {
                             __result = num;
                         }
