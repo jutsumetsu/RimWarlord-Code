@@ -136,9 +136,9 @@ namespace Electromagnetic.UI
                 rectT.yMin += 40f;
                 Widgets.DrawMenuSection(rectT);
                 Rect rect8 = new Rect(0f, 0f, rectT.width - 20f, this.lastPathsHeight);
-                Widgets.BeginScrollView(rectT.ContractedBy(2f), ref this.pathsScrollPos, rect8, true);
+                //Widgets.BeginScrollView(rectT.ContractedBy(2f), ref this.pathsScrollPos, rect8, true);
                 this.DoPaths(rect8);
-                Widgets.EndScrollView();
+                //Widgets.EndScrollView();
             }
         }
 
@@ -187,30 +187,46 @@ namespace Electromagnetic.UI
         }
         public static void DoPathAbilities(Rect inRect, RWrd_RouteDef path, Dictionary<AbilityDef, Vector2> abilityPos, Action<Rect, AbilityDef> doAbility)
         {
+            // 获取每个节点的技能和对应层级
+            var routeNodes = path.routeNodes;
 
-                // 获取每个节点的技能和所需等级
-                var routeNodes = path.routeNodes;
+            foreach (var node in routeNodes)
+            {
+                int level = node.level;
+                List<AbilityDef> abilities = node.abilities;
 
-                foreach (var node in routeNodes)
+                // 为每个等级创建一个矩形区域
+                Rect rect = new Rect(inRect.x, inRect.y + (float)(path.MaxLevel - 1 - level) * inRect.height / (float)path.MaxLevel + 10f, inRect.width, inRect.height / 5f);
+
+                // 检查 abilityTreeXOffsets是否足够长
+                if (abilities.Count - 1 < abilityTreeXOffsets.Length)
                 {
-                    int level = node.level;
-                    List<AbilityDef> abilities = node.abilities;
-
-                    // 为每个等级创建一个矩形区域
-                    Rect rect = new Rect(inRect.x, inRect.y + (float)(path.MaxLevel - 1 - level) * inRect.height / (float)path.MaxLevel + 10f, inRect.width, inRect.height / 5f);
-
                     // 遍历该等级中的所有能力
                     for (int j = 0; j < abilities.Count; j++)
                     {
-                        Rect arg = new Rect(rect.x + rect.width / 2f + abilityTreeXOffsets[abilities.Count - 1][j], rect.y, 36f, 36f);
-                        AbilityDef abilityDef = abilities[j];
-                        abilityPos[abilityDef] = arg.center;
-
-                        doAbility(arg, abilityDef);
+                        // 检查 abilityTreeXOffsets是否足够长
+                        if (j < abilityTreeXOffsets[abilities.Count - 1].Length)
+                        {
+                            Rect arg = new Rect(rect.x + rect.width / 2f + abilityTreeXOffsets[abilities.Count - 1][j], rect.y, 36f, 36f);
+                            AbilityDef abilityDef = abilities[j];
+                            abilityPos[abilityDef] = arg.center;
+                            doAbility(arg, abilityDef);
+                        }
+                        else
+                        {
+                            Log.Warning($"abilityTreeXOffsets 内部数组长度不足，abilities.Count: {abilities.Count}, j: {j}");
+                        }
                     }
                 }
-            
+                else
+                {
+                    Log.Warning($"abilityTreeXOffsets 长度不足，abilities.Count: {abilities.Count}");
+                }
+            }
         }
+
+
+
         public static void DrawPathBackground(ref Rect rect, RWrd_RouteDef def)
         {
             Texture2D image = def.backgroundImage;
@@ -247,21 +263,11 @@ namespace Electromagnetic.UI
         private Vector2 psysetsScrollPos;
         private static readonly float[][] abilityTreeXOffsets = new float[][]
         {
-            new float[]
-            {
-                -18f
-            },
-            new float[]
-            {
-                -47f,
-                11f
-            },
-            new float[]
-            {
-                -69f,
-                -18f,
-                33f
-            }
+            new float[] { -18f },                 // 1 ability
+            new float[] { -47f, 11f },            // 2 abilities
+            new float[] { -69f, -18f, 33f },      // 3 abilities
+            new float[] { -90f, -45f, 0f, 45f }   // 4 abilities
         };
+
     }
 }
