@@ -11,22 +11,16 @@ using Electromagnetic.Core;
 
 namespace Electromagnetic.Abilities
 {
-    public class HediffComp_Shield_RWrd : HediffComp_Draw_RWrd
+    public class HediffComp_DarkTransmigration : HediffComp
     {
-        public HediffCompProperties_Shield_RWrd Props
+        public HediffCompProperties_DarkTransmigration Props
         {
             get
             {
-                return this.props as HediffCompProperties_Shield_RWrd;
+                return this.props as HediffCompProperties_DarkTransmigration;
             }
         }
-        public virtual bool ShieldActive
-        {
-            get
-            {
-                return (this.Energy > 0f || !this.useEnergy) /*&& this.ticksTillReset <= 0*/;
-            }
-        }
+        
         public float EnergyMax
         {
             get
@@ -56,15 +50,6 @@ namespace Electromagnetic.Abilities
             }
         }
 
-        public override void DrawAt(Vector3 drawPos)
-        {
-            drawPos.y = AltitudeLayer.MoteOverhead.AltitudeFor();
-            drawPos += this.Props.graphic.drawOffset;
-            //Log.Message("energy:"+ this.Energy);
-            //Log.Message("ShieldActive:" + ShieldActive);
-            Graphics.DrawMesh(MeshPool.plane10, Matrix4x4.TRS(drawPos, Quaternion.AngleAxis(this.Props.doRandomRotation ? ((float)Rand.Range(0, 360)) : 0f, Vector3.up), new Vector3(this.Props.graphic.drawSize.x, 1f, this.Props.graphic.drawSize.y)), this.Graphic.MatSingleFor(base.Pawn), 0);
-            //Graphics.DrawMesh(MeshPool.plane10, Matrix4x4.TRS(drawPos, Quaternion.AngleAxis(this.Props.doRandomRotation ? ((float)Rand.Range(0, 360)) : 0f, Vector3.up), new Vector3(this.Props.graphic.drawSize.x, 1f, this.Props.graphic.drawSize.y)), CompShield_RWrd.BubbleMat, 0);
-        }
 
         public override void CompPostPostAdd(DamageInfo? dinfo)
         {
@@ -96,7 +81,7 @@ namespace Electromagnetic.Abilities
             bool flag = absorbed;
             if (!flag)
             {
-                bool shieldActive = this.ShieldActive;
+                bool shieldActive = true;
                 if (shieldActive)
                 {
                     bool flag2 = this.Props.breakOn.Contains(dinfo.Def);
@@ -206,36 +191,7 @@ namespace Electromagnetic.Abilities
             
         }
 
-        protected virtual void Break()
-        {
-            this.energy = 0f;
-            //this.sustainer.End();
-            SoundDef soundBroken = this.Props.soundBroken;
-            if (soundBroken != null)
-            {
-                soundBroken.PlayOneShot(base.Pawn);
-            }
-            bool flag = this.Props.brokenFleck != null;
-            if (flag)
-            {
-                FleckMaker.Static(base.Pawn.TrueCenter(), base.Pawn.Map, this.Props.brokenFleck, 12f);
-            }
-            bool doDust = this.Props.doDust;
-            if (doDust)
-            {
-                for (int i = 0; i < 6; i++)
-                {
-                    FleckMaker.ThrowDustPuff(base.Pawn.TrueCenter() + Vector3Utility.HorizontalVectorFromAngle((float)Rand.Range(0, 360)) * Rand.Range(0.3f, 0.6f), base.Pawn.Map, Rand.Range(0.8f, 1.2f));
-                }
-            }
-            this.ticksTillReset = this.Props.rechargeDelay;
-            bool flag2 = this.ticksTillReset <= 0;
-            if (flag2)
-            {
-                this.Reset();
-            }
-            this.parent.Severity = 0;
-        }
+        
 
         protected virtual bool AbsorbDamage(ref DamageInfo dinfo)
         {
@@ -288,29 +244,11 @@ namespace Electromagnetic.Abilities
             return result;
         }
 
-        protected virtual void Reset()
-        {
-            this.ticksTillReset = 0;
-            this.energy = this.EnergyMax * this.Props.energyPctOnReset;
-            SoundDef soundRecharge = this.Props.soundRecharge;
-            if (soundRecharge != null)
-            {
-                soundRecharge.PlayOneShot(base.Pawn);
-            }
-            bool doDust = this.Props.doDust;
-            if (doDust)
-            {
-                FleckMaker.ThrowLightningGlow(base.Pawn.TrueCenter(), base.Pawn.Map, 3f);
-            }
-        }
+       
 
         public override void CompPostPostRemoved()
         {
-            SoundDef soundEnded = this.Props.soundEnded;
-            if (soundEnded != null)
-            {
-                soundEnded.PlayOneShot(base.Pawn);
-            }
+
             base.CompPostPostRemoved();
         }
 

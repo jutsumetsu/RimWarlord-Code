@@ -101,8 +101,9 @@ namespace Electromagnetic.Core
                 tempRWrd = default(RimWarlordDef);
             }*/
             List<RWrd_RouteDef> allDefListForReading = DefDatabase<RWrd_RouteDef>.AllDefsListForReading;
+            allDefListForReading.Remove(RWrd_DefOf.Base);
             route =  allDefListForReading.RandomElement<RWrd_RouteDef>();
-            root.routes.Add(route);
+            root.UnlockRoute(route);
         }
         //检查技能
         public static List<Ability> CheckAbilities(this Pawn pawn, RWrd_RouteDef route)

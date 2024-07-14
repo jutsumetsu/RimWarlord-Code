@@ -9,7 +9,7 @@ using Verse;
 
 namespace Electromagnetic.Abilities
 {
-    public class HediffCompProperties_Shield_RWrd : HediffCompProperties_Draw_RWrd
+    public class HediffCompProperties_DarkTransmigration : HediffCompProperties_Draw_RWrd
     {
         public override void ResolveReferences(HediffDef parent)
         {

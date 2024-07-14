@@ -62,7 +62,17 @@ namespace Electromagnetic.Abilities
                 multiplier = (int)Math.Floor(multiplier / 2f);
                 num2 *= multiplier;
             }
-            GenExplosion.DoExplosion(position, this.parent.pawn.MapHeld, this.Props.range, named, this.Pawn, num2, -1f, null, null, null, null, null, 1f, 1, null, false, null, 0f, 1, 0f, false, null, null, null, false, 1.6f, 0f, false, null, 1f, null, this.AffectedCells(target));
+            //友伤豁免
+            List<Thing> list = new List<Thing>();
+            foreach (Pawn pawn2 in Pawn.MapHeld.mapPawns.AllPawns)
+            {
+                bool flag3 = pawn2.Faction == Pawn.Faction;
+                if (flag3)
+                {
+                    list.Add(pawn2);
+                }
+            }
+            GenExplosion.DoExplosion(position, this.parent.pawn.MapHeld, this.Props.range, named, this.Pawn, num2, -1f, null, null, null, null, null, 1f, 1, null, false, null, 0f, 1, 0f, false, null, list, null, false, 1.6f, 0f, false, null, 1f, null, this.AffectedCells(target));
             base.Apply(target, dest);
         }
         //影响的格子

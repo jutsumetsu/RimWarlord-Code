@@ -34,5 +34,6 @@ namespace Electromagnetic.Core
         public static HediffDef RWrd_ElectricInternalEnergy;
         public static HediffDef RWrd_HeavenLock;
         public static HediffDef RWrd_ExplosiveEnergy;
+        public static HediffDef RWrd_DarkHediff;
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using Electromagnetic.Core;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.Noise;
 using Verse.Sound;
 using static HarmonyLib.Code;
 
@@ -34,10 +36,10 @@ namespace Electromagnetic.UI
                 }
             }
         }
-
+        //选项卡信息
         public ITab_Pawn_RWrd()
         {
-            this.labelKey = "RWrd.Powerfulperson";
+            this.labelKey = "RWrd_ITab".Translate();
             this.size = new Vector2((float)Verse.UI.screenWidth, (float)Verse.UI.screenHeight * 0.75f);
             /*this.pathsByTab = (from def in DefDatabase<RWrd_RouteDef>.AllDefs
                                group def by def.defName).ToDictionary((IGrouping<string, RWrd_RouteDef> group)
@@ -67,13 +69,14 @@ namespace Electromagnetic.UI
         }
 
         public float RequestedPsysetsHeight { get; private set; }
-
+        //是否可见
         public override bool IsVisible
         {
             get
             {
                 Pawn pawn = Find.Selector.SingleSelectedThing as Pawn;
                 bool result;
+                //判断有无力量之源
                 if (pawn != null && pawn.health.hediffSet.HasHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, false))
                 {
                     Faction faction = pawn.Faction;
@@ -107,7 +110,7 @@ namespace Electromagnetic.UI
             this.hediff = null;
             this.abilityPos.Clear();
         }
-
+        //填充选项卡界面
         protected override void FillTab()
         {
             Pawn pawn = Find.Selector.SingleSelectedThing as Pawn;
@@ -124,21 +127,76 @@ namespace Electromagnetic.UI
                 GameFont font = Text.Font;
                 TextAnchor anchor = Text.Anchor;
 
-                Rect rect = new Rect(Vector2.one * 20f, this.size - Vector2.one * 40f);
-                Widgets.DrawBoxSolid(rect, Color.gray);
+                /*Widgets.DrawBoxSolid(rect, Color.gray);*/
+                //游戏语言检测
+                bool lflag = LanguageDatabase.activeLanguage.ToString() != "Simplified Chinese";
+                bool lflag2 = LanguageDatabase.activeLanguage.ToString() != "Traditional Chinese";
 
                 Text.Font = font;
                 Text.Anchor = anchor;
-                Rect rectF = new Rect(Vector2.one * 20f, this.size - Vector2.one * 40f);
-                Rect rectS = rect.TakeLeftPart(this.size.x * 0.3f);
-                Rect rectT = rect.ContractedBy(5f);
-                TabDrawer.DrawTabs<TabRecord>(new Rect(rectT.x, rectT.y + 40f, rectT.width, rectT.height), this.tabs, 200f);
-                rectT.yMin += 40f;
-                Widgets.DrawMenuSection(rectT);
-                Rect rect8 = new Rect(0f, 0f, rectT.width - 20f, this.lastPathsHeight);
-                //Widgets.BeginScrollView(rectT.ContractedBy(2f), ref this.pathsScrollPos, rect8, true);
+                Rect rect = new Rect(Vector2.one * 20f, this.size - Vector2.one * 40f);
+                //左侧矩形
+                Rect rect2 = rect.TakeLeftPart(this.size.x * 0.2f);
+                //右侧矩形
+                Rect rect3 = rect.TakeRightPart(this.size.x * 0.8f);
+                rect3.ContractedBy(5f);
+                Listing_Standard listing_Standard = new Listing_Standard();
+                listing_Standard.Begin(rect2);
+                Text.Font = GameFont.Medium;
+                //显示人物名称
+                listing_Standard.Label(this.pawn.Name.ToStringFull, -1f, null);
+                //显示当前等级
+                if (lflag && lflag2)
+                {
+                    listing_Standard.Label(this.hediff.energy.CurrentDef.label, -1f, null);
+                }
+                else
+                {
+                    int level = this.hediff.energy.CurrentDef.level;
+                    if (level > 0)
+                    {
+                        listing_Standard.Label(this.hediff.energy.CurrentDef.label + "匹", -1f, null);
+                    }
+                    else
+                    {
+                        listing_Standard.Label(this.hediff.energy.CurrentDef.label, -1f, null);
+                    }
+                }
+                //经验值进度条
+                Rect rectBar = listing_Standard.GetRect(30f, 1f);
+                rectBar.x -= 50f;
+                rectBar.width -= 100f;
+                Widgets.FillableBar(rectBar, this.hediff.energy.Exp / this.hediff.energy.CurrentDef.EXP);
+                //经验值百分比
+                float num = this.hediff.energy.Exp / this.hediff.energy.CurrentDef.EXP;
+                Vector2 offset = new Vector2(rectBar.center.x - 5f, rectBar.center.y - rectBar.height / 2f);
+                Rect rectBarCenter = new Rect(offset, rectBar.size);
+                Widgets.Label(rectBarCenter, num.ToString("P2"));
+                //经验获取提示
+                Text.Font = GameFont.Tiny;
+                listing_Standard.Label("RWrd_EarnXP".Translate(), -1f, null);
+                listing_Standard.Gap(10f);
+                listing_Standard.End();
+                //绘制技能树显示区域
+                TabDrawer.DrawTabs<TabRecord>(new Rect(rect3.x, rect3.y + 40f, rect3.width, rect3.height), this.tabs, 200f);
+                rect3.yMin += 40f;
+                Widgets.DrawMenuSection(rect3);
+                Rect rect8 = new Rect(rect3.x, rect3.y, rect3.width - 20f, this.lastPathsHeight);
+                //地狱道按钮
+                Rect buttonRect = new Rect(20f, rect.height - 50f, 100f, 30f);
+                if (Widgets.ButtonText(buttonRect, "RWrd_HellPathStory".Translate()))
+                {
+                    IntVec3 intVec = this.pawn.Position;
+                    Map map = this.pawn.Map;
+                    if (LetterMessageLabel != null)
+                    {
+                        Find.LetterStack.ReceiveLetter(LetterMessageLabel.Translate(), LetterMessageText.Translate(), LetterDefOf.PositiveEvent, new TargetInfo(intVec, map, false), null, null, null, null);
+                    }
+                    Messages.Message(this.messText.Translate(), new TargetInfo(intVec, map, false), MessageTypeDefOf.PositiveEvent, true);
+                    Log.Message("Button clicked!");
+                }
+                //绘制技能树
                 this.DoPaths(rect8);
-                //Widgets.EndScrollView();
             }
         }
 
@@ -148,17 +206,29 @@ namespace Electromagnetic.UI
             float num = (inRect.width - (float)(this.pathsPerRow + 1) * 10f) / (float)this.pathsPerRow;
             float num2 = 0f;
             int num3 = this.pathsPerRow;
-            IEnumerable<RWrd_RouteDef> paths = DefDatabase<RWrd_RouteDef>.AllDefs
+            //读取所有技能树
+            IEnumerable<RWrd_RouteDef> prepaths = DefDatabase<RWrd_RouteDef>.AllDefs
                                                 .OrderBy((RWrd_RouteDef path) => path.label.Substring(0, 1));
-
+            IEnumerable<RWrd_RouteDef> paths = prepaths.Reverse();
             foreach (RWrd_RouteDef def in paths)
             {
                 Texture2D texture2D = def.backgroundImage;
                 float num4 = num / (float)texture2D.width * (float)texture2D.height + 30f;
                 Rect rect = new Rect(vector, new Vector2(num, num4));
+                //绘制技能树背景图
                 DrawPathBackground(ref rect, def);
-
-                DoPathAbilities(rect, def, this.abilityPos, new Action<Rect, AbilityDef>(this.DoAbility));
+                rect.height -= 30f;
+                bool flag = this.hediff.routes.Contains(def);
+                if (flag)
+                {
+                    //绘制技能图标
+                    DoPathAbilities(rect, def, this.abilityPos, new Action<Rect, AbilityDef>(this.DoAbility));
+                }
+                else
+                {
+                    //涂暗
+                    Widgets.DrawRectFast(rect, new Color(0f, 0f, 0f, 0.55f), null);
+                }
 
                 num2 = Mathf.Max(num2, num4 + 10f);
                 vector.x += num + 10f;
@@ -176,8 +246,19 @@ namespace Electromagnetic.UI
 
         private void DoAbility(Rect inRect, AbilityDef ability)
         {
-            
+            //判断小人是否拥有该技能
+            bool flag = this.pawn.abilities.GetAbility(ability) == null;
             DrawAbility(inRect, ability);
+            if (flag)
+            {
+                //涂暗
+                Widgets.DrawRectFast(inRect, new Color(0f, 0f, 0f, 0.6f), null);
+            }
+            else
+            {
+                //发光
+                Widgets.DrawStrongHighlight(inRect.ExpandedBy(5f), null);
+            }
             /*bool flag4 = flag;
             if (flag4)
             {
@@ -196,7 +277,7 @@ namespace Electromagnetic.UI
                 List<AbilityDef> abilities = node.abilities;
 
                 // 为每个等级创建一个矩形区域
-                Rect rect = new Rect(inRect.x, inRect.y + (float)(path.MaxLevel - 1 - level) * inRect.height / (float)path.MaxLevel + 10f, inRect.width, inRect.height / 5f);
+                Rect rect = new Rect(inRect.x, inRect.y + (float)level * inRect.height / 8f, inRect.width, inRect.height / 8f);
 
                 // 检查 abilityTreeXOffsets是否足够长
                 if (abilities.Count - 1 < abilityTreeXOffsets.Length)
@@ -231,13 +312,14 @@ namespace Electromagnetic.UI
         {
             Texture2D image = def.backgroundImage;
             GUI.color = new ColorInt(97, 108, 122).ToColor;
+            Rect rect2 = new Rect(rect.x, rect.y, rect.width, rect.height - 30f);
             Widgets.DrawBox(rect.ExpandedBy(2f), 1, Texture2D.whiteTexture);
+            GUI.DrawTexture(rect2, image);
             GUI.color = Color.white;
-            Rect rect2 = rect.TakeBottomPart(30f);
-            Widgets.DrawRectFast(rect2, Widgets.WindowBGFillColor, null);
+            Rect rect3 = rect.TakeBottomPart(30f);
+            Widgets.DrawRectFast(rect3, Widgets.WindowBGFillColor, null);
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(rect2, def.LabelCap);
-            GUI.DrawTexture(rect, image);
+            Widgets.Label(rect3, def.label);
             Text.Anchor = TextAnchor.UpperLeft;
         }
         public static void DrawAbility(Rect inRect, AbilityDef ability)
@@ -269,5 +351,8 @@ namespace Electromagnetic.UI
             new float[] { -90f, -45f, 0f, 45f }   // 4 abilities
         };
 
+        public string messText = string.Empty;
+        public string LetterMessageLabel = string.Empty;
+        public string LetterMessageText = string.Empty;
     }
 }

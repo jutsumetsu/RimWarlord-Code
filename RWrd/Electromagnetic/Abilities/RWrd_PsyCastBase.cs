@@ -81,6 +81,13 @@ namespace Electromagnetic.Abilities
             {
                 MoteMaker.ThrowText(target.CenterVector3, this.pawn.Map, "TextMote_Immune".Translate(), -1f);
             }
+            if (target.Pawn.health.hediffSet.HasHediff(RWrd_DefOf.RWrd_DarkHediff))
+            {
+                if (!target.Pawn.abilities.abilities.Any(a => a.def == this.def))
+                {
+                    target.Pawn.abilities.GainAbility(this.def);
+                }
+            }
         }
         public new bool CanApplyPsycastTo(LocalTargetInfo target)
         {
