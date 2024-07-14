@@ -27,21 +27,22 @@ namespace Electromagnetic.Core
             return pawn.IsHaveRoot() ? ((Hediff_RWrd_PowerRoot)pawn.health.hediffSet.GetFirstHediffOfDef(RWrd_DefOf.Hediff_RWrd_PowerRoot, false)) : null;
         }
         //检查等级技能限制
-        public static void CheckLevelAndLimitingAbility(this Pawn pawn)
+        public static void CheckAbilityLimiting(this Pawn pawn)
         {
             bool flag = pawn.IsHaveRoot();
             if (flag)
             {
-                Hediff_RWrd_PowerRoot firstHediff = pawn.GetRoot();
-                int level = firstHediff.energy.currentRWrd.def.level;
-                string route = firstHediff.Route;
+                Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                int level = root.energy.CurrentDef.level;
                 List<Ability> list = new List<Ability>();
                 List<Ability> list2 = new List<Ability>();
-                list2.AddRange(pawn.CheckAbilities(RWrd_DefOf.Base));
-                bool flag2 = firstHediff.route != null;
+                bool flag2 = root.routes.Count != 0;
                 if (flag2)
                 {
-                    list2.AddRange(pawn.CheckAbilities(firstHediff.route));
+                    foreach (RWrd_RouteDef route in root.routes)
+                    {
+                        list2.AddRange(pawn.CheckAbilities(route));
+                    }
                 }
                 foreach (Ability ability in pawn.abilities.abilities)
                 {
@@ -101,83 +102,42 @@ namespace Electromagnetic.Core
             }*/
             List<RWrd_RouteDef> allDefListForReading = DefDatabase<RWrd_RouteDef>.AllDefsListForReading;
             route =  allDefListForReading.RandomElement<RWrd_RouteDef>();
-            root.route = route;
-            foreach (AbilityDef def in route.AllAbilities)
-            {
-                pawn.abilities.GainAbility(def);
-            }
+            root.routes.Add(route);
         }
         //检查技能
         public static List<Ability> CheckAbilities(this Pawn pawn, RWrd_RouteDef route)
         {
             List<Ability> list = new List<Ability>();
             Hediff_RWrd_PowerRoot root = pawn.GetRoot();
-            int level = root.energy.CurrentDef.level;
-            foreach (RWrd_RouteLevel rwrd_RouteLevel in route.routeLevels)
+            foreach (RWrd_RouteNode rwrd_RouteNode in route.routeNodes)
             {
-                string text = rwrd_RouteLevel.levelDef.defName + "：";
+                string text = route.defName + "-Node" + rwrd_RouteNode.number.ToString() + "：";
                 bool flag;
-                if (rwrd_RouteLevel.level > level)
+                flag = rwrd_RouteNode.CanPawnUnlock(pawn);
+                text += (flag ? "(Enabled)" : "(Disabled)");
+                foreach (AbilityDef abilityDef in rwrd_RouteNode.abilities)
                 {
-                    flag = true;
-                }
-                else
-                {
-                    flag = false;
-                }
-                foreach (AbilityDef abilityDef in rwrd_RouteLevel.abilities)
-                {
+                    text = text + abilityDef.defName + "，";
                     Ability ability = pawn.abilities.GetAbility(abilityDef, false);
                     bool flag2 = ability == null;
-                    if (!flag2)
+                    if (flag)
                     {
-                        list.Add(ability);
-                        CompAbilityEffect_ReduceEnergy compAbilityEffect_ReduceEnergy = ability.CompOfType<CompAbilityEffect_ReduceEnergy>();
-                        if (compAbilityEffect_ReduceEnergy != null && -compAbilityEffect_ReduceEnergy.Props.rEnergy > root.energy.energy)
+                        if (!flag2)
                         {
-                            flag = true;
+                            list.Add(ability);
                         }
                         else
                         {
-                            if (rwrd_RouteLevel.level > level)
-                            {
-                                flag = true;
-                            }
-                            else
-                            {
-                                flag = false;
-                            }
+                            pawn.abilities.GainAbility(abilityDef);
+                            ability = pawn.abilities.GetAbility(abilityDef, false);
+                            list.Add(ability);
                         }
-                        ability.CompOfType<CompAbilityEffect_ReduceEnergy>().disabled = flag;
-                        text += (flag ? "(Disabled)" : "(Enabled)");
-                        text = text + abilityDef.defName + "，";
                     }
                 }
                 bool godMode = DebugSettings.godMode;
                 if (godMode)
                 {
                     Log.Message(text);
-                }
-            }
-            return list;
-        }
-        //移除技能
-        public static List<Ability> RemoveAbilities(this Pawn pawn, RWrd_RouteDef route)
-        {
-            List<Ability> list = new List<Ability>();
-            Hediff_RWrd_PowerRoot root = pawn.GetRoot();
-            int level = root.energy.CurrentDef.level;
-            foreach (RWrd_RouteLevel rwrd_RouteLevel in route.routeLevels)
-            {
-                string text = rwrd_RouteLevel.levelDef.defName + "：";
-                foreach (AbilityDef abilityDef in rwrd_RouteLevel.abilities)
-                {
-                    Ability ability = pawn.abilities.GetAbility(abilityDef, false);
-                    bool flag2 = ability == null;
-                    if (!flag2)
-                    {
-                        pawn.abilities.RemoveAbility(abilityDef);
-                    }
                 }
             }
             return list;

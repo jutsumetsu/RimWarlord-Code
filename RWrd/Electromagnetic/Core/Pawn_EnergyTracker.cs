@@ -93,6 +93,7 @@ namespace Electromagnetic.Core
             if (flag)
             {
                 this.energy = ((num2 < this.CurrentDef.MaxEnergy) ? num2 : this.CurrentDef.MaxEnergy);
+                this.pawn.CheckAbilityLimiting();
             }
             else
             {
@@ -107,6 +108,7 @@ namespace Electromagnetic.Core
             {
                 float num2 = this.exp + num;
                 this.exp = ((num2 > this.CurrentDef.EXP) ? this.CurrentDef.EXP : num2);
+                this.pawn.CheckAbilityLimiting();
             }
         }
         //设置完全境界
@@ -117,6 +119,7 @@ namespace Electromagnetic.Core
             {
                 float num2 = this.completerealm + num;
                 this.completerealm = (num2 > this.CurrentDef.MaxCompleteRealm ? this.CurrentDef.MaxCompleteRealm : num2);
+                this.pawn.CheckAbilityLimiting();
             }
         }
         //设置力量流量
@@ -185,7 +188,7 @@ namespace Electromagnetic.Core
         //检查等级技能限制
         private void OnPostSetLevel()
         {
-            this.pawn.CheckLevelAndLimitingAbility();
+            this.pawn.CheckAbilityLimiting();
         }
         //获取下一级参数
         public RimWarlord GetNextRWrd()

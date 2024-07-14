@@ -15,14 +15,6 @@ namespace Electromagnetic.Abilities
                 return (CompProperties_ReduceEnergy)this.props;
             }
         }
-        //隐藏按钮
-        public override bool ShouldHideGizmo
-        {
-            get
-            {
-                return this.disabled;
-            }
-        }
         //初始化
         public override void Initialize(AbilityCompProperties props)
         {
@@ -41,6 +33,7 @@ namespace Electromagnetic.Abilities
                 {
                     ((Hediff_RWrd_PowerRoot)hediff).energy.SetEnergy((float)this.Props.rEnergy);
                     ((Hediff_RWrd_PowerRoot)hediff).energy.SetExp(0.1f * (float)(-(float)this.Props.rEnergy));
+                    ((RWrd_PsyCastBase)this.parent).proficiency += 0.2f;
                     break;
                 }
             }
@@ -72,17 +65,26 @@ namespace Electromagnetic.Abilities
         //隐藏技能按钮
         public override bool GizmoDisabled(out string reason)
         {
-            bool shouldHideGizmo = this.ShouldHideGizmo;
             bool result;
-            if (shouldHideGizmo)
+            if (this.parent.pawn.IsHaveRoot())
             {
-                reason = "力量不足，无法使用技能";
-                result = true;
+                result = false;
+                Hediff_RWrd_PowerRoot root = this.parent.pawn.GetRoot();
+                if (-(float)this.Props.rEnergy > root.energy.energy)
+                {
+                    result = true;
+                    reason = "能量不足，无法使用技能";
+                }
+                else
+                {
+                    result = false;
+                    reason = null;
+                }
             }
             else
             {
-                reason = null;
-                result = false;
+                result = true;
+                reason = "不具备磁场力量，无法使用技能";
             }
             return result;
         }

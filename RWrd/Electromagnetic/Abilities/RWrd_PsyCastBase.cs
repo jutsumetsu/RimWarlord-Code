@@ -119,6 +119,13 @@ namespace Electromagnetic.Abilities
         {
             this.AbilityTick();
         }
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look<float>(ref this.proficiency, "proficiency", 0f, false);
+        }
+        public float proficiency = 0;
+        public float MaxProficiency = 100;
         private Mote moteCast;
         private static float MoteCastFadeTime = 0.4f;
         private static float MoteCastScale = 1f;

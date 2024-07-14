@@ -37,12 +37,12 @@ namespace Electromagnetic.Core
             //能量显示
             rect3.width = 180f;
             rect3.height = rect.height / 2f;
-            this.DrawUI(rect3, this.energy.energy.energy, this.energy.energy.CurrentDef.MaxEnergy, this.EnergyLabel.Translate());
+            this.DrawUI(rect3, this.energy.energy.energy, this.energy.energy.CurrentDef.MaxEnergy, this.EnergyLabel);
             //等级显示
             Rect rect4 = rect2;
             rect4.width = 180f;
             rect4.yMin = rect2.y + 30;
-            this.DrawUI2(rect4, this.energy.energy.Exp, this.energy.energy.currentRWrd.def.EXP, this.energy.energy.currentRWrd.def.level, this.energy.energy.currentRWrd.def.label, this.ExpLabel.Translate());
+            this.DrawUI2(rect4, this.energy.energy.Exp, this.energy.energy.CurrentDef.EXP, this.energy.energy.CurrentDef.level, this.energy.energy.currentRWrd.def.label, this.ExpLabel.Translate());
             //完全境界显示
             Rect rect5 = rect2;
             rect5.width = 180f;
@@ -53,7 +53,7 @@ namespace Electromagnetic.Core
             rect6.width = 180f;
             rect6.yMin = rect5.y + 18;
             this.DrawUI4(rect6, this.energy.energy.PowerFlow, this.PowerFlowLabel.Translate());
-            float num = this.energy.energy.energy / this.energy.energy.currentRWrd.def.MaxEnergy;
+            float num = this.energy.energy.energy / this.energy.energy.CurrentDef.MaxEnergy;
             Rect position = new Rect(rect2.x + 125f, rect2.y + 8f, 50f, 60f);
             bool flag = (double)num <= 0.25;
             Text.Anchor = TextAnchor.UpperLeft;
@@ -62,7 +62,16 @@ namespace Electromagnetic.Core
         //绘制能量显示及能量条
         private void DrawUI(Rect rect, float a, float b, string label)
         {
-            Text.Font = GameFont.Small;
+            bool lflag = LanguageDatabase.activeLanguage.ToString() != "Simplified Chinese";
+            bool lflag2 = LanguageDatabase.activeLanguage.ToString() != "Traditional Chinese";
+            if (lflag && lflag2)
+            {
+                Text.Font = GameFont.Tiny;
+            }
+            else
+            {
+                Text.Font = GameFont.Small;
+            }
             //能量值标签位置
             Rect rect2 = new Rect(rect.x, rect.y, 60f, 25f);
             //数值位置
@@ -76,17 +85,28 @@ namespace Electromagnetic.Core
         //绘制等级显示
         private void DrawUI2(Rect rect, float a, float b, int c, string label, string label2)
         {
-            Text.Font = GameFont.Small;
+            bool lflag = LanguageDatabase.activeLanguage.ToString() != "Simplified Chinese";
+            bool lflag2 = LanguageDatabase.activeLanguage.ToString() != "Traditional Chinese";
             //等级标签位置
-            Rect rect2 = new Rect(rect.x, rect.y, 90f, 25f);
+            Rect rect2 = new Rect(rect.x, rect.y, 120f, 25f);
             //磁场转动匹数位置
             Rect rect3 = new Rect(rect.x + 85f, rect.y, 40f, 25f);
             //经验值标签位置
             Rect rect4 = new Rect(rect.x + 140f, rect.y, 40f, 25f);
             //电推伏特位置
             Rect rect5 = new Rect(rect.x + 65f, rect.y, 40f, 25f);
+            if (lflag && lflag2)
+            {
+                Text.Font = GameFont.Tiny;
+                rect4 = new Rect(rect.x + 150f, rect.y, 40f, 25f);
+                Widgets.Label(rect4, label2);
+            }
+            else
+            {
+                Text.Font = GameFont.Small;
+                Widgets.Label(rect4, label2);
+            }
             Widgets.Label(rect2, label);
-            Widgets.Label(rect4, label2);
             float num = a;
             bool flag = num >= b;
             if (flag)
@@ -95,19 +115,46 @@ namespace Electromagnetic.Core
             }
             if (c != 0)
             {
-                Widgets.Label(rect3, num.ToString("F0"));
+                if (lflag && lflag2)
+                {
+                    num = a / b;
+                    rect3 = new Rect(rect.x + 127f, rect.y, 40f, 25f);
+                    Widgets.Label(rect3, num.ToString("P0"));
+                }
+                else
+                {
+                    Widgets.Label(rect3, num.ToString("F0"));
+                }
             }
             else
             {
-                Widgets.Label(rect5, num.ToString("F0"));
+                if (lflag && lflag2)
+                {
+                    num = a / b;
+                    rect5 = new Rect(rect.x + 110f, rect.y, 40f, 25f);
+                    Widgets.Label(rect5, num.ToString("P2"));
+                }
+                else
+                {
+                    Widgets.Label(rect5, num.ToString("F0"));
+                }
             }
         }
         //绘制完全境界显示
         private void DrawUI3(Rect rect, float a, int b, string label)
         {
-            Text.Font = GameFont.Small;
+            bool lflag = LanguageDatabase.activeLanguage.ToString() != "Simplified Chinese";
+            bool lflag2 = LanguageDatabase.activeLanguage.ToString() != "Traditional Chinese";
+            if (lflag && lflag2)
+            {
+                Text.Font = GameFont.Tiny;
+            }
+            else
+            {
+                Text.Font = GameFont.Small;
+            }
             //完全境界标签位置
-            Rect rect2 = new Rect(rect.x, rect.y, 60f, 25f);
+            Rect rect2 = new Rect(rect.x, rect.y, 90f, 25f);
             //百级以内完全境界数值位置
             Rect rect3 = new Rect(rect.x + 90f, rect.y, 40f, 25f);
             //完全境界级数标签位置
@@ -131,43 +178,103 @@ namespace Electromagnetic.Core
             Widgets.Label(rect2, label);
             if (b < 10)
             {
-                Widgets.Label(rect5, b.ToString("F0"));
-                Widgets.Label(rect4, "成");
+                if (lflag && lflag2)
+                {
+                    float num = b * 10;
+                    Widgets.Label(rect5, num.ToString("F0") + "%");
+                }
+                else
+                {
+                    Widgets.Label(rect5, b.ToString("F0"));
+                    Widgets.Label(rect4, "成");
+                }
             }
             else if (flag)
             {
-                Widgets.Label(rect6, a.ToString("最后境界"));
+                if (lflag && lflag2)
+                {
+                    rect6 = new Rect(rect.x + 100f, rect.y, 80f, 25f);
+                    Widgets.Label(rect6, "RWrd_FinalRealm".Translate());
+                }
+                else
+                {
+                    Widgets.Label(rect6, "RWrd_FinalRealm".Translate());
+                }
             }
             else if (flag1)
             {
-                Widgets.Label(rect5, c.ToString("F0"));
-                Widgets.Label(rect4, "级");
+                if (lflag && lflag2)
+                {
+                    Widgets.Label(rect5, "Lv." + c.ToString("F0"));
+                }
+                else
+                {
+                    Widgets.Label(rect5, c.ToString("F0"));
+                    Widgets.Label(rect4, "级");
+                }
             }
             else if (flag2)
             {
-                Widgets.Label(rect3, c.ToString("F0"));
-                Widgets.Label(rect4, "级");
+                if (lflag && lflag2)
+                {
+                    Widgets.Label(rect5, "Lv." + c.ToString("F0"));
+                }
+                else
+                {
+                    Widgets.Label(rect3, c.ToString("F0"));
+                    Widgets.Label(rect4, "级");
+                }
             }
             else if (flag3)
             {
-                Widgets.Label(rect7, c.ToString("F0"));
-                Widgets.Label(rect4, "级");
+                if (lflag && lflag2)
+                {
+                    Widgets.Label(rect5, "Lv." + c.ToString("F0"));
+                }
+                else
+                {
+                    Widgets.Label(rect7, c.ToString("F0"));
+                    Widgets.Label(rect4, "级");
+                }
             }
             else if (flag4)
             {
-                Widgets.Label(rect8, c.ToString("F0"));
-                Widgets.Label(rect4, "级");
+                if (lflag && lflag2)
+                {
+                    Widgets.Label(rect5, "Lv." + c.ToString("F0"));
+                }
+                else
+                {
+                    Widgets.Label(rect8, c.ToString("F0"));
+                    Widgets.Label(rect4, "级");
+                }
             }
             else
             {
-                Widgets.Label(rect9, c.ToString("F0"));
-                Widgets.Label(rect4, "级");
+                if (lflag && lflag2)
+                {
+                    Widgets.Label(rect5, "Lv." + c.ToString("F0"));
+                }
+                else
+                {
+                    Widgets.Label(rect9, c.ToString("F0"));
+                    Widgets.Label(rect4, "级");
+                }
             }
         }
         //绘制力量流量显示
         private void DrawUI4(Rect rect, int a, string label)
         {
-            Text.Font = GameFont.Small;
+            bool lflag = LanguageDatabase.activeLanguage.ToString() != "Simplified Chinese";
+            bool lflag2 = LanguageDatabase.activeLanguage.ToString() != "Traditional Chinese";
+            if (lflag && lflag2)
+            {
+                Text.Font = GameFont.Tiny;
+            }
+            else
+            {
+                Text.Font = GameFont.Small;
+            }
             //力量流量标签位置
             Rect rect2 = new Rect(rect.x, rect.y, 60f, 25f);
             //力量流量数值位置
@@ -176,7 +283,7 @@ namespace Electromagnetic.Core
             Rect rect4 = new Rect(rect.x + 140f, rect.y, 40f, 25f);
             Widgets.Label(rect2, label);
             Widgets.Label(rect3, a.ToString("F0"));
-            Widgets.Label(rect4, "度");
+            Widgets.Label(rect4, "RWrd_KWH".Translate());
         }
 
         public Pawn pawn;

@@ -122,6 +122,7 @@
     <Compile Include="Electromagnetic\Core\Pawn_EnergyTracker.cs" />
     <Compile Include="Electromagnetic\Core\PowerRootUtillity.cs" />
     <Compile Include="Electromagnetic\Core\RWrd_PsycastOrigin.cs" />
+    <Compile Include="Electromagnetic\Core\RWrd_RouteNode.cs" />
     <Compile Include="Electromagnetic\Core\ThinkNode_ConditionalNeedTraining.cs" />
     <Compile Include="Electromagnetic\Core\ThoughtWorker_NeedTrain.cs" />
     <Compile Include="Electromagnetic\Core\TrainingCategory.cs" />

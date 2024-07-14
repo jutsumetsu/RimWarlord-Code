@@ -10,22 +10,21 @@ namespace Electromagnetic.Core
         public override void ResolveReferences()
         {
             base.ResolveReferences();
-            foreach (RWrd_RouteLevel ri_RouteLevel in this.routeLevels)
+            foreach (RWrd_RouteNode rwrd_RouteNode in this.routeNodes)
             {
-                ri_RouteLevel.ResolveReferences();
-                this.levels[ri_RouteLevel.level] = ri_RouteLevel.abilities;
+                this.nodes[rwrd_RouteNode.number] = rwrd_RouteNode.abilities;
             }
         }
         public override IEnumerable<string> ConfigErrors()
         {
-            bool flag = this.routeLevels.Count <= 0;
+            bool flag = this.routeNodes.Count <= 0;
             if (flag)
             {
-                yield return "No route level found for route " + this.defName;
+                yield return "No route node found for route " + this.defName;
             }
-            foreach (RWrd_RouteLevel level in this.routeLevels)
+            foreach (RWrd_RouteNode node in this.routeNodes)
             {
-                foreach (string error in level.ConfigErrors())
+                foreach (string error in node.ConfigErrors())
                 {
                     yield return error;
                 }
@@ -45,7 +44,7 @@ namespace Electromagnetic.Core
                 if (flag)
                 {
                     this.cachedAbilities = new List<AbilityDef>();
-                    foreach (List<AbilityDef> collection in this.levels.Values)
+                    foreach (List<AbilityDef> collection in this.nodes.Values)
                     {
                         this.cachedAbilities.AddRange(collection);
                     }
@@ -58,7 +57,7 @@ namespace Electromagnetic.Core
             get
             {
                 List<AbilityDef> list;
-                bool flag = this.levels.TryGetValue(lv, out list);
+                bool flag = this.nodes.TryGetValue(lv, out list);
                 List<AbilityDef> result;
                 if (flag)
                 {
@@ -71,8 +70,8 @@ namespace Electromagnetic.Core
                 return result;
             }
         }
-        public List<RWrd_RouteLevel> routeLevels = new List<RWrd_RouteLevel>();
+        public List<RWrd_RouteNode> routeNodes = new List<RWrd_RouteNode>();
         private List<AbilityDef> cachedAbilities;
-        private Dictionary<int, List<AbilityDef>> levels = new Dictionary<int, List<AbilityDef>>();
+        private Dictionary<int, List<AbilityDef>> nodes = new Dictionary<int, List<AbilityDef>>();
     }
 }
