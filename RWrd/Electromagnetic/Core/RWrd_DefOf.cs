@@ -15,8 +15,10 @@ namespace Electromagnetic.Core
         }
         //修炼主干
         public static HediffDef Hediff_RWrd_PowerRoot;
-        public static RWrd_RouteDef Base;
         public static TraitDef RWrd_Gifted;
+        //技能树
+        public static RWrd_RouteDef Base;
+        public static RWrd_RouteDef SixSecret;
         //能力
         public static AbilityDef RWrd_Ability_CellRecombination;
         //特效

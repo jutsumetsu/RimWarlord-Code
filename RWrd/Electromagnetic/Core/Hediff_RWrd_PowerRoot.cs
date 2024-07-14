@@ -40,20 +40,20 @@ namespace Electromagnetic.Core
                 bool flag2 = this.energy.currentRWrd.def.level == 0;
                 if (flag1)
                 {
-                    this.pawn.CheckLevelAndLimitingAbility();
+                    this.pawn.CheckAbilityLimiting();
                     this.reeStartInit = true;
                 }
                 Gizmo_Psychic gizmo = new Gizmo_Psychic(this.pawn, this);
-                gizmo.EnergyLabel = "能量值";
-                gizmo.CompleteRealmLabel = "完全境界";
-                gizmo.PowerFlowLabel = "力量流量";
+                gizmo.EnergyLabel = "RWrd_EP_Energy".Translate();
+                gizmo.CompleteRealmLabel = "Rwrd_CompleteRealm".Translate();
+                gizmo.PowerFlowLabel = "RWrd_PowerFlow".Translate();
                 if (flag2)
                 {
-                    gizmo.ExpLabel = "伏特";
+                    gizmo.ExpLabel = "RWrd_Volt".Translate();
                 }
                 else
                 {
-                    gizmo.ExpLabel = "匹";
+                    gizmo.ExpLabel = "RWrd_HorsePower".Translate();
                 }
                 yield return gizmo;
                 gizmo = null;
@@ -63,17 +63,17 @@ namespace Electromagnetic.Core
             {
                 yield return new Command_Action
                 {
-                    defaultLabel = "升级",
+                    defaultLabel = "RWrd_LevelUP".Translate(),
                     action = delegate ()
                     {
                         this.energy.SetExp(this.energy.CurrentDef.EXP);
                         this.energy.SetLevel();
-                        this.pawn.CheckLevelAndLimitingAbility();
+                        this.pawn.CheckAbilityLimiting();
                     }
                 };
                 yield return new Command_Action
                 {
-                    defaultLabel = "提升力量",
+                    defaultLabel = "RWrd_IncreaseEXP".Translate(),
                     action = delegate ()
                     {
                         this.energy.SetExp(1000f);
@@ -81,7 +81,7 @@ namespace Electromagnetic.Core
                 };
                 yield return new Command_Action
                 {
-                    defaultLabel = "增加能量",
+                    defaultLabel = "RWrd_IncreaseEnergy".Translate(),
                     action = delegate ()
                     {
                         this.energy.SetEnergy(1000f);
@@ -89,7 +89,7 @@ namespace Electromagnetic.Core
                 };
                 yield return new Command_Action
                 {
-                    defaultLabel = "提升完全境界",
+                    defaultLabel = "RWrd_IncreaseCompleteRealm".Translate(),
                     action = delegate ()
                     {
                         this.energy.SetCompleteRealm(0.1f);
@@ -97,7 +97,7 @@ namespace Electromagnetic.Core
                 };
                 yield return new Command_Action
                 {
-                    defaultLabel = "提升力量流量",
+                    defaultLabel = "RWrd_IncreasePowerFlow".Translate(),
                     action = delegate ()
                     {
                         this.energy.SetPowerFlow(10000);
@@ -105,14 +105,28 @@ namespace Electromagnetic.Core
                 };
                 yield return new Command_Action
                 {
-                    defaultLabel = "重载默认技能树",
+                    defaultLabel = "RWrd_ReloadDefaultSkillTree".Translate(),
                     action = delegate ()
                     {
-                        pawn.RemoveAbilities(RWrd_DefOf.Base);
-                        RWrd_DefOf.Base.AllAbilities.ForEach(delegate (AbilityDef a)
+                        this.RemoveRWrdAbilities();
+                        if (!this.routes.Contains(RWrd_DefOf.Base))
                         {
-                            this.pawn.abilities.GainAbility(a);
-                        });
+                            this.routes.Add(RWrd_DefOf.Base);
+                        }
+                        this.pawn.CheckAbilityLimiting();
+                    }
+                };
+                yield return new Command_Action
+                {
+                    defaultLabel = "RWrd_ReloadBaakFamilySkillTree".Translate(),
+                    action = delegate ()
+                    {
+                        this.RemoveRWrdAbilities();
+                        if (!this.routes.Contains(RWrd_DefOf.SixSecret))
+                        {
+                            this.routes.Add(RWrd_DefOf.SixSecret);
+                        }
+                        this.pawn.CheckAbilityLimiting();
                     }
                 };
             }
@@ -120,7 +134,7 @@ namespace Electromagnetic.Core
         }
         public override void PostRemoved()
         {
-            this.pawn.CheckLevelAndLimitingAbility();
+            this.pawn.CheckAbilityLimiting();
             this.RemoveRWrdAbilities();
             base.PostRemoved();
         }
@@ -191,11 +205,8 @@ namespace Electromagnetic.Core
         public override void PostMake()
         {
             base.PostMake();
-            //获取默认技能树能力
-            RWrd_DefOf.Base.AllAbilities.ForEach(delegate (AbilityDef a)
-            {
-                this.pawn.abilities.GainAbility(a);
-            });
+            //解锁默认技能树
+            this.routes.Add(RWrd_DefOf.Base);
             //赋予EnergyTracker
             bool flag = this.energy == null;
             if (flag)
@@ -237,7 +248,7 @@ namespace Electromagnetic.Core
                     this.energy.exp = this.energy.currentRWrd.def.EXP;
                     this.energy.energy = this.energy.currentRWrd.def.MaxEnergy;
                     this.energy.SetLevel();
-                    this.pawn.CheckLevelAndLimitingAbility();
+                    this.pawn.CheckAbilityLimiting();
                 }
             }
             else
@@ -248,7 +259,7 @@ namespace Electromagnetic.Core
                 this.energy.completerealm = UnityEngine.Random.Range(1, 4) * 0.1f;
                 this.energy.trainDesireFactor = UnityEngine.Random.Range(1, 51);
             }
-            this.pawn.CheckLevelAndLimitingAbility();
+            this.pawn.CheckAbilityLimiting();
             /*foreach (PawnCapacityModifier pawnCapacityModifier in this.GetPCMList())
             {
                 this.CurStage.capMods.Add(pawnCapacityModifier);
@@ -261,18 +272,13 @@ namespace Electromagnetic.Core
             Scribe_Deep.Look<Pawn_EnergyTracker>(ref this.energy, "energy", Array.Empty<object>());
             Scribe_Values.Look<bool>(ref this.IsInit, "IsInit", false, false);
             Scribe_Values.Look<bool>(ref this.openingBasicAbility, "openingBasicAbility", false, false);
-            Scribe_Values.Look<string>(ref this.Route, "Route", null, false);
-            Scribe_Defs.Look<RWrd_RouteDef>(ref this.route, "route");
+            Scribe_Collections.Look<RWrd_RouteDef>(ref this.routes, "routes", LookMode.Def, Array.Empty<object>());
             bool flag = Scribe.mode == LoadSaveMode.PostLoadInit;
             if (flag)
             {
-                bool flag2 = this.route == null && !this.Route.NullOrEmpty();
-                if (flag2)
+                if (this.routes == null)
                 {
-                    this.route = DefDatabase<RWrd_RouteDef>.GetNamed(this.Route.Split(new char[]
-                    {
-                        '_'
-                    }).Last<string>(), true);
+                    this.routes = new List<RWrd_RouteDef>();
                 }
                 this.energy.pawn = this.pawn;
             }
@@ -285,7 +291,6 @@ namespace Electromagnetic.Core
             this.energy.currentRWrd.def.MaxEnergy = this.energy.PowerFlow / 100;
             if (Find.TickManager.TicksGame % 60 == 0)
             {
-                this.pawn.CheckLevelAndLimitingAbility();
                 foreach (PawnCapacityModifier pcm in this.CurStage.capMods)
                 {
                     foreach (PawnCapacityModifier pawnCapacityModifier in this.GetPCMList())
@@ -376,9 +381,7 @@ namespace Electromagnetic.Core
         private bool IsInit = false;
         public bool initActivity = false;
 
-        public string Route = "";
-
-        public RWrd_RouteDef route;
+        public List<RWrd_RouteDef> routes = new List<RWrd_RouteDef>();
 
         public bool openingBasicAbility = false;
 
