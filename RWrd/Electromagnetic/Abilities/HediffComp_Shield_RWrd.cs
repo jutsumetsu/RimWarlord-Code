@@ -234,6 +234,7 @@ namespace Electromagnetic.Abilities
             {
                 this.Reset();
             }
+            this.parent.Severity = 0;
         }
 
         protected virtual bool AbsorbDamage(ref DamageInfo dinfo)
@@ -244,6 +245,7 @@ namespace Electromagnetic.Abilities
             {
                 float num = dinfo.Amount * this.Props.energyLossPerDamage;
                 bool flag2 = num < this.Energy;
+                Log.Message("Damage:" + num.ToString() + ", Energy:" + this.Energy.ToString());
                 bool ActiveS = this.ShieldActive;
                 
                 if (flag2)

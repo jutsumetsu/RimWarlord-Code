@@ -11,7 +11,7 @@ namespace Electromagnetic.Core
         {
             get
             {
-                bool flag = this.pawn ==null || this.energy == null;
+                bool flag = this.pawn ==null || this.root == null;
                 return !flag;
             }
         }
@@ -25,7 +25,7 @@ namespace Electromagnetic.Core
         {
             this.Order = -110f;
             this.pawn = pawn;
-            this.energy = energy;
+            this.root = energy;
         }
 
         public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
@@ -37,23 +37,23 @@ namespace Electromagnetic.Core
             //能量显示
             rect3.width = 180f;
             rect3.height = rect.height / 2f;
-            this.DrawUI(rect3, this.energy.energy.energy, this.energy.energy.CurrentDef.MaxEnergy, this.EnergyLabel);
+            this.DrawUI(rect3, this.root.energy.energy, this.root.energy.CurrentDef.MaxEnergy, this.EnergyLabel);
             //等级显示
             Rect rect4 = rect2;
             rect4.width = 180f;
             rect4.yMin = rect2.y + 30;
-            this.DrawUI2(rect4, this.energy.energy.Exp, this.energy.energy.CurrentDef.EXP, this.energy.energy.CurrentDef.level, this.energy.energy.currentRWrd.def.label, this.ExpLabel.Translate());
+            this.DrawUI2(rect4, this.root.energy.Exp, this.root.energy.CurrentDef.EXP, this.root.energy.CurrentDef.level, this.root.energy.CurrentDef.label, this.ExpLabel.Translate());
             //完全境界显示
             Rect rect5 = rect2;
             rect5.width = 180f;
             rect5.yMin = rect4.y + 18;
-            this.DrawUI3(rect5, this.energy.energy.CompleteRealm, this.energy.energy.AvailableCompleteRealm(), this.CompleteRealmLabel.Translate());
+            this.DrawUI3(rect5, this.root.energy.CompleteRealm, this.root.energy.AvailableCompleteRealm(), this.CompleteRealmLabel.Translate());
             //力量流量显示
             Rect rect6 = rect2;
             rect6.width = 180f;
             rect6.yMin = rect5.y + 18;
-            this.DrawUI4(rect6, this.energy.energy.PowerFlow, this.PowerFlowLabel.Translate());
-            float num = this.energy.energy.energy / this.energy.energy.CurrentDef.MaxEnergy;
+            this.DrawUI4(rect6, this.root.energy.PowerFlow, this.PowerFlowLabel.Translate());
+            float num = this.root.energy.energy / this.root.energy.CurrentDef.MaxEnergy;
             Rect position = new Rect(rect2.x + 125f, rect2.y + 8f, 50f, 60f);
             bool flag = (double)num <= 0.25;
             Text.Anchor = TextAnchor.UpperLeft;
@@ -287,7 +287,7 @@ namespace Electromagnetic.Core
         }
 
         public Pawn pawn;
-        public Hediff_RWrd_PowerRoot energy;
+        public Hediff_RWrd_PowerRoot root;
         public string ExpLabel;
         public string EnergyLabel;
         public string CompleteRealmLabel;

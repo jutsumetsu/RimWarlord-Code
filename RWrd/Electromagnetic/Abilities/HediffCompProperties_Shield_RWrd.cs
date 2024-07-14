@@ -18,14 +18,7 @@ namespace Electromagnetic.Abilities
             if (flag)
             {
                 List<DamageDef> list;
-                if (this.maxEnergy <= 0f)
-                {
-                    list = new List<DamageDef>();
-                }
-                else
-                {
-                    (list = new List<DamageDef>()).Add(DamageDefOf.EMP);
-                }
+                list = new List<DamageDef>();
                 this.breakOn = list;
             }
             bool flag2 = this.graphic == null;

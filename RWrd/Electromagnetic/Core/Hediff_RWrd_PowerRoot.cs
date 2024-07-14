@@ -109,10 +109,7 @@ namespace Electromagnetic.Core
                     action = delegate ()
                     {
                         this.RemoveRWrdAbilities();
-                        if (!this.routes.Contains(RWrd_DefOf.Base))
-                        {
-                            this.routes.Add(RWrd_DefOf.Base);
-                        }
+                        this.UnlockRoute(RWrd_DefOf.Base);
                         this.pawn.CheckAbilityLimiting();
                     }
                 };
@@ -122,10 +119,7 @@ namespace Electromagnetic.Core
                     action = delegate ()
                     {
                         this.RemoveRWrdAbilities();
-                        if (!this.routes.Contains(RWrd_DefOf.SixSecret))
-                        {
-                            this.routes.Add(RWrd_DefOf.SixSecret);
-                        }
+                        this.UnlockRoute(RWrd_DefOf.SixSecret);
                         this.pawn.CheckAbilityLimiting();
                     }
                 };
@@ -154,6 +148,17 @@ namespace Electromagnetic.Core
             {
                 this.pawn.abilities.RemoveAbility(a.def);
             });
+        }
+        public void UnlockRoute(RWrd_RouteDef route)
+        {
+            if (!this.routes.Contains(route))
+            {
+                this.routes.Add(route);
+            }
+            else
+            {
+                Messages.Message("RWrd_UnlockError".Translate(this.pawn.Name.ToStringShort, route.label), this.pawn, MessageTypeDefOf.PositiveEvent, true);
+            }
         }
         //身体机能加成列表
         private IEnumerable<PawnCapacityModifier> GetPCMList()
@@ -206,7 +211,7 @@ namespace Electromagnetic.Core
         {
             base.PostMake();
             //解锁默认技能树
-            this.routes.Add(RWrd_DefOf.Base);
+            this.UnlockRoute(RWrd_DefOf.Base);
             //赋予EnergyTracker
             bool flag = this.energy == null;
             if (flag)

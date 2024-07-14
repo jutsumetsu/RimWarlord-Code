@@ -37,7 +37,7 @@ namespace Electromagnetic.Abilities
             List<Thing> list = new List<Thing>();
             foreach (Pawn pawn2 in pawn.MapHeld.mapPawns.AllPawns)
             {
-                bool flag = pawn2.Faction == Faction.OfPlayer;
+                bool flag = pawn2.Faction == root.pawn.Faction;
                 if (flag)
                 {
                     list.Add(pawn2);
