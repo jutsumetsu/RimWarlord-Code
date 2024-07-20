@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Electromagnetic.UI;
+using RimWorld;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -33,11 +35,13 @@ namespace Electromagnetic.Core
             Rect rect = new Rect(topLeft.x - 4, topLeft.y, this.GetWidth(maxWidth), 89f);
             Rect rect2 = rect.ContractedBy(2f);
             Widgets.DrawWindowBackground(rect);
+            MainTabWindow_Inspect mainTabWindow_Inspect = (MainTabWindow_Inspect)MainButtonDefOf.Inspect.TabWindow;
+            Command_Electromagnetic command_Electromagnetic = ((mainTabWindow_Inspect != null) ? mainTabWindow_Inspect.LastMouseoverGizmo : null) as Command_Electromagnetic;
             Rect rect3 = rect2;
             //能量显示
             rect3.width = 180f;
             rect3.height = rect.height / 2f;
-            this.DrawUI(rect3, this.root.energy.energy, this.root.energy.CurrentDef.MaxEnergy, this.EnergyLabel);
+            this.DrawUI(rect3, this.root.energy.energy, this.root.energy.MaxEnergy, this.EnergyLabel);
             //等级显示
             Rect rect4 = rect2;
             rect4.width = 180f;
@@ -53,7 +57,7 @@ namespace Electromagnetic.Core
             rect6.width = 180f;
             rect6.yMin = rect5.y + 18;
             this.DrawUI4(rect6, this.root.energy.PowerFlow, this.PowerFlowLabel.Translate());
-            float num = this.root.energy.energy / this.root.energy.CurrentDef.MaxEnergy;
+            float num = this.root.energy.energy / this.root.energy.MaxEnergy;
             Rect position = new Rect(rect2.x + 125f, rect2.y + 8f, 50f, 60f);
             bool flag = (double)num <= 0.25;
             Text.Anchor = TextAnchor.UpperLeft;

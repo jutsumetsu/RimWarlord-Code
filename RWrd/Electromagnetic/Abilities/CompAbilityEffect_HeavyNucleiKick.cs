@@ -20,6 +20,14 @@ namespace Electromagnetic.Abilities
                 return (CompProperties_AbilityHeavyNucleiKick)this.props;
             }
         }
+        //技能接口
+        private RWrd_PsyCastBase Ability
+        {
+            get
+            {
+                return (RWrd_PsyCastBase)this.parent;
+            }
+        }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             Map map = this.parent.pawn.Map;
@@ -48,7 +56,8 @@ namespace Electromagnetic.Abilities
                     Pawn pawn = enemy;
                     //伤害计算
                     Hediff_RWrd_PowerRoot root = caster.GetRoot();
-                    int num = 40 + root.energy.CurrentDef.level;
+                    int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
+                    int num = 40 + root.energy.CurrentDef.level + masteryOffset;
                     int acr = root.energy.AvailableCompleteRealm();
                     int pff = root.energy.PowerFlowFactor();
                     int multiplier = acr + pff;

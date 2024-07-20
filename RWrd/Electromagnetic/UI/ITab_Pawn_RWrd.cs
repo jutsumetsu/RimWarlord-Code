@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using Electromagnetic.Abilities;
 using Electromagnetic.Core;
 using RimWorld;
 using UnityEngine;
@@ -135,15 +136,15 @@ namespace Electromagnetic.UI
                 Text.Anchor = anchor;
                 Rect rect = new Rect(Vector2.one * 20f, this.size - Vector2.one * 40f);
                 //左侧矩形
-                Rect rect2 = rect.TakeLeftPart(this.size.x * 0.2f);
+                Rect rect2 = rect.TakeLeftPart(this.size.x * 0.12f);
                 //右侧矩形
-                Rect rect3 = rect.TakeRightPart(this.size.x * 0.8f);
+                Rect rect3 = rect.TakeRightPart(this.size.x * 0.85f);
                 rect3.ContractedBy(5f);
                 Listing_Standard listing_Standard = new Listing_Standard();
                 listing_Standard.Begin(rect2);
                 Text.Font = GameFont.Medium;
                 //显示人物名称
-                listing_Standard.Label(this.pawn.Name.ToStringFull, -1f, null);
+                listing_Standard.Label(this.pawn.Name.ToStringShort, -1f, null);
                 //显示当前等级
                 if (lflag && lflag2)
                 {
@@ -161,10 +162,10 @@ namespace Electromagnetic.UI
                         listing_Standard.Label(this.hediff.energy.CurrentDef.label, -1f, null);
                     }
                 }
+                listing_Standard.Gap(10f);
                 //经验值进度条
                 Rect rectBar = listing_Standard.GetRect(30f, 1f);
-                rectBar.x -= 50f;
-                rectBar.width -= 100f;
+                rectBar.x -= 10f;
                 Widgets.FillableBar(rectBar, this.hediff.energy.Exp / this.hediff.energy.CurrentDef.EXP);
                 //经验值百分比
                 float num = this.hediff.energy.Exp / this.hediff.energy.CurrentDef.EXP;
@@ -175,6 +176,15 @@ namespace Electromagnetic.UI
                 Text.Font = GameFont.Tiny;
                 listing_Standard.Label("RWrd_EarnXP".Translate(), -1f, null);
                 listing_Standard.Gap(10f);
+                Text.Font = GameFont.Small;
+                listing_Standard.Label("Rwrd_CompleteRealm".Translate() + ": " + this.hediff.energy.completerealm.ToString() + "/10000", -1f, null);
+                listing_Standard.Label("RWrd_PowerFlow".Translate() + ": " + this.hediff.energy.powerflow.ToString() + "/100000000", -1f, null);
+                //力量体系介绍按钮
+                Rect buttonRect = listing_Standard.GetRect(30f, 0.5f);
+                if (Widgets.ButtonText(buttonRect, "RWrd_IntroduceButton".Translate()))
+                {
+                    Find.LetterStack.ReceiveLetter("RWrd_IntroduceButton".Translate(), "RWrd_IntroduceMessage".Translate() + "RWrd_IntroduceMessage1".Translate(), LetterDefOf.PositiveEvent);
+                }
                 listing_Standard.End();
                 //绘制技能树显示区域
                 TabDrawer.DrawTabs<TabRecord>(new Rect(rect3.x, rect3.y + 40f, rect3.width, rect3.height), this.tabs, 200f);
@@ -208,12 +218,14 @@ namespace Electromagnetic.UI
                 if (flag)
                 {
                     //绘制技能图标
-                    DoPathAbilities(rect, def, this.abilityPos, new Action<Rect, AbilityDef>(this.DoAbility));
+                    DoPathAbilities(rect, def, this.abilityPos, new Action<Rect, AbilityDef, RWrd_RouteNode>(this.DoAbility));
                 }
                 else
                 {
                     //涂暗
                     Widgets.DrawRectFast(rect, new Color(0f, 0f, 0f, 0.55f), null);
+                    //工具提示
+                    TooltipHandler.TipRegion(rect, () => ((def.unlockRequired != null) ? "RWrd_Locked".Translate().Resolve() + def.unlockRequired + "\n\n" : "") + def.description + "\n\n" + "RWrd_AbilitiesList".Translate() + "\n" + (from ab in def.AllAbilities select ab.label).ToLineList("  ", true), def.GetHashCode());
                 }
 
                 num2 = Mathf.Max(num2, num4 + 10f);
@@ -230,11 +242,13 @@ namespace Electromagnetic.UI
             this.lastPathsHeight = vector.y + num2;
         }
 
-        private void DoAbility(Rect inRect, AbilityDef ability)
+        private void DoAbility(Rect inRect, AbilityDef abilityDef, RWrd_RouteNode node)
         {
             //判断小人是否拥有该技能
-            bool flag = this.pawn.abilities.GetAbility(ability) == null;
-            DrawAbility(inRect, ability);
+            bool flag = this.pawn.abilities.GetAbility(abilityDef) == null;
+            RWrd_PsyCastBase ability;
+            float mastery = 0;
+            DrawAbility(inRect, abilityDef);
             if (flag)
             {
                 //涂暗
@@ -243,41 +257,47 @@ namespace Electromagnetic.UI
             else
             {
                 //发光
-                Widgets.DrawStrongHighlight(inRect.ExpandedBy(5f), null);
+                Widgets.DrawStrongHighlight(inRect.ExpandedBy(2f));
+                ability = (RWrd_PsyCastBase)this.pawn.abilities.GetAbility(abilityDef);
+                mastery = ability.mastery;
             }
-            /*bool flag4 = flag;
-            if (flag4)
-            {
-                Widgets.DrawRectFast(inRect, new Color(0f, 0f, 0f, 0.6f), null);
-            }*/
-            
+            TooltipHandler.TipRegion(inRect, () => string.Format("{0}\n\n{1}\n{2}", abilityDef.label, abilityDef.description, flag ? ("\n" + "RWrd_Locked".Translate().Resolve()) + "\n" + node.unlockRequired : "\n" + "RWrd_Mastery".Translate().Resolve() + mastery.ToString()), abilityDef.GetHashCode());
+
         }
-        public static void DoPathAbilities(Rect inRect, RWrd_RouteDef path, Dictionary<AbilityDef, Vector2> abilityPos, Action<Rect, AbilityDef> doAbility)
+        public void DoPathAbilities(Rect inRect, RWrd_RouteDef path, Dictionary<AbilityDef, Vector2> abilityPos, Action<Rect, AbilityDef, RWrd_RouteNode> doAbility)
         {
             // 获取每个节点的技能和对应层级
             var routeNodes = path.routeNodes;
+            Dictionary<AbilityDef, Rect> abilityRect = new Dictionary<AbilityDef, Rect>();
 
-            foreach (var node in routeNodes)
+            for (int level = 1; level <= path.MaxLevel; level++)
             {
-                int level = node.level;
-                List<AbilityDef> abilities = node.abilities;
-
-                // 为每个等级创建一个矩形区域
+                //按照层级创建技能列表
+                List<AbilityDef> abilities = new List<AbilityDef>();
+                foreach (var node in routeNodes)
+                {
+                    if (node.level == level)
+                    {
+                        abilities.AddRange(node.abilities);
+                    }
+                }
+                // 为每个层级创建一个矩形区域
                 Rect rect = new Rect(inRect.x, inRect.y + (float)level * inRect.height / 8f, inRect.width, inRect.height / 8f);
 
                 // 检查 abilityTreeXOffsets是否足够长
                 if (abilities.Count - 1 < abilityTreeXOffsets.Length)
                 {
-                    // 遍历该等级中的所有能力
+                    // 遍历该层级中的所有能力
                     for (int j = 0; j < abilities.Count; j++)
                     {
                         // 检查 abilityTreeXOffsets是否足够长
                         if (j < abilityTreeXOffsets[abilities.Count - 1].Length)
                         {
+                            //获取技能绘制信息
                             Rect arg = new Rect(rect.x + rect.width / 2f + abilityTreeXOffsets[abilities.Count - 1][j], rect.y, 36f, 36f);
                             AbilityDef abilityDef = abilities[j];
+                            abilityRect[abilityDef] = arg;
                             abilityPos[abilityDef] = arg.center;
-                            doAbility(arg, abilityDef);
                         }
                         else
                         {
@@ -288,6 +308,36 @@ namespace Electromagnetic.UI
                 else
                 {
                     Log.Warning($"abilityTreeXOffsets 长度不足，abilities.Count: {abilities.Count}");
+                }
+            }
+            //绘制技能连线
+            foreach (var node in routeNodes)
+            {
+                if (node.preNode != 0)
+                {
+                    RWrd_RouteNode preNode;
+                    foreach (var node2 in routeNodes)
+                    {
+                        if (node2.number == node.preNode)
+                        {
+                            preNode = node2;
+                            foreach (var abilityDef2 in preNode.abilities)
+                            {
+                                foreach (var abilityDef in node.abilities)
+                                {
+                                    Widgets.DrawLine(abilityPos[abilityDef], abilityPos[abilityDef2], (this.pawn.abilities.GetAbility(abilityDef) != null) ? Color.white : Color.grey, 2f);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            //绘制技能
+            foreach (var node in routeNodes)
+            {
+                foreach (var abilityDef in node.abilities)
+                {
+                    doAbility(abilityRect[abilityDef], abilityDef, node);
                 }
             }
         }
@@ -304,6 +354,8 @@ namespace Electromagnetic.UI
             GUI.color = Color.white;
             Rect rect3 = rect.TakeBottomPart(30f);
             Widgets.DrawRectFast(rect3, Widgets.WindowBGFillColor, null);
+            //工具提示
+            TooltipHandler.TipRegion(rect3, () => def.description + "\n\n" + "RWrd_AbilitiesList".Translate() + "\n" + (from ab in def.AllAbilities select ab.label).ToLineList("  ", true), def.GetHashCode());
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(rect3, def.label);
             Text.Anchor = TextAnchor.UpperLeft;
@@ -331,10 +383,11 @@ namespace Electromagnetic.UI
         private Vector2 psysetsScrollPos;
         private static readonly float[][] abilityTreeXOffsets = new float[][]
         {
-            new float[] { -18f },                 // 1 ability
-            new float[] { -47f, 11f },            // 2 abilities
-            new float[] { -69f, -18f, 33f },      // 3 abilities
-            new float[] { -90f, -45f, 0f, 45f }   // 4 abilities
+            new float[] { -18f },                   // 1 ability
+            new float[] { -47f, 11f },               // 2 abilities
+            new float[] { -69f, -18f, 33f },          // 3 abilities
+            new float[] { -84f, -40f, 4f, 48f },       // 4 abilities
+            new float[] { -92f, -55f, -18f, 19f, 56f }  // 5 abilities
         };
 
     }

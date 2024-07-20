@@ -40,6 +40,7 @@ namespace Electromagnetic.Abilities
                     Hediff_RWrd_PowerRoot root = pawn.GetRoot();
                     int level = root.energy.CurrentDef.level;
                     int num = this.def.projectile.GetDamageAmount(1f, null);
+                    num += 10;
                     num += level;
                     return num;
                 }
@@ -61,11 +62,11 @@ namespace Electromagnetic.Abilities
             {
                 this.mainLauncher = this.launcher;
             }
-            bool flag2 = this.equipmentDef == null;
+            /*bool flag2 = this.equipmentDef == null;
             if (flag2)
             {
                 this.equipmentDef = ThingDef.Named("Gun_Autopistol");
-            }
+            }*/
             bool flag3 = TeslaProjectile.wasDeflected;
             if (flag3)
             {
@@ -108,7 +109,7 @@ namespace Electromagnetic.Abilities
                         {
                             impactSound.PlayOneShot(hitThing);
                         }
-                        this.RegisterHit(hitThing);
+                        /*this.RegisterHit(hitThing);*/
                         bool flag9 = this.numBounces < this.MaxBounceCount;
                         if (flag9)
                         {

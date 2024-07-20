@@ -102,10 +102,57 @@ namespace Electromagnetic.Core
             }
             yield break;
         }
+        public string unlockRequired
+        {
+            get
+            {
+                string result = "";
+                if (this.requiredLevel > 0)
+                {
+                    result += "RWrd_LevelRequired".Translate(this.requiredLevel.ToString());
+                }
+                else if (this.requiredCompleteRealm > 0)
+                {
+                    //游戏语言检测
+                    bool lflag = LanguageDatabase.activeLanguage.ToString() == "Simplified Chinese";
+                    bool lflag2 = LanguageDatabase.activeLanguage.ToString() == "Traditional Chinese";
+                    string required = "";
+                    if (this.requiredCompleteRealm < 1)
+                    {
+                        if (lflag || lflag2)
+                        {
+                            required = "RWrd_CompleteRealmRequired1".Translate((this.requiredCompleteRealm * 10).ToString());
+                        }
+                        else
+                        {
+                            required = "RWrd_CompleteRealmRequired1".Translate(this.requiredCompleteRealm.ToString("P0"));
+                        }
+                    }
+                    else if (this.requiredCompleteRealm == 1)
+                    {
+                        required = "RWrd_FinalRealm".Translate();
+                    }
+                    else
+                    {
+                        required = "RWrd_CompleteRealmRequired2".Translate(this.requiredCompleteRealm.ToString());
+                    }
+                    if (result != "")
+                    {
+                        result += ", " + required;
+                    }
+                    else
+                    {
+                        result += required;
+                    }
+                }
+                return result;
+            }
+        }
         public int number;
         public int requiredLevel = 0;
         public float requiredCompleteRealm = 0;
         public int level;
+        public int preNode = 0;
         public List <AbilityDef> requiredAbilities = new List <AbilityDef>();
         public List<AbilityDef> abilities = new List<AbilityDef>();
     }

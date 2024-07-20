@@ -23,6 +23,14 @@ namespace Electromagnetic.Abilities
                 return (CompProperties_AbilityMatterHardening)this.props;
             }
         }
+        //技能接口
+        private RWrd_PsyCastBase Ability
+        {
+            get
+            {
+                return (RWrd_PsyCastBase)this.parent;
+            }
+        }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             base.Apply(target,dest);
@@ -39,7 +47,8 @@ namespace Electromagnetic.Abilities
                 if (Caster.IsHaveRoot())
                 {
                     Hediff_RWrd_PowerRoot root = Caster.GetRoot();
-                    int level = root.energy.CurrentDef.level + 1;
+                    int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
+                    int level = root.energy.CurrentDef.level + 1 + masteryOffset;
                     int num = (int)Math.Floor(level / 5f);
                     targetThing.HitPoints = Mathf.RoundToInt(targetThing.MaxHitPoints * Props.HardeningFactor * (num));
                 }

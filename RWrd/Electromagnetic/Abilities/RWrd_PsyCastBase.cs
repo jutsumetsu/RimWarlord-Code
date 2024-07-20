@@ -1,4 +1,5 @@
 ﻿using Electromagnetic.Core;
+using Electromagnetic.UI;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace Electromagnetic.Abilities
             bool flag = this.gizmo == null;
             if (flag)
             {
-                this.gizmo = new Command_Ability(this, this.pawn);
+                this.gizmo = new Command_Electromagnetic(this, this.mastery, this.pawn);
             }
             yield return this.gizmo;
             yield break;
@@ -80,6 +81,28 @@ namespace Electromagnetic.Abilities
             else
             {
                 MoteMaker.ThrowText(target.CenterVector3, this.pawn.Map, "TextMote_Immune".Translate(), -1f);
+            }
+            if (target.Pawn !=  null)
+            {
+                if (target.Pawn.health.hediffSet.GetFirstHediff<Hediff_DarkReincarnation>() != null)
+                {
+                    Log.Message("Target has Dark Reincarnation Hediff");
+                    if (!target.Pawn.abilities.abilities.Any(a => a.def == this.def))
+                    {
+                        target.Pawn.abilities.GainAbility(this.def);
+                        RWrd_PsyCastBase ability = (RWrd_PsyCastBase)target.Pawn.abilities.GetAbility(this.def);
+                        ability.mastery = -100;
+                        CompAbilityEffect_ReduceEnergy compAbilityEffect_ReduceEnergy = ability.CompOfType<CompAbilityEffect_ReduceEnergy>();
+                        compAbilityEffect_ReduceEnergy.Props.isAshura = true;
+                    }
+                    else
+                    {
+                        Hediff_DarkReincarnation hediff = target.Pawn.health.hediffSet.GetFirstHediff<Hediff_DarkReincarnation>();
+                        RWrd_PsyCastBase ability = (RWrd_PsyCastBase)target.Pawn.abilities.GetAbility(this.def);
+                        float num = 0.1f * (float)Math.Ceiling(hediff.mastery / 10f);
+                        ability.mastery += num;
+                    }
+                }
             }
         }
         public new bool CanApplyPsycastTo(LocalTargetInfo target)

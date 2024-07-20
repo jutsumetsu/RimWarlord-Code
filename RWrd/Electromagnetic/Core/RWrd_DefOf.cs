@@ -27,12 +27,15 @@ namespace Electromagnetic.Core
         public static FleckDef RWrd_ThunderPunchFleck;
         //建筑
         public static ThingDef RWrd_Building_TrainingSpot;
+        public static ThingDef HiTechResearchBench;
         //Job
         public static JobDef RWrd_General_Training;
+        public static JobDef RWrd_ResearchDisc;
         //Hediff
         public static HediffDef RWrd_Regenerating;
         public static HediffDef RWrd_ElectricInternalEnergy;
         public static HediffDef RWrd_HeavenLock;
         public static HediffDef RWrd_ExplosiveEnergy;
+        public static HediffDef RWrd_AsuraFormula;
     }
 }

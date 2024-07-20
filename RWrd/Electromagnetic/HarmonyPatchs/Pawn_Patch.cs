@@ -203,11 +203,11 @@ namespace Electromagnetic.HarmonyPatchs
                         }
                         if (flag16)
                         {
-                            __result = 100 + 50 * lf;
+                            __result += 100 + 50 * lf;
                         }
                         if (flag17)
                         {
-                            __result = -50 - 50 * lf;
+                            __result += -50 - 50 * lf;
                         }
                         if (flag18)
                         {

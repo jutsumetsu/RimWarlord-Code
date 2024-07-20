@@ -228,7 +228,7 @@ namespace Electromagnetic.Core
                 RWrd_RouteDef rwrd_RouteDef = null;
                 PowerRootUtillity.RandomPowerRootSpawn(this.pawn, this, out rimWarlordDef, out rwrd_RouteDef);
                 this.energy.powerflow = UnityEngine.Random.Range(3, 51) * 10000;
-                this.energy.currentRWrd.def.MaxEnergy = this.energy.powerflow / 100;
+                this.energy.MaxEnergy = this.energy.powerflow / 100;
                 float prenum = this.pawn.ageTracker.AgeBiologicalTicks / 3600000f;
                 //年龄限制完全境界
                 int age = (int)Math.Floor(prenum);
@@ -251,7 +251,7 @@ namespace Electromagnetic.Core
                 while (this.energy.currentRWrd.def.level < rimWarlordDef.level)
                 {
                     this.energy.exp = this.energy.currentRWrd.def.EXP;
-                    this.energy.energy = this.energy.currentRWrd.def.MaxEnergy;
+                    this.energy.energy = this.energy.MaxEnergy;
                     this.energy.SetLevel();
                     this.pawn.CheckAbilityLimiting();
                 }
@@ -259,8 +259,8 @@ namespace Electromagnetic.Core
             else
             {
                 //殖民者生成
-                this.energy.powerflow = UnityEngine.Random.Range(3, 51) * 10000;
-                this.energy.currentRWrd.def.MaxEnergy = this.energy.powerflow / 100;
+                this.energy.powerflow = UnityEngine.Random.Range(2, 11) * 50000;
+                this.energy.MaxEnergy = this.energy.powerflow / 100;
                 this.energy.completerealm = UnityEngine.Random.Range(1, 4) * 0.1f;
                 this.energy.trainDesireFactor = UnityEngine.Random.Range(1, 51);
             }
@@ -293,7 +293,7 @@ namespace Electromagnetic.Core
             base.Tick();
             JobDriver jobDriver = this.pawn.jobs.curDriver;
             //最大能量赋值
-            this.energy.currentRWrd.def.MaxEnergy = this.energy.PowerFlow / 100;
+            this.energy.MaxEnergy = this.energy.PowerFlow / 100;
             if (Find.TickManager.TicksGame % 60 == 0)
             {
                 foreach (PawnCapacityModifier pcm in this.CurStage.capMods)

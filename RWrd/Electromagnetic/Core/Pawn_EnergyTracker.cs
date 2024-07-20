@@ -92,7 +92,7 @@ namespace Electromagnetic.Core
             bool flag = num2 >= 0f;
             if (flag)
             {
-                this.energy = ((num2 < this.CurrentDef.MaxEnergy) ? num2 : this.CurrentDef.MaxEnergy);
+                this.energy = ((num2 < this.MaxEnergy) ? num2 : this.MaxEnergy);
                 this.pawn.CheckAbilityLimiting();
             }
             else
@@ -219,6 +219,7 @@ namespace Electromagnetic.Core
         public void ExposeData()
         {
             Scribe_Values.Look<float>(ref this.energy, "energy", 0f, false);
+            Scribe_Values.Look<float>(ref this.MaxEnergy, "maxenergy", 0f, false);
             Scribe_Values.Look<float>(ref this.exp, "exp", 0f, false);
             Scribe_Values.Look<float>(ref this.completerealm, "completerealm", 0f, false);
             Scribe_Values.Look<int>(ref this.powerflow, "powerflow", 0, false);
@@ -232,6 +233,7 @@ namespace Electromagnetic.Core
 
         public float completerealm = 0f;
         public int powerflow = 0;
+        public float MaxEnergy = 0f;
         public float energy = 0f;
         public float exp = 0f;
         public float damage = 0f;

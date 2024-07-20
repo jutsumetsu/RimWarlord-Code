@@ -44,12 +44,24 @@ namespace Electromagnetic.Core
                         list2.AddRange(pawn.CheckAbilities(route));
                     }
                 }
+                else
+                {
+                    root.UnlockRoute(RWrd_DefOf.Base);
+                    foreach (RWrd_RouteDef route in root.routes)
+                    {
+                        list2.AddRange(pawn.CheckAbilities(route));
+                    }
+                }
                 foreach (Ability ability in pawn.abilities.abilities)
                 {
                     CompAbilityEffect_ReduceEnergy compAbilityEffect_ReduceEnergy = ability.CompOfType<CompAbilityEffect_ReduceEnergy>();
                     bool flag3 = compAbilityEffect_ReduceEnergy == null;
                     if (!flag3)
                     {
+                        if (compAbilityEffect_ReduceEnergy.Props.isCommon || compAbilityEffect_ReduceEnergy.Props.isAshura)
+                        {
+                            list2.Add(ability);
+                        }
                         bool flag4 = list2.Contains(ability);
                         if (!flag4)
                         {
@@ -105,11 +117,10 @@ namespace Electromagnetic.Core
             route =  allDefListForReading.RandomElement<RWrd_RouteDef>();
             root.UnlockRoute(route);
         }
-        //检查技能
+        //检查技能树
         public static List<Ability> CheckAbilities(this Pawn pawn, RWrd_RouteDef route)
         {
             List<Ability> list = new List<Ability>();
-            Hediff_RWrd_PowerRoot root = pawn.GetRoot();
             foreach (RWrd_RouteNode rwrd_RouteNode in route.routeNodes)
             {
                 string text = route.defName + "-Node" + rwrd_RouteNode.number.ToString() + "：";
@@ -142,6 +153,21 @@ namespace Electromagnetic.Core
                 }
             }
             return list;
+        }
+        //移除技能技能树
+        public static void RemoveAbilities(this Pawn pawn, RWrd_RouteDef route)
+        {
+            foreach (var node in route.routeNodes)
+            {
+                foreach (var abilityDef in node.abilities)
+                {
+                    Ability ability = pawn.abilities.GetAbility(abilityDef, false);
+                    if (ability != null)
+                    {
+                        pawn.abilities.RemoveAbility(abilityDef);
+                    }
+                }
+            }
         }
         //检查是否能满足长期需求
         public static bool LordPreventsGettingTraining(Pawn pawn)
