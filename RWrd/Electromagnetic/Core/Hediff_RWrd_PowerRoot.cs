@@ -402,6 +402,19 @@ namespace Electromagnetic.Core
                     stat = StatDefOf.Flammability,
                     value = 0,
                 };
+                if (ModDetector.DBHIsLoaded)
+                {
+                    yield return new StatModifier
+                    {
+                        stat = RWrd_DefOf.ThirstRateMultiplier,
+                        value = Math.Max(1 - this.energy.level * 0.05f, 0f),
+                    };
+                    yield return new StatModifier
+                    {
+                        stat = RWrd_DefOf.BladderRateMultiplier,
+                        value = Math.Max(1 - this.energy.level * 0.05f, 0f),
+                    };
+                }
             }
         }
         /// <summary>
@@ -526,7 +539,6 @@ namespace Electromagnetic.Core
         public override void Tick()
         {
             base.Tick();
-            JobDriver jobDriver = this.pawn.jobs.curDriver;
             //最大能量赋值
             this.energy.MaxEnergy = this.energy.PowerFlow / 100;
             if (this.energy.IsUpdateLevelTiming())

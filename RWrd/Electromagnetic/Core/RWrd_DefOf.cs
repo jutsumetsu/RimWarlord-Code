@@ -45,5 +45,9 @@ namespace Electromagnetic.Core
         public static HediffDef Frail;
         //人物属性
         public static StatDef MeleeArmorPenetration;
+
+        public static StatDef ThirstRateMultiplier;
+        public static StatDef HygieneRateMultiplier;
+        public static StatDef BladderRateMultiplier;
     }
 }
