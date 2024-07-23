@@ -46,7 +46,7 @@ namespace Electromagnetic.Abilities
             FleckDef[] effectSet = this.EffectSet;
             //生成技能释放特效
             FleckCreationData dataStatic = FleckMaker.GetDataStatic(this.parent.pawn.DrawPos, map, effectSet[0], 3f);
-            dataStatic.rotation = (float)CompAbilityEffect_ElectricClaw.PointsAngleTool(this.parent.pawn.Position, pawn.Position);
+            dataStatic.rotation = (float)Tools.PointsAngleTool(this.parent.pawn.Position, pawn.Position);
             map.flecks.CreateFleck(dataStatic);
             //暂停目标动作并击晕
             pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, false);
@@ -90,11 +90,6 @@ namespace Electromagnetic.Abilities
             hediff1.root = this.parent.pawn.GetRoot();
             hediff1.mastery = this.Ability.mastery;
             pawn.health.AddHediff(hediff1, null, null, null);
-        }
-        //角度工具
-        public static double PointsAngleTool(IntVec3 p1, IntVec3 p2)
-        {
-            return Math.Atan2((double)(p2.x - p1.x), (double)(p2.z - p1.z)) * 180.0 / 3.141592653589793;
         }
     }
 }

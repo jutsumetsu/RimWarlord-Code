@@ -55,7 +55,7 @@ namespace Electromagnetic.HarmonyPatchs
                         {
                             int acr = root.energy.AvailableCompleteRealm();
                             int pff = root.energy.PowerFlowFactor();
-                            int level = root.energy.CurrentDef.level;
+                            int level = root.energy.level;
                             float cr = root.energy.completerealm;
                             if (acr >= 1 && pff >= 1)
                             {
@@ -63,7 +63,7 @@ namespace Electromagnetic.HarmonyPatchs
                                 multiplier = (int)Math.Floor(multiplier / 2);
                                 float num = __instance.verbProps.AdjustedMeleeDamageAmount(__instance, __instance.CasterPawn);
                                 float armorPenetration = __instance.verbProps.AdjustedArmorPenetration(__instance, __instance.CasterPawn);
-                                armorPenetration += cr;
+                                /*armorPenetration += cr;*/
                                 num = Rand.Range(num * 0.8f, num * 1.2f);
                                 num += level;
                                 num *= multiplier;
@@ -137,7 +137,7 @@ namespace Electromagnetic.HarmonyPatchs
                 {
                     Hediff_RWrd_PowerRoot root = pawn.GetRoot();
                     int pff = root.energy.PowerFlowFactor();
-                    int level = root.energy.CurrentDef.level + 1;
+                    int level = root.energy.level + 1;
                     int multiplier = pff + level;
                     __result *= multiplier;
                 }
@@ -155,146 +155,24 @@ namespace Electromagnetic.HarmonyPatchs
                     Pawn pawn = thing as Pawn;
                     if (pawn.IsHaveRoot())
                     {
-                        Hediff_RWrd_PowerRoot root = pawn.GetRoot();
-                        float cr = root.energy.completerealm;
-                        float num = __result + cr;
-                        int level = root.energy.CurrentDef.level;
-                        int pff = root.energy.PowerFlowFactor();
-                        int lf = level + 1;
-                        int multiplier = pff + lf;
-                        float num2 = __result - lf * 0.1f;
-                        float num3 = __result - cr;
-                        bool flag = stat.ToString() == nameof(StatDefOf.ShootingAccuracyPawn);
-                        bool flag1 = stat.ToString() == nameof(StatDefOf.ShootingAccuracyFactor_Touch);
-                        bool flag2 = stat.ToString() == nameof(StatDefOf.ShootingAccuracyFactor_Short);
-                        bool flag3 = stat.ToString() == nameof(StatDefOf.ShootingAccuracyFactor_Medium);
-                        bool flag4 = stat.ToString() == nameof(StatDefOf.ShootingAccuracyFactor_Long);
-                        bool flag5 = stat.ToString() == nameof(StatDefOf.MeleeHitChance);
-                        bool flag6 = stat.ToString() == nameof(StatDefOf.CarryingCapacity);
-                        bool flag7 = stat.ToString() == nameof(StatDefOf.GlobalLearningFactor);
-                        bool flag8 = stat.ToString() == nameof(StatDefOf.ImmunityGainSpeed);
-                        bool flag9 = stat.ToString() == nameof(StatDefOf.HuntingStealth);
-                        bool flag10 = stat.ToString() == nameof(StatDefOf.MedicalSurgerySuccessChance);
-                        bool flag11 = stat.ToString() == nameof(StatDefOf.MedicalTendQuality);
-                        bool flag12 = stat.ToString() == nameof(StatDefOf.ArmorRating_Sharp);
-                        bool flag13 = stat.ToString() == nameof(StatDefOf.ArmorRating_Blunt);
-                        bool flag14 = stat.ToString() == nameof(StatDefOf.ArmorRating_Heat);
                         bool flag15 = stat.ToString() == nameof(StatDefOf.MeleeDodgeChance);
-                        bool flag16 = stat.ToString() == nameof(StatDefOf.ComfyTemperatureMax);
-                        bool flag17 = stat.ToString() == nameof(StatDefOf.ComfyTemperatureMin);
                         bool flag18 = stat.ToString() == nameof(StatDefOf.MeleeCooldownFactor);
-                        bool flag19 = stat.ToString() == nameof(StatDefOf.InjuryHealingFactor);
-                        bool flag20 = stat.ToString() == nameof(StatDefOf.ToxicResistance);
                         bool flag21 = stat.ToString() == nameof(StatDefOf.IncomingDamageFactor);
-                        bool flag22 = stat.ToString() == nameof(StatDefOf.MaxHitPoints);
-                        bool flag23 = stat.ToString() == nameof(StatDefOf.NegotiationAbility);
-                        if (flag || flag1 || flag2 || flag3 || flag4 || flag5 || flag9 || flag10 || flag11 || flag12 || flag13 || flag14)
-                        {
-                            __result = num;
-                        }
-                        if (flag6 || flag7 || flag8 || flag20)
-                        {
-                            __result *= lf;
-                        }
                         if (flag15)
                         {
-                            __result += Math.Min(cr, 0.5f);
                             __result = Math.Min(__result, 0.85f);
-                        }
-                        if (flag16)
-                        {
-                            __result += 100 + 50 * lf;
-                        }
-                        if (flag17)
-                        {
-                            __result += -50 - 50 * lf;
                         }
                         if (flag18)
                         {
-                            __result = Math.Max(num2, 0.05f);
-                        }
-                        if (flag19)
-                        {
-                            __result = (int)Math.Ceiling(lf / 2f) * 5;
+                            __result = Math.Max(__result, 0.05f);
                         }
                         if (flag21)
                         {
-                            __result = Math.Max(num3, 0.1f);
-                        }
-                        if (flag22)
-                        {
-                            __result *= multiplier;
-                        }
-                        if (flag23)
-                        {
-                            if (level >= 10)
-                            {
-                                __result += 0.8f;
-                            }
+                            __result = Math.Max(__result, 0.1f);
                         }
                     }
                 }
             }
         }
-       /* [HarmonyPatch(typeof(CompAbilityEffect_GiveHediff))]
-        [HarmonyPatch("ApplyInner")]
-        class Patch5
-        {
-            [HarmonyPrefix]
-            public static bool hediffPatch(CompAbilityEffect_GiveHediff __instance, Pawn target, Pawn other)
-            {
-                Pawn caster = __instance.parent.pawn;
-
-                if (caster.IsHaveRoot() && __instance.Props.hediffDef.hediffClass == typeof(Hediff_TargetBase))
-                {
-                    Log.Message("patch success");
-                    if (target != null)
-                    {
-                        bool TryResist = Traverse.Create(__instance).Field("TryResist").GetValue<bool>();
-                        if (TryResist)
-                        {
-                            MoteMaker.ThrowText(target.DrawPos, target.Map, "Resisted".Translate(), -1f);
-                            return false;
-                        }
-                        if (__instance.Props.replaceExisting)
-                        {
-                            Hediff firstHediffOfDef = target.health.hediffSet.GetFirstHediffOfDef(__instance.Props.hediffDef, false);
-                            if (firstHediffOfDef != null)
-                            {
-                                target.health.RemoveHediff(firstHediffOfDef);
-                            }
-                        }
-                        Hediff hediff = HediffMaker.MakeHediff(__instance.Props.hediffDef, target, __instance.Props.onlyBrain ? target.health.hediffSet.GetBrain() : null);
-                        HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();
-                        if (hediffComp_Disappears != null)
-                        {
-                            hediffComp_Disappears.ticksToDisappear = __instance.GetDurationSeconds(target).SecondsToTicks();
-                        }
-                        if (__instance.Props.severity >= 0f)
-                        {
-                            hediff.Severity = __instance.Props.severity;
-                        }
-                        HediffComp_Link hediffComp_Link = hediff.TryGetComp<HediffComp_Link>();
-                        if (hediffComp_Link != null)
-                        {
-                            hediffComp_Link.other = other;
-                            hediffComp_Link.drawConnection = (target == __instance.parent.pawn);
-                        }
-                        if (caster.IsHaveRoot())
-                        {
-                            Hediff_TargetBase hediff_TargetBase = hediff as Hediff_TargetBase;
-                            hediff_TargetBase.root = caster.GetRoot();
-                        }
-                        else
-                        {
-                            target.health.AddHediff(hediff, null, null, null);
-                        }
-                    }
-                    return false;
-                }
-
-                return true;
-            }
-        }*/
     }
 }

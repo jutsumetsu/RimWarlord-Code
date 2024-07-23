@@ -27,6 +27,7 @@ namespace Electromagnetic.Core
         public static FleckDef RWrd_ThunderPunchFleck;
         //建筑
         public static ThingDef RWrd_Building_TrainingSpot;
+
         public static ThingDef HiTechResearchBench;
         //Job
         public static JobDef RWrd_General_Training;
@@ -37,5 +38,12 @@ namespace Electromagnetic.Core
         public static HediffDef RWrd_HeavenLock;
         public static HediffDef RWrd_ExplosiveEnergy;
         public static HediffDef RWrd_AsuraFormula;
+
+        public static HediffDef Asthma;
+        public static HediffDef BadBack;
+        public static HediffDef Flu;
+        public static HediffDef Frail;
+        //人物属性
+        public static StatDef MeleeArmorPenetration;
     }
 }

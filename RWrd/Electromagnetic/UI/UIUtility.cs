@@ -10,31 +10,48 @@ namespace Electromagnetic.UI
 {
     public static class UIUtility
     {
-        // Token: 0x06000A4E RID: 2638 RVA: 0x00049FBC File Offset: 0x000481BC
+        /// <summary>
+        /// 取矩形顶部
+        /// </summary>
+        /// <param name="rect">目标矩形</param>
+        /// <param name="pixels">高度</param>
+        /// <returns></returns>
         public static Rect TakeTopPart(this Rect rect, float pixels)
         {
             Rect result = rect.TopPartPixels(pixels);
             rect.yMin += pixels;
             return result;
         }
-
-        // Token: 0x06000A4F RID: 2639 RVA: 0x00049FEC File Offset: 0x000481EC
+        /// <summary>
+        /// 取矩形底部
+        /// </summary>
+        /// <param name="rect">目标矩形</param>
+        /// <param name="pixels">高度</param>
+        /// <returns></returns>
         public static Rect TakeBottomPart(this Rect rect, float pixels)
         {
             Rect result = rect.BottomPartPixels(pixels);
             rect.yMax -= pixels;
             return result;
         }
-
-        // Token: 0x06000A50 RID: 2640 RVA: 0x0004A01C File Offset: 0x0004821C
+        /// <summary>
+        /// 取矩形右部
+        /// </summary>
+        /// <param name="rect">目标矩形</param>
+        /// <param name="pixels">宽度</param>
+        /// <returns></returns>
         public static Rect TakeRightPart(this Rect rect, float pixels)
         {
             Rect result = rect.RightPartPixels(pixels);
             rect.xMax -= pixels;
             return result;
         }
-
-        // Token: 0x06000A51 RID: 2641 RVA: 0x0004A04C File Offset: 0x0004824C
+        /// <summary>
+        /// 取矩形左部
+        /// </summary>
+        /// <param name="rect">目标矩形</param>
+        /// <param name="pixels">宽度</param>
+        /// <returns></returns>
         public static Rect TakeLeftPart(this Rect rect, float pixels)
         {
             Rect result = rect.LeftPartPixels(pixels);

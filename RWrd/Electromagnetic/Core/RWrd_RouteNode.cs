@@ -10,18 +10,27 @@ namespace Electromagnetic.Core
 {
     public class RWrd_RouteNode
     {
+        /// <summary>
+        /// 节点解锁总检测
+        /// </summary>
+        /// <param name="pawn">小人实例</param>
+        /// <returns></returns>
         public virtual bool CanPawnUnlock(Pawn pawn)
         {
             return this.PawnHasEnoughLevel(pawn) && this.PawnHasEnoughCompleteRealm(pawn) && this.PawnHasUnlockPreAbility(pawn);
         }
-        //检测是否抵达需求等级
+        /// <summary>
+        /// 检测是否抵达需求等级
+        /// </summary>
+        /// <param name="pawn">小人实例</param>
+        /// <returns></returns>
         private bool PawnHasEnoughLevel(Pawn pawn)
         {
             bool result;
             if (pawn.IsHaveRoot())
             {
                 Hediff_RWrd_PowerRoot root = pawn.GetRoot();
-                int level = root.energy.CurrentDef.level;
+                int level = root.energy.level;
                 if (level >= requiredLevel)
                 {
                     result = true;
@@ -37,7 +46,11 @@ namespace Electromagnetic.Core
             }
             return result;
         }
-        //检测是否抵达需求完全境界
+        /// <summary>
+        /// 检测是否抵达需求完全境界
+        /// </summary>
+        /// <param name="pawn">小人实例</param>
+        /// <returns></returns>
         private bool PawnHasEnoughCompleteRealm(Pawn pawn)
         {
             bool result;
@@ -60,7 +73,11 @@ namespace Electromagnetic.Core
             }
             return result;
         }
-        //检测是否解锁前置技能
+        /// <summary>
+        /// 检测是否解锁前置技能
+        /// </summary>
+        /// <param name="pawn">小人实例</param>
+        /// <returns></returns>
         private bool PawnHasUnlockPreAbility(Pawn pawn)
         {
             bool result;
@@ -93,6 +110,10 @@ namespace Electromagnetic.Core
             }
             return result;
         }
+        /// <summary>
+        /// 节点能力为空报错
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<string> ConfigErrors()
         {
             bool flag = this.abilities == null;
@@ -102,6 +123,9 @@ namespace Electromagnetic.Core
             }
             yield break;
         }
+        /// <summary>
+        /// 解锁需求文本
+        /// </summary>
         public string unlockRequired
         {
             get
@@ -113,13 +137,10 @@ namespace Electromagnetic.Core
                 }
                 else if (this.requiredCompleteRealm > 0)
                 {
-                    //游戏语言检测
-                    bool lflag = LanguageDatabase.activeLanguage.ToString() == "Simplified Chinese";
-                    bool lflag2 = LanguageDatabase.activeLanguage.ToString() == "Traditional Chinese";
-                    string required = "";
+                    string required;
                     if (this.requiredCompleteRealm < 1)
                     {
-                        if (lflag || lflag2)
+                        if (Tools.IsChineseLanguage)
                         {
                             required = "RWrd_CompleteRealmRequired1".Translate((this.requiredCompleteRealm * 10).ToString());
                         }
@@ -149,11 +170,29 @@ namespace Electromagnetic.Core
             }
         }
         public int number;
+        /// <summary>
+        /// 等级需求
+        /// </summary>
         public int requiredLevel = 0;
+        /// <summary>
+        /// 完全境界需求
+        /// </summary>
         public float requiredCompleteRealm = 0;
+        /// <summary>
+        /// 节点层级
+        /// </summary>
         public int level;
+        /// <summary>
+        /// 绘画前置节点
+        /// </summary>
         public int preNode = 0;
+        /// <summary>
+        /// 前置技能
+        /// </summary>
         public List <AbilityDef> requiredAbilities = new List <AbilityDef>();
+        /// <summary>
+        /// 节点技能列表
+        /// </summary>
         public List<AbilityDef> abilities = new List<AbilityDef>();
     }
 }

@@ -23,7 +23,7 @@ namespace Electromagnetic.Core
         {
             get
             {
-                return this.CurrentDef.level == 99;
+                return this.level == this.LevelMax;
             }
         }
         //初始化
@@ -42,7 +42,9 @@ namespace Electromagnetic.Core
             }*/
             this.OnPostSetLevel();
         }
-        //能量
+        /// <summary>
+        /// 能量
+        /// </summary>
         public float Energy
         {
             get
@@ -50,7 +52,9 @@ namespace Electromagnetic.Core
                 return this.energy;
             }
         }
-        //经验
+        /// <summary>
+        /// 经验
+        /// </summary>
         public float Exp
         {
             get
@@ -58,7 +62,23 @@ namespace Electromagnetic.Core
                 return this.exp;
             }
         }
-        //完全境界
+        public int MaxExp
+        {
+            get
+            {
+                if (this.level == 0)
+                {
+                    return 100000;
+                }
+                else
+                {
+                    return 10000;
+                }
+            }
+        }
+        /// <summary>
+        /// 完全境界
+        /// </summary>
         public float CompleteRealm
         {
             get
@@ -66,7 +86,9 @@ namespace Electromagnetic.Core
                 return this.completerealm;
             }
         }
-        //力量流量
+        /// <summary>
+        /// 力量流量
+        /// </summary>
         public int PowerFlow
         {
             get
@@ -85,7 +107,10 @@ namespace Electromagnetic.Core
         {
             this.Init();
         }
-        //设置能量
+        /// <summary>
+        /// 设置能量
+        /// </summary>
+        /// <param name="num">数值</param>
         public void SetEnergy(float num)
         {
             float num2 = this.energy + num;
@@ -100,43 +125,54 @@ namespace Electromagnetic.Core
                 this.energy = 0f;
             }
         }
-        //设置经验
+        /// <summary>
+        /// 设置经验
+        /// </summary>
+        /// <param name="num">数值</param>
         public void SetExp(float num)
         {
             bool flag = num <= 0f;
             if (!flag)
             {
                 float num2 = this.exp + num;
-                this.exp = ((num2 > this.CurrentDef.EXP) ? this.CurrentDef.EXP : num2);
+                this.exp = ((num2 > this.MaxExp) ? this.MaxExp : num2);
                 this.pawn.CheckAbilityLimiting();
             }
         }
-        //设置完全境界
+        /// <summary>
+        /// 设置完全境界
+        /// </summary>
+        /// <param name="num">数值</param>
         public void SetCompleteRealm(float num)
         {
             bool flag = num <= 0f;
             if (!flag)
             {
                 float num2 = this.completerealm + num;
-                this.completerealm = (num2 > this.CurrentDef.MaxCompleteRealm ? this.CurrentDef.MaxCompleteRealm : num2);
+                this.completerealm = (num2 > this.MaxCompleteRealm ? this.MaxCompleteRealm : num2);
                 this.pawn.CheckAbilityLimiting();
             }
         }
-        //设置力量流量
+        /// <summary>
+        /// 设置力量流量
+        /// </summary>
+        /// <param name="num">数值</param>
         public void SetPowerFlow(int num)
         {
             bool flag = num <= 0;
             if (!flag)
             {
                 int num2 = this.powerflow + num;
-                this.powerflow = (num2 > this.CurrentDef.MaxPowerFlow ? this.CurrentDef.MaxPowerFlow : num2);
+                this.powerflow = (num2 > this.MaxPowerFlow ? this.MaxPowerFlow : num2);
             }
         }
-        //升级检查
+        /// <summary>
+        /// 升级检查
+        /// </summary>
+        /// <returns></returns>
         public bool IsUpdateLevelTiming()
         {
-            RimWarlord nextRWrd = this.GetNextRWrd();
-            bool flag = this.currentRWrd == nextRWrd;
+            bool flag = this.OnMaxLevel;
             bool result;
             if (flag)
             {
@@ -144,7 +180,7 @@ namespace Electromagnetic.Core
             }
             else
             {
-                bool flag2 = this.exp >= this.CurrentDef.EXP;
+                bool flag2 = this.exp >= this.MaxExp;
                 if (flag2)
                 {
                     result = true;
@@ -156,64 +192,44 @@ namespace Electromagnetic.Core
             }
             return result;
         }
-        //可用完全境界等级
+        /// <summary>
+        /// 可用完全境界等级
+        /// </summary>
+        /// <returns></returns>
         public int AvailableCompleteRealm()
         {
             int acr = (int)Math.Floor(this.completerealm * 10);
             return acr;
         }
-        //力量流量乘数
+        /// <summary>
+        /// 力量流量乘数
+        /// </summary>
+        /// <returns></returns>
         public int PowerFlowFactor()
         {
             float num = this.powerflow / 100000;
             int pff = (int)Math.Ceiling(num);
             return pff;
         }
-        //设置等级
+        /// <summary>
+        /// 设置等级
+        /// </summary>
         public void SetLevel()
         {
-            RimWarlord nextRWrd = this.GetNextRWrd() ;
-            bool flag = nextRWrd == this.currentRWrd ;
-            if (!flag)
+            bool flag = this.IsUpdateLevelTiming();
+            if (flag)
             {
-                bool flag2 = this.IsUpdateLevelTiming() ;
-                if (flag2)
-                {
-                    this.currentRWrd = nextRWrd ;
-                    this.OnPostSetLevel() ;
-                    this.exp = 0f;
-                }
+                this.level += 1;
+                this.OnPostSetLevel();
+                this.exp = 0f;
             }
         }
-        //检查等级技能限制
+        /// <summary>
+        /// 设置等级后方法
+        /// </summary>
         private void OnPostSetLevel()
         {
             this.pawn.CheckAbilityLimiting();
-        }
-        //获取下一级参数
-        public RimWarlord GetNextRWrd()
-        {
-            RimWarlord rimWarlord = this.currentRWrd;
-            bool flag = this.CurrentDef.level == 99;
-            RimWarlord result;
-            if (flag)
-            {
-                result = rimWarlord;
-            }
-            else
-            {
-                RimWarlordDef def;
-                bool flag2 = RimWarlordDef.Dict.TryGetValue(this.CurrentDef.level + 1, out def);
-                if (flag2)
-                {
-                    result = new RimWarlord(def, this.pawn);
-                }
-                else
-                {
-                    result = rimWarlord;
-                }
-            }
-            return result;
         }
 
         public void ExposeData()
@@ -223,24 +239,70 @@ namespace Electromagnetic.Core
             Scribe_Values.Look<float>(ref this.exp, "exp", 0f, false);
             Scribe_Values.Look<float>(ref this.completerealm, "completerealm", 0f, false);
             Scribe_Values.Look<int>(ref this.powerflow, "powerflow", 0, false);
+            Scribe_Values.Look<int>(ref this.level, "level", 0, false);
             Scribe_Deep.Look<RimWarlord>(ref this.currentRWrd, "currentRWrd", Array.Empty<object>());
             Scribe_Values.Look<bool>(ref this.canSelfDestruct, "canSelfDestruct", false, false);
+            bool flag = Scribe.mode == LoadSaveMode.PostLoadInit;
+            if (flag)
+            {
+                if (this.level == 0 && this.currentRWrd.def.level > 0)
+                {
+                    this.level = this.currentRWrd.def.level;
+                }
+            }
         }
 
         public Pawn pawn;
 
         public RimWarlord currentRWrd = new RimWarlord();
-
+        /// <summary>
+        /// 完全境界
+        /// </summary>
         public float completerealm = 0f;
+        /// <summary>
+        /// 完全境界上限
+        /// </summary>
+        public int MaxCompleteRealm = 10000;
+        /// <summary>
+        /// 力量流量
+        /// </summary>
         public int powerflow = 0;
+        /// <summary>
+        /// 力量流量上限
+        /// </summary>
+        public int MaxPowerFlow = 100000000;
+        /// <summary>
+        /// 最大能量
+        /// </summary>
         public float MaxEnergy = 0f;
+        /// <summary>
+        /// 能量值
+        /// </summary>
         public float energy = 0f;
+        /// <summary>
+        /// 经验值
+        /// </summary>
         public float exp = 0f;
+        /// <summary>
+        /// 经验值
+        /// </summary>
         public float damage = 0f;
+        /// <summary>
+        /// 练功渴望度
+        /// </summary>
         public int trainDesireFactor = 1;
-        //等级上下限
-        public const int LevelMax = 99;
-        public const int LevelMin = 0;
+        /// <summary>
+        /// 等级
+        /// </summary>
+        public int level = 0;
+        /// <summary>
+        /// 等级上限
+        /// </summary>
+        public int LevelMax = 99;
+        /// <summary>
+        /// 等级下限
+        /// </summary>
+        public int LevelMin = 0;
 
         public bool canSelfDestruct = false;
     }

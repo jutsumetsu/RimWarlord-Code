@@ -48,7 +48,7 @@ namespace Electromagnetic.Abilities
                 {
                     Hediff_RWrd_PowerRoot root = Caster.GetRoot();
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
-                    int level = root.energy.CurrentDef.level + 1 + masteryOffset;
+                    int level = root.energy.level + 1 + masteryOffset;
                     int num = (int)Math.Floor(level / 5f);
                     targetThing.HitPoints = Mathf.RoundToInt(targetThing.MaxHitPoints * Props.HardeningFactor * (num));
                 }

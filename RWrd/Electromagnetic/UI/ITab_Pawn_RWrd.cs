@@ -96,10 +96,12 @@ namespace Electromagnetic.UI
             this.pawn = (Pawn)Find.Selector.SingleSelectedThing;
             this.InitCache();
         }
-
+        /// <summary>
+        /// 初始化缓存
+        /// </summary>
         private void InitCache()
         {
-            this.hediff = pawn.GetRoot();
+            this.root = pawn.GetRoot();
             this.abilityPos.Clear();
         }
 
@@ -107,7 +109,7 @@ namespace Electromagnetic.UI
         {
             base.CloseTab();
             this.pawn = null;
-            this.hediff = null;
+            this.root = null;
             this.abilityPos.Clear();
         }
         //填充选项卡界面
@@ -121,17 +123,11 @@ namespace Electromagnetic.UI
                 this.InitCache();
             }
 
-            bool flag3 = this.pawn == null || this.hediff == null;
+            bool flag3 = this.pawn == null || this.root == null;
             if (!flag3)
             {
                 GameFont font = Text.Font;
                 TextAnchor anchor = Text.Anchor;
-
-                /*Widgets.DrawBoxSolid(rect, Color.gray);*/
-                //游戏语言检测
-                bool lflag = LanguageDatabase.activeLanguage.ToString() != "Simplified Chinese";
-                bool lflag2 = LanguageDatabase.activeLanguage.ToString() != "Traditional Chinese";
-
                 Text.Font = font;
                 Text.Anchor = anchor;
                 Rect rect = new Rect(Vector2.one * 20f, this.size - Vector2.one * 40f);
@@ -146,29 +142,28 @@ namespace Electromagnetic.UI
                 //显示人物名称
                 listing_Standard.Label(this.pawn.Name.ToStringShort, -1f, null);
                 //显示当前等级
-                if (lflag && lflag2)
+                if (this.root.energy.level == 0)
                 {
-                    listing_Standard.Label(this.hediff.energy.CurrentDef.label, -1f, null);
+                    listing_Standard.Label("RWrd_BE".Translate(), -1f, null);
                 }
                 else
                 {
-                    int level = this.hediff.energy.CurrentDef.level;
-                    if (level > 0)
+                    if (Tools.IsChineseLanguage)
                     {
-                        listing_Standard.Label(this.hediff.energy.CurrentDef.label + "匹", -1f, null);
+                        listing_Standard.Label("RWrd_BM".Translate(this.root.energy.level.ToString()) + "匹", -1f, null);
                     }
                     else
                     {
-                        listing_Standard.Label(this.hediff.energy.CurrentDef.label, -1f, null);
+                        listing_Standard.Label("RWrd_BM".Translate(this.root.energy.level.ToString()), -1f, null);
                     }
                 }
                 listing_Standard.Gap(10f);
                 //经验值进度条
                 Rect rectBar = listing_Standard.GetRect(30f, 1f);
                 rectBar.x -= 10f;
-                Widgets.FillableBar(rectBar, this.hediff.energy.Exp / this.hediff.energy.CurrentDef.EXP);
+                Widgets.FillableBar(rectBar, this.root.energy.Exp / this.root.energy.MaxExp);
                 //经验值百分比
-                float num = this.hediff.energy.Exp / this.hediff.energy.CurrentDef.EXP;
+                float num = this.root.energy.Exp / this.root.energy.MaxExp;
                 Vector2 offset = new Vector2(rectBar.center.x - 5f, rectBar.center.y - rectBar.height / 2f);
                 Rect rectBarCenter = new Rect(offset, rectBar.size);
                 Widgets.Label(rectBarCenter, num.ToString("P2"));
@@ -177,8 +172,8 @@ namespace Electromagnetic.UI
                 listing_Standard.Label("RWrd_EarnXP".Translate(), -1f, null);
                 listing_Standard.Gap(10f);
                 Text.Font = GameFont.Small;
-                listing_Standard.Label("Rwrd_CompleteRealm".Translate() + ": " + this.hediff.energy.completerealm.ToString() + "/10000", -1f, null);
-                listing_Standard.Label("RWrd_PowerFlow".Translate() + ": " + this.hediff.energy.powerflow.ToString() + "/100000000", -1f, null);
+                listing_Standard.Label("Rwrd_CompleteRealm".Translate() + ": " + this.root.energy.completerealm.ToString() + "/10000", -1f, null);
+                listing_Standard.Label("RWrd_PowerFlow".Translate() + ": " + this.root.energy.powerflow.ToString() + "/100000000", -1f, null);
                 //力量体系介绍按钮
                 Rect buttonRect = listing_Standard.GetRect(30f, 0.5f);
                 if (Widgets.ButtonText(buttonRect, "RWrd_IntroduceButton".Translate()))
@@ -214,7 +209,7 @@ namespace Electromagnetic.UI
                 //绘制技能树背景图
                 DrawPathBackground(ref rect, def);
                 rect.height -= 30f;
-                bool flag = this.hediff.routes.Contains(def);
+                bool flag = this.root.routes.Contains(def);
                 if (flag)
                 {
                     //绘制技能图标
@@ -341,9 +336,7 @@ namespace Electromagnetic.UI
                 }
             }
         }
-
-
-
+        //绘制技能树背景
         public static void DrawPathBackground(ref Rect rect, RWrd_RouteDef def)
         {
             Texture2D image = def.backgroundImage;
@@ -375,7 +368,7 @@ namespace Electromagnetic.UI
         private readonly List<TabRecord> tabs;
         private string curTab;
         private bool devMode;
-        private Hediff_RWrd_PowerRoot hediff;
+        private Hediff_RWrd_PowerRoot root;
         private float lastPathsHeight;
         private int pathsPerRow;
         private Vector2 pathsScrollPos;

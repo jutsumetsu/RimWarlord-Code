@@ -11,10 +11,10 @@ namespace Electromagnetic.UI
 {
     public class Command_Electromagnetic : Command_Ability
     {
-        public Command_Electromagnetic(Ability ability, float mastery, Pawn pawn) : base(ability, pawn)
+        public Command_Electromagnetic(Ability ability, Pawn pawn) : base(ability, pawn)
         {
-            this.Mastery = mastery;
         }
+        ///工具提示
         public override string Tooltip
         {
             get
@@ -24,10 +24,13 @@ namespace Electromagnetic.UI
                 {
                     text += "\n" + "RWrd_EnergyReduce".Translate() + this.ReduceEnergy.ToString();
                 }
-                text += "\n" + "RWrd_Mastery".Translate() + this.Mastery;
+                text += "\n" + "RWrd_Mastery".Translate() + Ability.mastery;
                 return text;
             }
         }
+        /// <summary>
+        /// 能量消耗
+        /// </summary>
         public float ReduceEnergy
         {
             get
@@ -36,6 +39,12 @@ namespace Electromagnetic.UI
                 return -compAbilityEffect_ReduceEnergy.EnergyReduce;
             }
         }
-        public float Mastery;
+        private new RWrd_PsyCastBase Ability
+        {
+            get
+            {
+                return this.ability as RWrd_PsyCastBase;
+            }
+        }
     }
 }

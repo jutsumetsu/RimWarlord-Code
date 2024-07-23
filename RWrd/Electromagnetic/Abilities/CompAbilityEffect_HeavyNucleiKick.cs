@@ -57,7 +57,7 @@ namespace Electromagnetic.Abilities
                     //伤害计算
                     Hediff_RWrd_PowerRoot root = caster.GetRoot();
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
-                    int num = 40 + root.energy.CurrentDef.level + masteryOffset;
+                    int num = 40 + root.energy.level + masteryOffset;
                     int acr = root.energy.AvailableCompleteRealm();
                     int pff = root.energy.PowerFlowFactor();
                     int multiplier = acr + pff;

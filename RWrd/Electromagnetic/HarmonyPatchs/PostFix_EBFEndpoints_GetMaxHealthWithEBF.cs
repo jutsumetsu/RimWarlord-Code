@@ -25,7 +25,7 @@ namespace Electromagnetic.HarmonyPatchs
             {
                 Hediff_RWrd_PowerRoot root = pawn.GetRoot();
                 int pff = root.energy.PowerFlowFactor();
-                int level = root.energy.CurrentDef.level + 1;
+                int level = root.energy.level + 1;
                 int multiplier = pff + level;
                 __result *= multiplier;
             }

@@ -54,14 +54,19 @@ namespace Electromagnetic.Core
                 return !this.Disabled;
             }
         }
-        //不可用
+        /// <summary>
+        /// 不可用
+        /// </summary>
         private bool Disabled
         {
             get
             {
-                return !this.pawn.IsHaveRoot();
+                return !this.pawn.IsHaveRoot() || !this.pawn.Spawned;
             }
         }
+        /// <summary>
+        /// 是否在练功
+        /// </summary>
         private bool IsTraining
         {
             get
@@ -69,6 +74,9 @@ namespace Electromagnetic.Core
                 return this.pawn.jobs.curDriver.GetType() == typeof(JobDriver_RWrd_General_Training) || this.pawn.jobs.curDriver.GetType() == typeof(JobDriver_RWrd_Specialized_Training);
             }
         }
+        /// <summary>
+        /// 是否在打交
+        /// </summary>
         private bool IsBattle
         {
             get
@@ -82,7 +90,9 @@ namespace Electromagnetic.Core
             this.threshPercents.Add(0.1f);
             this.SetInitialLevel();
         }
-        //初始等级
+        /// <summary>
+        /// 设置初始等级
+        /// </summary>
         public override void SetInitialLevel()
         {
             this.CurLevel = 0.5f;

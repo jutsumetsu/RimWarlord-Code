@@ -69,11 +69,11 @@ namespace Electromagnetic.Abilities
                 Hediff_RWrd_PowerRoot root1 = this.parent.pawn.GetRoot();
                 Hediff_RWrd_PowerRoot root2 = pawn.GetRoot();
                 //双方磁场力量差距
-                int num = root1.energy.CurrentDef.level - root2.energy.CurrentDef.level;
+                int num = root1.energy.level - root2.energy.level;
                 //判断自己是否强于目标
                 if (num > 0)
                 {
-                    int num1 = root2.energy.CurrentDef.level + 1;
+                    int num1 = root2.energy.level + 1;
                     //削弱乘数
                     int ff = Math.Min(num, num1);
                     Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.RWrd_HeavenLock, pawn, null);

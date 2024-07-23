@@ -28,12 +28,16 @@ namespace Electromagnetic.Abilities
         public RWrd_PsyCastBase(Pawn pawn, AbilityDef def) : base(pawn, def)
         {
         }
+        /// <summary>
+        /// 获取Gizmo
+        /// </summary>
+        /// <returns></returns>
         public override IEnumerable<Command> GetGizmos()
         {
             bool flag = this.gizmo == null;
             if (flag)
             {
-                this.gizmo = new Command_Electromagnetic(this, this.mastery, this.pawn);
+                this.gizmo = new Command_Electromagnetic(this, this.pawn);
             }
             yield return this.gizmo;
             yield break;
@@ -82,8 +86,10 @@ namespace Electromagnetic.Abilities
             {
                 MoteMaker.ThrowText(target.CenterVector3, this.pawn.Map, "TextMote_Immune".Translate(), -1f);
             }
+            //修罗道
             if (target.Pawn !=  null)
             {
+                //检测黑暗轮回类Hediff
                 if (target.Pawn.health.hediffSet.GetFirstHediff<Hediff_DarkReincarnation>() != null)
                 {
                     Log.Message("Target has Dark Reincarnation Hediff");
@@ -147,6 +153,10 @@ namespace Electromagnetic.Abilities
             base.ExposeData();
             Scribe_Values.Look<float>(ref this.mastery, "mastery", 0f, false);
         }
+        /// <summary>
+        /// 设置精通值
+        /// </summary>
+        /// <param name="num">数值</param>
         public void SetMastery(float num)
         {
             if (num > 0)

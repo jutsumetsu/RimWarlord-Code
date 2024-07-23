@@ -41,7 +41,7 @@ namespace Electromagnetic.Core
                     {
                         if (root != null)
                         {
-                            int currentLevel = root.energy.currentRWrd.def.level;
+                            int currentLevel = root.energy.level;
                             if (currentLevel == 0)
                             {
                                 root.energy.SetExp(200);

@@ -1,12 +1,18 @@
-﻿using Electromagnetic.UI;
+﻿using Electromagnetic.Abilities;
+using Electromagnetic.UI;
+using LudeonTK;
 using RimWorld;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
+using Verse.Noise;
 
 namespace Electromagnetic.Core
 {
+    /// <summary>
+    /// 磁场力量Gizmo
+    /// </summary>
     public class Gizmo_Psychic : Gizmo
     {
         public override bool Visible
@@ -17,17 +23,25 @@ namespace Electromagnetic.Core
                 return !flag;
             }
         }
-        //UI宽度
+        /// <summary>
+        /// UI宽度
+        /// </summary>
+        /// <param name="maxWidth">最大宽度</param>
+        /// <returns></returns>
         public override float GetWidth(float maxWidth)
         {
             return 176f;
         }
-        //获取信息
-        public Gizmo_Psychic(Pawn pawn, Hediff_RWrd_PowerRoot energy)
+        /// <summary>
+        /// 获取信息
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <param name="root">力量之源</param>
+        public Gizmo_Psychic(Pawn pawn, Hediff_RWrd_PowerRoot root)
         {
             this.Order = -110f;
             this.pawn = pawn;
-            this.root = energy;
+            this.root = root;
         }
 
         public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
@@ -37,16 +51,47 @@ namespace Electromagnetic.Core
             Widgets.DrawWindowBackground(rect);
             MainTabWindow_Inspect mainTabWindow_Inspect = (MainTabWindow_Inspect)MainButtonDefOf.Inspect.TabWindow;
             Command_Electromagnetic command_Electromagnetic = ((mainTabWindow_Inspect != null) ? mainTabWindow_Inspect.LastMouseoverGizmo : null) as Command_Electromagnetic;
+            //闪烁效果
+            float num = Mathf.Repeat(Time.time, 0.85f);
+            float num2 = 1f;
+            if (num < 0.1f)
+            {
+                num2 = num / 0.1f;
+            }
+            else if (num >= 0.25f)
+            {
+                num2 = 1f - (num - 0.25f) / 0.6f;
+            }
             Rect rect3 = rect2;
             //能量显示
             rect3.width = 180f;
             rect3.height = rect.height / 2f;
             this.DrawUI(rect3, this.root.energy.energy, this.root.energy.MaxEnergy, this.EnergyLabel);
+            //能量消耗预览
+            if (command_Electromagnetic != null)
+            {
+                //获取ReduceEnergy
+                CompAbilityEffect_ReduceEnergy compAbilityEffect_ReduceEnergy = command_Electromagnetic.Ability.CompOfType<CompAbilityEffect_ReduceEnergy>();
+                //获取能量条矩形
+                Rect rect31 = new Rect(rect3.x, rect3.y + 20f, 172f, 10f);
+                float delta = Math.Max((this.root.energy.energy + compAbilityEffect_ReduceEnergy.EnergyReduce) / this.root.energy.MaxEnergy, 0f);
+                float fillPercentage = this.root.energy.energy / this.root.energy.MaxEnergy;
+                //绘制
+                if (compAbilityEffect_ReduceEnergy.EnergyReduce < 0)
+                {
+                    float width = rect31.width;
+                    rect31.xMin = UIScaling.AdjustCoordToUIScalingFloor(rect31.xMin + delta * width);
+                    rect31.width = UIScaling.AdjustCoordToUIScalingCeil((fillPercentage - delta) * width);
+                    GUI.color = new Color(1f, 1f, 1f, num2);
+                    GenUI.DrawTextureWithMaterial(rect31, Gizmo_Psychic.EnergyBarTexReduce, null, default);
+                    GUI.color = Color.white;
+                }
+            }
             //等级显示
             Rect rect4 = rect2;
             rect4.width = 180f;
             rect4.yMin = rect2.y + 30;
-            this.DrawUI2(rect4, this.root.energy.Exp, this.root.energy.CurrentDef.EXP, this.root.energy.CurrentDef.level, this.root.energy.CurrentDef.label, this.ExpLabel.Translate());
+            this.DrawUI2(rect4, this.root.energy.Exp, this.root.energy.MaxExp, this.root.energy.level, this.PowerLabel.Translate(), this.ExpLabel.Translate());
             //完全境界显示
             Rect rect5 = rect2;
             rect5.width = 180f;
@@ -57,18 +102,19 @@ namespace Electromagnetic.Core
             rect6.width = 180f;
             rect6.yMin = rect5.y + 18;
             this.DrawUI4(rect6, this.root.energy.PowerFlow, this.PowerFlowLabel.Translate());
-            float num = this.root.energy.energy / this.root.energy.MaxEnergy;
-            Rect position = new Rect(rect2.x + 125f, rect2.y + 8f, 50f, 60f);
-            bool flag = (double)num <= 0.25;
             Text.Anchor = TextAnchor.UpperLeft;
             return new GizmoResult(GizmoState.Clear);
         }
-        //绘制能量显示及能量条
+        /// <summary>
+        /// 绘制能量显示及能量条
+        /// </summary>
+        /// <param name="rect">矩形区域</param>
+        /// <param name="a">当前能量值</param>
+        /// <param name="b">最大能量值</param>
+        /// <param name="label">能量值标签</param>
         private void DrawUI(Rect rect, float a, float b, string label)
         {
-            bool lflag = LanguageDatabase.activeLanguage.ToString() != "Simplified Chinese";
-            bool lflag2 = LanguageDatabase.activeLanguage.ToString() != "Traditional Chinese";
-            if (lflag && lflag2)
+            if (!Tools.IsChineseLanguage)
             {
                 Text.Font = GameFont.Tiny;
             }
@@ -84,13 +130,19 @@ namespace Electromagnetic.Core
             Rect rect4 = new Rect(rect.x, rect.y + 20f, 172f, 10f);
             Widgets.Label(rect2, label);
             Widgets.Label(rect3, a.ToString("F0") + " / " + b.ToString("F0"));
-            Widgets.FillableBar(rect4, a / b, Gizmo_Psychic.FullBarTex, Gizmo_Psychic.EmptyBarTex, false);
+            Widgets.FillableBar(rect4, a / b, Gizmo_Psychic.EnergyBarTex, Gizmo_Psychic.EmptyBarTex, false);
         }
-        //绘制等级显示
+        /// <summary>
+        /// 绘制等级显示
+        /// </summary>
+        /// <param name="rect">矩形区域</param>
+        /// <param name="a">当前经验值</param>
+        /// <param name="b">最大经验值</param>
+        /// <param name="c">当前等级</param>
+        /// <param name="label">等级标签</param>
+        /// <param name="label2">经验值标签</param>
         private void DrawUI2(Rect rect, float a, float b, int c, string label, string label2)
         {
-            bool lflag = LanguageDatabase.activeLanguage.ToString() != "Simplified Chinese";
-            bool lflag2 = LanguageDatabase.activeLanguage.ToString() != "Traditional Chinese";
             //等级标签位置
             Rect rect2 = new Rect(rect.x, rect.y, 120f, 25f);
             //磁场转动匹数位置
@@ -99,7 +151,7 @@ namespace Electromagnetic.Core
             Rect rect4 = new Rect(rect.x + 140f, rect.y, 40f, 25f);
             //电推伏特位置
             Rect rect5 = new Rect(rect.x + 65f, rect.y, 40f, 25f);
-            if (lflag && lflag2)
+            if (!Tools.IsChineseLanguage)
             {
                 Text.Font = GameFont.Tiny;
                 rect4 = new Rect(rect.x + 150f, rect.y, 40f, 25f);
@@ -119,10 +171,10 @@ namespace Electromagnetic.Core
             }
             if (c != 0)
             {
-                if (lflag && lflag2)
+                if (!Tools.IsChineseLanguage)
                 {
                     num = a / b;
-                    rect3 = new Rect(rect.x + 127f, rect.y, 40f, 25f);
+                    rect3 = new Rect(rect.x + 123f, rect.y, 40f, 25f);
                     Widgets.Label(rect3, num.ToString("P0"));
                 }
                 else
@@ -132,7 +184,7 @@ namespace Electromagnetic.Core
             }
             else
             {
-                if (lflag && lflag2)
+                if (!Tools.IsChineseLanguage)
                 {
                     num = a / b;
                     rect5 = new Rect(rect.x + 110f, rect.y, 40f, 25f);
@@ -144,12 +196,16 @@ namespace Electromagnetic.Core
                 }
             }
         }
-        //绘制完全境界显示
+        /// <summary>
+        /// 绘制完全境界显示
+        /// </summary>
+        /// <param name="rect">矩形区域</param>
+        /// <param name="a">完全境界数值</param>
+        /// <param name="b">有效完全境界数值</param>
+        /// <param name="label">完全境界标签</param>
         private void DrawUI3(Rect rect, float a, int b, string label)
         {
-            bool lflag = LanguageDatabase.activeLanguage.ToString() != "Simplified Chinese";
-            bool lflag2 = LanguageDatabase.activeLanguage.ToString() != "Traditional Chinese";
-            if (lflag && lflag2)
+            if (!Tools.IsChineseLanguage)
             {
                 Text.Font = GameFont.Tiny;
             }
@@ -182,7 +238,7 @@ namespace Electromagnetic.Core
             Widgets.Label(rect2, label);
             if (b < 10)
             {
-                if (lflag && lflag2)
+                if (!Tools.IsChineseLanguage)
                 {
                     float num = b * 10;
                     Widgets.Label(rect5, num.ToString("F0") + "%");
@@ -195,7 +251,7 @@ namespace Electromagnetic.Core
             }
             else if (flag)
             {
-                if (lflag && lflag2)
+                if (!Tools.IsChineseLanguage)
                 {
                     rect6 = new Rect(rect.x + 100f, rect.y, 80f, 25f);
                     Widgets.Label(rect6, "RWrd_FinalRealm".Translate());
@@ -207,7 +263,7 @@ namespace Electromagnetic.Core
             }
             else if (flag1)
             {
-                if (lflag && lflag2)
+                if (!Tools.IsChineseLanguage)
                 {
                     Widgets.Label(rect5, "Lv." + c.ToString("F0"));
                 }
@@ -219,7 +275,7 @@ namespace Electromagnetic.Core
             }
             else if (flag2)
             {
-                if (lflag && lflag2)
+                if (!Tools.IsChineseLanguage)
                 {
                     Widgets.Label(rect5, "Lv." + c.ToString("F0"));
                 }
@@ -231,7 +287,7 @@ namespace Electromagnetic.Core
             }
             else if (flag3)
             {
-                if (lflag && lflag2)
+                if (!Tools.IsChineseLanguage)
                 {
                     Widgets.Label(rect5, "Lv." + c.ToString("F0"));
                 }
@@ -243,7 +299,7 @@ namespace Electromagnetic.Core
             }
             else if (flag4)
             {
-                if (lflag && lflag2)
+                if (!Tools.IsChineseLanguage)
                 {
                     Widgets.Label(rect5, "Lv." + c.ToString("F0"));
                 }
@@ -255,7 +311,7 @@ namespace Electromagnetic.Core
             }
             else
             {
-                if (lflag && lflag2)
+                if (!Tools.IsChineseLanguage)
                 {
                     Widgets.Label(rect5, "Lv." + c.ToString("F0"));
                 }
@@ -266,12 +322,15 @@ namespace Electromagnetic.Core
                 }
             }
         }
-        //绘制力量流量显示
+        /// <summary>
+        /// 绘制力量流量显示
+        /// </summary>
+        /// <param name="rect">矩形区域</param>
+        /// <param name="a">力量流量数值</param>
+        /// <param name="label">单位标签</param>
         private void DrawUI4(Rect rect, int a, string label)
         {
-            bool lflag = LanguageDatabase.activeLanguage.ToString() != "Simplified Chinese";
-            bool lflag2 = LanguageDatabase.activeLanguage.ToString() != "Traditional Chinese";
-            if (lflag && lflag2)
+            if (!Tools.IsChineseLanguage)
             {
                 Text.Font = GameFont.Tiny;
             }
@@ -291,13 +350,41 @@ namespace Electromagnetic.Core
         }
 
         public Pawn pawn;
+        /// <summary>
+        /// 力量之源
+        /// </summary>
         public Hediff_RWrd_PowerRoot root;
+        /// <summary>
+        /// 力量标签
+        /// </summary>
+        public string PowerLabel;
+        /// <summary>
+        /// 经验标签
+        /// </summary>
         public string ExpLabel;
+        /// <summary>
+        /// 能量标签
+        /// </summary>
         public string EnergyLabel;
+        /// <summary>
+        /// 完全境界标签
+        /// </summary>
         public string CompleteRealmLabel;
+        /// <summary>
+        /// 力量流量标签
+        /// </summary>
         public string PowerFlowLabel;
-
-        private static readonly Texture2D FullBarTex = SolidColorMaterials.NewSolidColorTexture(new Color(1f, 0.84f, 0f));
+        /// <summary>
+        /// 能量条材质
+        /// </summary>
+        private static readonly Texture2D EnergyBarTex = SolidColorMaterials.NewSolidColorTexture(new Color(1f, 0.84f, 0f));
+        /// <summary>
+        /// 能量条减少材质
+        /// </summary>
+        private static readonly Texture2D EnergyBarTexReduce = SolidColorMaterials.NewSolidColorTexture(new Color(0.73f, 0.65f, 0.24f));
+        /// <summary>
+        /// 能量条空材质
+        /// </summary>
         private static readonly Texture2D EmptyBarTex = SolidColorMaterials.NewSolidColorTexture(Color.clear);
     }
 }

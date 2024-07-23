@@ -42,7 +42,7 @@ namespace Electromagnetic.Abilities
             FleckDef[] effectSet = this.EffectSet;
             //伤害计算
             int masteryOffset = (int)Math.Floor(mastery / 10f);
-            float num = 20 + root.energy.CurrentDef.level + masteryOffset;
+            float num = 20 + root.energy.level + masteryOffset;
             int acr = root.energy.AvailableCompleteRealm();
             int pff = root.energy.PowerFlowFactor();
             float multiplier = acr + pff;

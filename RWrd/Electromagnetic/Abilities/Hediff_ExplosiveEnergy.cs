@@ -27,7 +27,7 @@ namespace Electromagnetic.Abilities
             Pawn pawn = this.pawn;
             //伤害计算
             Hediff_RWrd_PowerRoot root = this.root;
-            int num = damage + root.energy.CurrentDef.level;
+            int num = damage + root.energy.level;
             int acr = root.energy.AvailableCompleteRealm();
             int pff = root.energy.PowerFlowFactor();
             int multiplier = acr + pff;

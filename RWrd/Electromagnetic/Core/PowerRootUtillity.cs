@@ -9,7 +9,11 @@ namespace Electromagnetic.Core
 {
     public static class PowerRootUtillity
     {
-        //是否拥有力量之源
+        /// <summary>
+        /// 是否拥有力量之源
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <returns></returns>
         public static bool IsHaveRoot(this Pawn pawn)
         {
             if (pawn == null)
@@ -21,19 +25,26 @@ namespace Electromagnetic.Core
                 return pawn.health.hediffSet.HasHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, false);
             }
         }
-        //获取角色力量之源数据
+        /// <summary>
+        /// 获取角色力量之源数据
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <returns></returns>
         public static Hediff_RWrd_PowerRoot GetRoot(this Pawn pawn)
         {
             return pawn.IsHaveRoot() ? ((Hediff_RWrd_PowerRoot)pawn.health.hediffSet.GetFirstHediffOfDef(RWrd_DefOf.Hediff_RWrd_PowerRoot, false)) : null;
         }
-        //检查等级技能限制
+        /// <summary>
+        /// 检查等级技能限制
+        /// </summary>
+        /// <param name="pawn"></param>
         public static void CheckAbilityLimiting(this Pawn pawn)
         {
             bool flag = pawn.IsHaveRoot();
             if (flag)
             {
                 Hediff_RWrd_PowerRoot root = pawn.GetRoot();
-                int level = root.energy.CurrentDef.level;
+                int level = root.energy.level;
                 List<Ability> list = new List<Ability>();
                 List<Ability> list2 = new List<Ability>();
                 bool flag2 = root.routes.Count != 0;
@@ -76,8 +87,14 @@ namespace Electromagnetic.Core
                 });
             }
         }
-        //随机生成力量之源
-        public static void RandomPowerRootSpawn(Pawn pawn, Hediff_RWrd_PowerRoot root, out RimWarlordDef currentRWrd, out RWrd_RouteDef route)
+        /// <summary>
+        /// 随机生成力量之源
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <param name="root">力量之源</param>
+        /// <param name="currentRWrd">等级Def</param>
+        /// <param name="route">技能树</param>
+        public static void RandomPowerRootSpawn(Pawn pawn, Hediff_RWrd_PowerRoot root)
         {
             int num = (int)(pawn.kindDef.combatPower / 100f);
             bool flag = num < 5;
@@ -106,18 +123,18 @@ namespace Electromagnetic.Core
             {
                 num = 10;
             }
-            currentRWrd = RimWarlordDef.Dict.GetValueOrDefault(num);
-            /*RimWarlordDef tempRWrd;
-            if (!RimWarlordDef.Dict.TryGetValue(num, out tempRWrd))
-            {
-                tempRWrd = default(RimWarlordDef);
-            }*/
-            List<RWrd_RouteDef> allDefListForReading = DefDatabase<RWrd_RouteDef>.AllDefsListForReading;
+            root.energy.level = num;
+            /*List<RWrd_RouteDef> allDefListForReading = DefDatabase<RWrd_RouteDef>.AllDefsListForReading;
             allDefListForReading.Remove(RWrd_DefOf.Base);
-            route =  allDefListForReading.RandomElement<RWrd_RouteDef>();
-            root.UnlockRoute(route);
+            RWrd_RouteDef route =  allDefListForReading.RandomElement<RWrd_RouteDef>();*/
+            /*root.UnlockRoute(route);*/
         }
-        //检查技能树
+        /// <summary>
+        /// 检查技能树
+        /// </summary>
+        /// <param name="pawn">小人实例</param>
+        /// <param name="route">技能树</param>
+        /// <returns></returns>
         public static List<Ability> CheckAbilities(this Pawn pawn, RWrd_RouteDef route)
         {
             List<Ability> list = new List<Ability>();
@@ -154,7 +171,11 @@ namespace Electromagnetic.Core
             }
             return list;
         }
-        //移除技能技能树
+        /// <summary>
+        /// 移除技能技能树
+        /// </summary>
+        /// <param name="pawn">小人实例</param>
+        /// <param name="route">技能树</param>
         public static void RemoveAbilities(this Pawn pawn, RWrd_RouteDef route)
         {
             foreach (var node in route.routeNodes)
@@ -169,7 +190,11 @@ namespace Electromagnetic.Core
                 }
             }
         }
-        //检查是否能满足长期需求
+        /// <summary>
+        /// 检查是否能满足长期需求
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <returns></returns>
         public static bool LordPreventsGettingTraining(Pawn pawn)
         {
             Lord lord = pawn.GetLord();

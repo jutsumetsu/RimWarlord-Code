@@ -58,7 +58,7 @@ namespace Electromagnetic.Abilities
             vector.z += 0.5f;
             //生成打击特效
             FleckCreationData dataStatic = FleckMaker.GetDataStatic(vector, map, effectSet[0], 2f);
-            dataStatic.rotation = (float)CompAbilityEffect_ThunderPunch.PointsAngleTool(this.parent.pawn.Position, pawn.Position);
+            dataStatic.rotation = (float)Tools.PointsAngleTool(this.parent.pawn.Position, pawn.Position);
             map.flecks.CreateFleck(dataStatic);
             SoundInfo info = SoundInfo.InMap(new TargetInfo(pawn.Position, map, false), MaintenanceType.None);
             SoundDefOf.Pawn_Melee_Punch_HitPawn.PlayOneShot(info);
@@ -68,7 +68,7 @@ namespace Electromagnetic.Abilities
             {
                 //伤害计算
                 Hediff_RWrd_PowerRoot root = Pawn.GetRoot();
-                num += root.energy.CurrentDef.level;
+                num += root.energy.level;
                 int acr = root.energy.AvailableCompleteRealm();
                 int pff = root.energy.PowerFlowFactor();
                 int multiplier = acr + pff;
@@ -76,11 +76,6 @@ namespace Electromagnetic.Abilities
                 num *= multiplier;
             }
             pawn.TakeDamage(new DamageInfo(DamageDefOf.Flame, (float)num, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true));
-        }
-        //角度工具
-        public static double PointsAngleTool(IntVec3 p1, IntVec3 p2)
-        {
-            return Math.Atan2((double)(p2.x - p1.x), (double)(p2.z - p1.z)) * 180.0 / 3.141592653589793;
         }
         private HashSet<Faction> affectedFactionCache = new HashSet<Faction>();
     }
