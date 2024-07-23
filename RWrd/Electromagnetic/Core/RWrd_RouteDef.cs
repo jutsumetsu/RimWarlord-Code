@@ -117,6 +117,5 @@ namespace Electromagnetic.Core
         public Texture2D backgroundImage;
         public int width;
         public int height;
-        public string unlockRequired;
     }
 }

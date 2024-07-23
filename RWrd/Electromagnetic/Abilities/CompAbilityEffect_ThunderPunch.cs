@@ -40,14 +40,6 @@ namespace Electromagnetic.Abilities
                 return this.parent.pawn;
             }
         }
-        //技能接口
-        private RWrd_PsyCastBase Ability
-        {
-            get
-            {
-                return (RWrd_PsyCastBase)this.parent;
-            }
-        }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             base.Apply(target, dest);
@@ -62,8 +54,7 @@ namespace Electromagnetic.Abilities
             map.flecks.CreateFleck(dataStatic);
             SoundInfo info = SoundInfo.InMap(new TargetInfo(pawn.Position, map, false), MaintenanceType.None);
             SoundDefOf.Pawn_Melee_Punch_HitPawn.PlayOneShot(info);
-            int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
-            int num = 40 + masteryOffset;
+            int num = 40;
             if (Pawn.IsHaveRoot())
             {
                 //伤害计算

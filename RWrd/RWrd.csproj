@@ -84,7 +84,6 @@
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_SpawnMoteCasting.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_SpawnMoteSinging.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_ThunderPunch.cs" />
-    <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_TigerSharkExplosionPunch.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_WindBlade.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityElectricClaw.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityGiveTargetHediff.cs" />
@@ -92,7 +91,6 @@
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityHeavyNucleiKick.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityMatterHardening.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityThunderPunch.cs" />
-    <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityTigerSharkExplosionPunch.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityWindBlade.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_ReduceEnergy.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_SpawnMoteCast.cs" />
@@ -103,7 +101,6 @@
     <Compile Include="Electromagnetic\Abilities\HediffComp_Draw_RWrd.cs" />
     <Compile Include="Electromagnetic\Abilities\HediffComp_Shield_RWrd.cs" />
     <Compile Include="Electromagnetic\Abilities\Hediff_CellRecombination.cs" />
-    <Compile Include="Electromagnetic\Abilities\Hediff_DarkReincarnation.cs" />
     <Compile Include="Electromagnetic\Abilities\Hediff_ElectricInternalEnergy.cs" />
     <Compile Include="Electromagnetic\Abilities\Hediff_ExplosiveEnergy.cs" />
     <Compile Include="Electromagnetic\Abilities\Hediff_HeavenLock.cs" />
@@ -118,12 +115,10 @@
     <Compile Include="Electromagnetic\Core\Gizmo_Psychic.cs" />
     <Compile Include="Electromagnetic\Core\Hediff_RWrd_PowerRoot.cs" />
     <Compile Include="Electromagnetic\Core\JobDriver_RWrd_General_Training.cs" />
-    <Compile Include="Electromagnetic\Core\JobDriver_RWrd_ResearchDisc.cs" />
     <Compile Include="Electromagnetic\Core\JobDriver_RWrd_Specialized_Training.cs" />
     <Compile Include="Electromagnetic\Core\JobGiver_EMTraining.cs" />
     <Compile Include="Electromagnetic\Core\ModDetector.cs" />
     <Compile Include="Electromagnetic\Core\Need_Training.cs" />
-    <Compile Include="Electromagnetic\Core\NeoStudyManager.cs" />
     <Compile Include="Electromagnetic\Core\Pawn_EnergyTracker.cs" />
     <Compile Include="Electromagnetic\Core\PowerRootUtillity.cs" />
     <Compile Include="Electromagnetic\Core\RWrd_PsycastOrigin.cs" />
@@ -137,9 +132,6 @@
     <Compile Include="Electromagnetic\HarmonyPatchs\HealthPatch.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\Pawn_Patch.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\PostFix_EBFEndpoints_GetMaxHealthWithEBF.cs" />
-    <Compile Include="Electromagnetic\Things\CompProperties_ThingStudiable.cs" />
-    <Compile Include="Electromagnetic\Things\CompThingStudiable.cs" />
-    <Compile Include="Electromagnetic\UI\Command_Electromagnetic.cs" />
     <Compile Include="Electromagnetic\UI\ITab_Pawn_RWrd.cs" />
     <Compile Include="Electromagnetic\UI\UIUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

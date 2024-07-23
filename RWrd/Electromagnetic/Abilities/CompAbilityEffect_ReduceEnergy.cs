@@ -15,41 +15,6 @@ namespace Electromagnetic.Abilities
                 return (CompProperties_ReduceEnergy)this.props;
             }
         }
-        //技能接口
-        private RWrd_PsyCastBase Ability
-        {
-            get
-            {
-                return (RWrd_PsyCastBase)this.parent;
-            }
-        }
-        //能量消耗
-        public float EnergyReduce
-        {
-            get
-            {
-                if (this.Props.masteryOffset != 0 || this.Props.masteryFactor != 0)
-                {
-                    if (this.Props.masteryOffset != 0 & this.Props.masteryFactor == 0)
-                    {
-                        return (float)this.Props.rEnergy + (float)Math.Floor(this.Ability.mastery * this.Props.masteryOffset);
-                    }
-                    else if (this.Props.masteryOffset == 0 & this.Props.masteryFactor != 0)
-                    {
-                        return (float)this.Props.rEnergy * (float)Math.Floor(this.Ability.mastery * this.Props.masteryFactor);
-                    }
-                    else
-                    {
-                        Log.Error("masteryOffset and masteryFactor cannot exist at the same time!");
-                        return (float)this.Props.rEnergy;
-                    }
-                }
-                else
-                {
-                    return (float)this.Props.rEnergy;
-                }
-            }
-        }
         //初始化
         public override void Initialize(AbilityCompProperties props)
         {
@@ -66,10 +31,9 @@ namespace Electromagnetic.Abilities
                 bool flag = hediff.GetType() == typeof(Hediff_RWrd_PowerRoot);
                 if (flag)
                 {
-                    ((Hediff_RWrd_PowerRoot)hediff).energy.SetEnergy(this.EnergyReduce);
+                    ((Hediff_RWrd_PowerRoot)hediff).energy.SetEnergy((float)this.Props.rEnergy);
                     ((Hediff_RWrd_PowerRoot)hediff).energy.SetExp(0.1f * (float)(-(float)this.Props.rEnergy));
                     ((RWrd_PsyCastBase)this.parent).SetMastery(0.2f);
-                    ((Hediff_RWrd_PowerRoot)hediff).energy.SetCompleteRealm(0.0002f);
                     break;
                 }
             }
@@ -98,7 +62,7 @@ namespace Electromagnetic.Abilities
             base.CompTick();
         }
 
-        //禁用技能按钮
+        //隐藏技能按钮
         public override bool GizmoDisabled(out string reason)
         {
             bool result;
@@ -109,7 +73,7 @@ namespace Electromagnetic.Abilities
                 if (-(float)this.Props.rEnergy > root.energy.energy)
                 {
                     result = true;
-                    reason = "RWrd_NoEnergy".Translate() + ", " + "RWrd_CannotUse".Translate();
+                    reason = "能量不足，无法使用技能";
                 }
                 else
                 {
@@ -120,25 +84,11 @@ namespace Electromagnetic.Abilities
             else
             {
                 result = true;
-                reason = "RWrd_NoRoot".Translate() + ", " + "RWrd_CannotUse".Translate();
+                reason = "不具备磁场力量，无法使用技能";
             }
             return result;
         }
-        //隐藏技能按钮
-        public override bool ShouldHideGizmo
-        {
-            get
-            {
-                if (this.Ability.mastery < 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
+
         public bool disabled = true;
         public Hediff_RWrd_PowerRoot root;
         private int tick = 0;

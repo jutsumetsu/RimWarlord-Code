@@ -27,14 +27,6 @@ namespace Electromagnetic.Abilities
                 return this.parent.pawn;
             }
         }
-        //技能接口
-        private RWrd_PsyCastBase Ability
-        {
-            get
-            {
-                return (RWrd_PsyCastBase)this.parent;
-            }
-        }
         //检测可用格子
         private bool canusecell(IntVec3 c)
         {
@@ -58,8 +50,7 @@ namespace Electromagnetic.Abilities
                 this.Pawn.Map.flecks.CreateFleck(dataStatic);
             }
             DamageDef named = DefDatabase<DamageDef>.GetNamed("Cut", true);
-            int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
-            int num2 = 30 + masteryOffset;
+            int num2 = 30;
             if (Pawn.IsHaveRoot())
             {
                 //计算伤害

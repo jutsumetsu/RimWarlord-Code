@@ -13,9 +13,5 @@ namespace Electromagnetic.Abilities
         }
         public int rEnergy;
         public int level;
-        public float masteryFactor = 0;
-        public float masteryOffset = 0;
-        public bool isCommon = false;
-        public bool isAshura = false;
     }
 }

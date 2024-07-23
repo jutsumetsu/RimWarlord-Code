@@ -18,14 +18,6 @@ namespace Electromagnetic.Abilities
                 return (CompProperties_AbilityGiveTargetHediff)this.props;
             }
         }
-        //技能接口
-        private RWrd_PsyCastBase Ability
-        {
-            get
-            {
-                return (RWrd_PsyCastBase)this.parent;
-            }
-        }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             base.Apply(target, dest);
@@ -79,7 +71,6 @@ namespace Electromagnetic.Abilities
                 //传入力量之源参数
                 Hediff_TargetBase hediff1 = hediff as Hediff_TargetBase;
                 hediff1.root = this.parent.pawn.GetRoot();
-                hediff1.mastery = this.Ability.mastery;
                 target.health.AddHediff(hediff1, null, null, null);
             }
         }
