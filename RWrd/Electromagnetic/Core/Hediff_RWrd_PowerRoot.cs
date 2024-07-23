@@ -447,6 +447,14 @@ namespace Electromagnetic.Core
                 return stage;
             }
         }
+        public override IEnumerable<StatDrawEntry> SpecialDisplayStats(StatRequest req)
+        {
+            foreach (StatDrawEntry statDrawEntry in this.CurStage.SpecialDisplayStats())
+            {
+                yield return statDrawEntry;
+            }
+            yield break;
+        }
         public override void PostMake()
         {
             base.PostMake();
@@ -553,7 +561,7 @@ namespace Electromagnetic.Core
             }
             if (jobDriver != null)
             {
-                if (jobDriver.GetType() == typeof(JobDriver_AttackMelee))
+                if (jobDriver.GetType() == typeof(JobDriver_AttackMelee) || jobDriver.GetType() == typeof(JobDriver_AttackStatic))
                 {
                     int numMeleeAttacksMade = Traverse.Create(jobDriver).Field("numMeleeAttacksMade").GetValue<int>();
                     if (numMeleeAttacksMade > this.meleeAttackCounter)
