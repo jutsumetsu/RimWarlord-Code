@@ -30,6 +30,14 @@ namespace Electromagnetic.Abilities
                 };
             }
         }
+        //技能接口
+        private RWrd_PsyCastBase Ability
+        {
+            get
+            {
+                return (RWrd_PsyCastBase)this.parent;
+            }
+        }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             base.Apply(target, dest);
@@ -80,6 +88,7 @@ namespace Electromagnetic.Abilities
             hediffComp_Disappears.ticksToDisappear = 120;
             Hediff_TargetBase hediff1 = hediff as Hediff_TargetBase;
             hediff1.root = this.parent.pawn.GetRoot();
+            hediff1.mastery = this.Ability.mastery;
             pawn.health.AddHediff(hediff1, null, null, null);
         }
     }

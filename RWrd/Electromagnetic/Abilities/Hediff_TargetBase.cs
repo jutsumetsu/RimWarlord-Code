@@ -11,5 +11,6 @@ namespace Electromagnetic.Abilities
     public class Hediff_TargetBase : HediffWithComps
     {
         public Hediff_RWrd_PowerRoot root;
+        public float mastery;
     }
 }
