@@ -46,8 +46,11 @@ namespace Electromagnetic.Core
         //人物属性
         public static StatDef MeleeArmorPenetration;
 
+        [MayRequire("DubsBadHygiene")]
         public static StatDef ThirstRateMultiplier;
+        [MayRequire("DubsBadHygiene")]
         public static StatDef HygieneRateMultiplier;
+        [MayRequire("DubsBadHygiene")]
         public static StatDef BladderRateMultiplier;
     }
 }
