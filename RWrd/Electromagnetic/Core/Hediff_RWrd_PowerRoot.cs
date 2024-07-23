@@ -559,38 +559,6 @@ namespace Electromagnetic.Core
                     }
                 }
             }
-            if (jobDriver != null)
-            {
-                if (jobDriver.GetType() == typeof(JobDriver_AttackMelee) || jobDriver.GetType() == typeof(JobDriver_AttackStatic))
-                {
-                    int numMeleeAttacksMade = Traverse.Create(jobDriver).Field("numMeleeAttacksMade").GetValue<int>();
-                    if (numMeleeAttacksMade > this.meleeAttackCounter)
-                    {
-                        //攻击次数计数器
-                        meleeAttackCounter++;
-                    }
-                }
-                else
-                {
-                    float num = this.energy.damage;
-                    float num2 = num * meleeAttackCounter / 10;
-                    int exp1 = (int)Math.Floor(num2);
-                    int exp2 = exp1 * 10;
-                    int currentLevel = this.energy.level;
-                    if (currentLevel == 0)
-                    {
-                        //电推经验获取
-                        this.energy.SetExp(exp2);
-                    }
-                    else
-                    {
-                        //磁场转动经验获取
-                        this.energy.SetExp(exp1);
-                    }
-                    this.energy.damage = 0;
-                    meleeAttackCounter = 0;
-                }
-            }
         }
         public int meleeAttackCounter = 0;
 

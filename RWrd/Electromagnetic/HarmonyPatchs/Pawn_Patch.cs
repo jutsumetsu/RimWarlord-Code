@@ -71,6 +71,19 @@ namespace Electromagnetic.HarmonyPatchs
                                 {
                                     Pawn pawn = target.Pawn;
                                     root.energy.damage = num;
+                                    float num2 = num / 10;
+                                    int exp1 = (int)Math.Floor(num2);
+                                    int exp2 = exp1 * 10;
+                                    if (level == 0)
+                                    {
+                                        //电推经验获取
+                                        root.energy.SetExp(exp2);
+                                    }
+                                    else
+                                    {
+                                        //磁场转动经验获取
+                                        root.energy.SetExp(exp1);
+                                    }
                                 }
 
                                 List<DamageInfo> damageInfos = new List<DamageInfo>();
