@@ -147,7 +147,6 @@
     <Compile Include="Electromagnetic\Core\RimWarlordDef.cs" />
     <Compile Include="Electromagnetic\Core\RWrd_DefOf.cs" />
     <Compile Include="Electromagnetic\Core\RWrd_RouteDef.cs" />
-    <Compile Include="Electromagnetic\Core\RWrd_RouteLevel.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

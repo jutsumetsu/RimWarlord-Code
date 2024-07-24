@@ -118,7 +118,6 @@ namespace Electromagnetic.Core
             if (flag)
             {
                 this.energy = ((num2 < this.MaxEnergy) ? num2 : this.MaxEnergy);
-                this.pawn.CheckAbilityLimiting();
             }
             else
             {
@@ -136,7 +135,6 @@ namespace Electromagnetic.Core
             {
                 float num2 = this.exp + num;
                 this.exp = ((num2 > this.MaxExp) ? this.MaxExp : num2);
-                this.pawn.CheckAbilityLimiting();
             }
         }
         /// <summary>
@@ -151,6 +149,7 @@ namespace Electromagnetic.Core
                 float num2 = this.completerealm + num;
                 this.completerealm = (num2 > this.MaxCompleteRealm ? this.MaxCompleteRealm : num2);
                 this.pawn.CheckAbilityLimiting();
+                this.pawn.UpdateStageInfo(true);
             }
         }
         /// <summary>
@@ -221,6 +220,7 @@ namespace Electromagnetic.Core
             {
                 this.level += 1;
                 this.OnPostSetLevel();
+                this.pawn.UpdateStageInfo();
                 this.exp = 0f;
             }
         }

@@ -198,9 +198,7 @@ namespace Electromagnetic.UI
             float num2 = 0f;
             int num3 = this.pathsPerRow;
             //读取所有技能树
-            IEnumerable<RWrd_RouteDef> prepaths = DefDatabase<RWrd_RouteDef>.AllDefs
-                                                .OrderBy((RWrd_RouteDef path) => path.label.Substring(0, 1));
-            IEnumerable<RWrd_RouteDef> paths = prepaths.Reverse();
+            IEnumerable<RWrd_RouteDef> paths = DefDatabase<RWrd_RouteDef>.AllDefs;
             foreach (RWrd_RouteDef def in paths)
             {
                 Texture2D texture2D = def.backgroundImage;

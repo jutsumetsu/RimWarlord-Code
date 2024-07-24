@@ -9,6 +9,33 @@ namespace Electromagnetic.Core
 {
     public class RWrd_RouteDef : Def
     {
+        /// <summary>
+        /// 是否可解锁
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <returns></returns>
+        public virtual bool CanPawnUnlock(Pawn pawn)
+        {
+            if (unlockNoRequired)
+            {
+                return true;
+            }
+            else
+            {
+                return PawnHasCorrectBackstory(pawn);
+            }
+        }
+        private bool PawnHasCorrectBackstory(Pawn pawn)
+        {
+            if (this.backstoryFilter != null)
+            {
+                return this.backstoryFilter.Matches(pawn.story.Adulthood) || this.backstoryFilter.Matches(pawn.story.Childhood);
+            }
+            else
+            {
+                return false;
+            }
+        }
         public override void ResolveReferences()
         {
             base.ResolveReferences();
@@ -37,7 +64,9 @@ namespace Electromagnetic.Core
         {
             return this.AllAbilities.Contains(def);
         }
-        //所有技能
+        /// <summary>
+        /// 所有技能
+        /// </summary>
         public List<AbilityDef> AllAbilities
         {
             get
@@ -95,6 +124,9 @@ namespace Electromagnetic.Core
                 }
             });
         }
+        /// <summary>
+        /// 最大层级
+        /// </summary>
         public int MaxLevel
         {
             get
@@ -118,5 +150,8 @@ namespace Electromagnetic.Core
         public int width;
         public int height;
         public string unlockRequired;
+        public bool unlockNoRequired = false;
+        [NoTranslate]
+        public BackstoryCategoryFilter backstoryFilter;
     }
 }

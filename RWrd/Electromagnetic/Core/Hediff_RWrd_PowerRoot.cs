@@ -152,6 +152,15 @@ namespace Electromagnetic.Core
                         this.pawn.CheckAbilityLimiting();
                     }
                 };
+                yield return new Command_Action
+                {
+                    defaultLabel = "RWrd_RefreshSkillTree".Translate(),
+                    action = delegate ()
+                    {
+                        this.pawn.CheckRouteUnlock();
+                        this.pawn.CheckAbilityLimiting();
+                    }
+                };
             }
             yield break;
         }
@@ -178,6 +187,10 @@ namespace Electromagnetic.Core
                 this.pawn.abilities.RemoveAbility(a.def);
             });
         }
+        /// <summary>
+        /// 解锁技能树
+        /// </summary>
+        /// <param name="route">技能树Def</param>
         public void UnlockRoute(RWrd_RouteDef route)
         {
             if (!this.routes.Contains(route))
@@ -193,7 +206,7 @@ namespace Electromagnetic.Core
         /// 身体机能加成列表
         /// </summary>
         /// <returns></returns>
-        private IEnumerable<PawnCapacityModifier> GetPCMList
+        public IEnumerable<PawnCapacityModifier> GetPCMList
         {
             get
             {
@@ -245,7 +258,7 @@ namespace Electromagnetic.Core
         /// <summary>
         /// 人物属性加成列表
         /// </summary>
-        private IEnumerable<StatModifier> GetStatOffsetList
+        public IEnumerable<StatModifier> GetStatOffsetList
         {
             get
             {
@@ -361,7 +374,7 @@ namespace Electromagnetic.Core
         /// <summary>
         /// 人物属性乘数列表
         /// </summary>
-        private IEnumerable<StatModifier> GetStatFactorList
+        public IEnumerable<StatModifier> GetStatFactorList
         {
             get
             {
@@ -441,25 +454,34 @@ namespace Electromagnetic.Core
         {
             get
             {
-                HediffStage stage = new HediffStage();
-                stage.becomeVisible = false;
+                float num1;
+                float num2 = Math.Max(1 - this.energy.level * 0.05f, 0f);
                 if (this.energy.level == 0)
                 {
-                    stage.painFactor = 0.1f;
+                    num1 = 0.1f;
                 }
                 else
                 {
-                    stage.painFactor = 0;
+                    num1 = 0;
                 }
-                stage.hungerRateFactor = Math.Max(1 - this.energy.level * 0.05f, 0f);
-                stage.totalBleedFactor = 0;
-                stage.makeImmuneTo = this.GetImmuneTo;
-                stage.statOffsets = this.GetStatOffsetList.ToList();
-                stage.statFactors = this.GetStatFactorList.ToList();
-                stage.capMods = this.GetPCMList.ToList();
-                return stage;
+                if (this.stage == null)
+                {
+                    this.stage = new HediffStage
+                                {
+                                    painFactor = num1,
+                                    becomeVisible = false,
+                                    hungerRateFactor = num2,
+                                    totalBleedFactor = 0,
+                                    makeImmuneTo = this.GetImmuneTo,
+                                    statOffsets = this.GetStatOffsetList.ToList(),
+                                    statFactors = this.GetStatFactorList.ToList(),
+                                    capMods = this.GetPCMList.ToList()
+                                };
+                }
+                return this.stage;
             }
         }
+        // 绘制详情页
         public override IEnumerable<StatDrawEntry> SpecialDisplayStats(StatRequest req)
         {
             foreach (StatDrawEntry statDrawEntry in this.CurStage.SpecialDisplayStats())
@@ -472,7 +494,7 @@ namespace Electromagnetic.Core
         {
             base.PostMake();
             //解锁默认技能树
-            this.UnlockRoute(RWrd_DefOf.Base);
+            this.pawn.CheckRouteUnlock();
             //赋予EnergyTracker
             bool flag = this.energy == null;
             if (flag)
@@ -534,6 +556,7 @@ namespace Electromagnetic.Core
                     this.routes = new List<RWrd_RouteDef>();
                 }
                 this.energy.pawn = this.pawn;
+                this.pawn.CheckRouteUnlock();
             }
         }
         public override void Tick()
@@ -584,5 +607,7 @@ namespace Electromagnetic.Core
         public bool openingBasicAbility = false;
 
         public bool reeStartInit = false;
+
+        public HediffStage stage;
     }
 }
