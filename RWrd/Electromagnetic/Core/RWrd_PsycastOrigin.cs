@@ -224,26 +224,5 @@ namespace Electromagnetic.Core
             }
             return result;
         }
-        public override void AbilityTick()
-        {
-            base.AbilityTick();
-            bool flag = this.pawn.Spawned && base.Casting;
-            if (flag)
-            {
-                bool flag2 = this.moteCast == null || this.moteCast.Destroyed;
-                if (flag2)
-                {
-                    this.moteCast = MoteMaker.MakeAttachedOverlay(this.pawn, ThingDefOf.Mote_CastPsycast, RWrd_PsycastOrigin.MoteCastOffset, RWrd_PsycastOrigin.MoteCastScale, base.verb.verbProps.warmupTime - RWrd_PsycastOrigin.MoteCastFadeTime);
-                }
-                else
-                {
-                    this.moteCast.Maintain();
-                }
-            }
-        }
-        private Mote moteCast;
-        private static float MoteCastFadeTime = 0.4f;
-        private static float MoteCastScale = 1f;
-        private static Vector3 MoteCastOffset = new Vector3(0f, 0f, 0.48f);
     }
 }

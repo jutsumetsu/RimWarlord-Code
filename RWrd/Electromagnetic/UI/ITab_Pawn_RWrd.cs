@@ -89,6 +89,10 @@ namespace Electromagnetic.UI
                 return result;
             }
         }
+        public Pawn GetSelectedPawn()
+        {
+            return Find.Selector.SingleSelectedThing as Pawn;
+        }
 
         public override void OnOpen()
         {
@@ -179,6 +183,16 @@ namespace Electromagnetic.UI
                 if (Widgets.ButtonText(buttonRect, "RWrd_IntroduceButton".Translate()))
                 {
                     Find.LetterStack.ReceiveLetter("RWrd_IntroduceButton".Translate(), "RWrd_IntroduceMessage".Translate() + "RWrd_IntroduceMessage1".Translate(), LetterDefOf.PositiveEvent);
+                }
+                //原子分裂按钮
+                if (this.root.energy.level >= 75)
+                {
+                    Rect thingsSpawn = listing_Standard.GetRect(40f, 0.35f);
+                    if (Widgets.ButtonTextSubtle(thingsSpawn, "RWrd_AtomSplit".Translate()))
+                    {
+                        var selectArtifact = new Dialog_SelectThings(this);
+                        Find.WindowStack.Add(selectArtifact);
+                    }
                 }
                 listing_Standard.End();
                 //绘制技能树显示区域
@@ -360,10 +374,15 @@ namespace Electromagnetic.UI
             GUI.color = Color.white;
             GUI.DrawTexture(inRect, ContentFinder<Texture2D>.Get(ability.iconPath, true));
         }
-        
+        public void AssignArtifact(Thing things)
+        {
+            this.curThings = things;
+        }
+
         private readonly Dictionary<AbilityDef, Vector2> abilityPos = new Dictionary<AbilityDef, Vector2>();
         //private readonly Dictionary<string, List<RWrd_RouteDef>> pathsByTab = new Dictionary<string, List<RWrd_RouteDef>>();
         private readonly List<TabRecord> tabs;
+        public Thing curThings;
         private string curTab;
         private bool devMode;
         private Hediff_RWrd_PowerRoot root;

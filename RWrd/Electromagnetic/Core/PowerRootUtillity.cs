@@ -39,12 +39,15 @@ namespace Electromagnetic.Core
         /// 检查技能树解锁
         /// </summary>
         /// <param name="pawn"></param>
-        public static void CheckRouteUnlock(this Pawn pawn)
+        public static void CheckRouteUnlock(this Pawn pawn, Hediff_RWrd_PowerRoot root = null)
         {
             bool flag = pawn.IsHaveRoot();
-            if (flag)
+            if (flag || root != null)
             {
-                Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                if (root == null)
+                {
+                    root = pawn.GetRoot();
+                }
                 IEnumerable<RWrd_RouteDef> paths = DefDatabase<RWrd_RouteDef>.AllDefs;
                 foreach (var path in paths)
                 {
@@ -62,12 +65,15 @@ namespace Electromagnetic.Core
         /// 检查等级技能限制
         /// </summary>
         /// <param name="pawn"></param>
-        public static void CheckAbilityLimiting(this Pawn pawn)
+        public static void CheckAbilityLimiting(this Pawn pawn, Hediff_RWrd_PowerRoot root = null)
         {
             bool flag = pawn.IsHaveRoot();
-            if (flag)
+            if (flag || root != null)
             {
-                Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                if (root == null)
+                {
+                    root = pawn.GetRoot();
+                }
                 int level = root.energy.level;
                 List<Ability> list = new List<Ability>();
                 List<Ability> list2 = new List<Ability>();
@@ -143,7 +149,7 @@ namespace Electromagnetic.Core
             /*List<RWrd_RouteDef> allDefListForReading = DefDatabase<RWrd_RouteDef>.AllDefsListForReading;
             allDefListForReading.Remove(RWrd_DefOf.Base);
             RWrd_RouteDef route =  allDefListForReading.RandomElement<RWrd_RouteDef>();*/
-            /*root.UnlockRoute(route);*/
+            root.UnlockRoute(RWrd_DefOf.Base);
         }
         /// <summary>
         /// 检查技能树

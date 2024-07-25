@@ -493,13 +493,12 @@ namespace Electromagnetic.Core
         public override void PostMake()
         {
             base.PostMake();
-            //解锁默认技能树
-            this.pawn.CheckRouteUnlock();
             //赋予EnergyTracker
             bool flag = this.energy == null;
             if (flag)
             {
                 this.energy = new Pawn_EnergyTracker(this.pawn);
+                this.routes = new List<RWrd_RouteDef>();
                 this.IsInit = true;
                 this.initActivity = true;
             }
@@ -538,7 +537,9 @@ namespace Electromagnetic.Core
                 this.energy.completerealm = UnityEngine.Random.Range(1, 4) * 0.1f;
                 this.energy.trainDesireFactor = UnityEngine.Random.Range(1, 51);
             }
-            this.pawn.CheckAbilityLimiting();
+            this.pawn.CheckRouteUnlock(this);
+            this.pawn.CheckAbilityLimiting(this);
+            Log.Message("Root post make is called");
         }
         //保存数据
         public override void ExposeData()
@@ -602,7 +603,7 @@ namespace Electromagnetic.Core
         private bool IsInit = false;
         public bool initActivity = false;
 
-        public List<RWrd_RouteDef> routes = new List<RWrd_RouteDef>();
+        public List<RWrd_RouteDef> routes;
 
         public bool openingBasicAbility = false;
 
