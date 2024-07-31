@@ -27,7 +27,7 @@ namespace Electromagnetic.UI
 
         public Dialog_SelectThings(ITab_Pawn_RWrd parent)
         {
-            doCloseButton = true;
+            doCloseButton = false;
             doCloseX = true;
             closeOnClickedOutside = false;
             absorbInputAroundWindow = false;

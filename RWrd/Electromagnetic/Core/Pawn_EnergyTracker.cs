@@ -11,13 +11,6 @@ namespace Electromagnetic.Core
     [StaticConstructorOnStartup]
     public class Pawn_EnergyTracker : IExposable
     {
-        public RimWarlordDef CurrentDef
-        {
-            get
-            {
-                return this.currentRWrd.def;
-            }
-        }
         //判断是否满级
         public bool OnMaxLevel
         {
@@ -34,12 +27,6 @@ namespace Electromagnetic.Core
             this.completerealm = 0f;
             this.powerflow = 0;
             this.canSelfDestruct = false;
-            this.currentRWrd = new RimWarlord(RimWarlordDef.Dict.GetValueOrDefault(0), this.pawn);
-            /*RimWarlordDef def;
-            if (!RimWarlordDef.Dict.TryGetValue(0, out def))
-            {
-                def = default(RimWarlordDef);
-            }*/
             this.OnPostSetLevel();
         }
         /// <summary>
@@ -240,21 +227,11 @@ namespace Electromagnetic.Core
             Scribe_Values.Look<float>(ref this.completerealm, "completerealm", 0f, false);
             Scribe_Values.Look<int>(ref this.powerflow, "powerflow", 0, false);
             Scribe_Values.Look<int>(ref this.level, "level", 0, false);
-            Scribe_Deep.Look<RimWarlord>(ref this.currentRWrd, "currentRWrd", Array.Empty<object>());
             Scribe_Values.Look<bool>(ref this.canSelfDestruct, "canSelfDestruct", false, false);
             bool flag = Scribe.mode == LoadSaveMode.PostLoadInit;
-            if (flag)
-            {
-                if (this.level == 0 && this.currentRWrd.def.level > 0)
-                {
-                    this.level = this.currentRWrd.def.level;
-                }
-            }
         }
 
         public Pawn pawn;
-
-        public RimWarlord currentRWrd = new RimWarlord();
         /// <summary>
         /// 完全境界
         /// </summary>

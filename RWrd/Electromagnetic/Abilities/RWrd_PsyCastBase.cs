@@ -167,9 +167,5 @@ namespace Electromagnetic.Abilities
         }
         public float mastery = 0;
         public float MaxMastery = 100;
-        private Mote moteCast;
-        private static float MoteCastFadeTime = 0.4f;
-        private static float MoteCastScale = 1f;
-        private static Vector3 MoteCastOffset = new Vector3(0f, 0f, 0.48f);
     }
 }

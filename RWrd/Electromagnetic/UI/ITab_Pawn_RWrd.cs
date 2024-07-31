@@ -182,12 +182,16 @@ namespace Electromagnetic.UI
                 Rect buttonRect = listing_Standard.GetRect(30f, 0.5f);
                 if (Widgets.ButtonText(buttonRect, "RWrd_IntroduceButton".Translate()))
                 {
-                    Find.LetterStack.ReceiveLetter("RWrd_IntroduceButton".Translate(), "RWrd_IntroduceMessage".Translate() + "RWrd_IntroduceMessage1".Translate(), LetterDefOf.PositiveEvent);
+                    Find.WindowStack.Add(new Dialog_PowerIntroduce());
                 }
                 //原子分裂按钮
                 if (this.root.energy.level >= 75)
                 {
                     Rect thingsSpawn = listing_Standard.GetRect(40f, 0.35f);
+                    if (Mouse.IsOver(thingsSpawn))
+                    {
+                        TooltipHandler.TipRegion(thingsSpawn, "RWrd_ASIntroduce".Translate());
+                    }
                     if (Widgets.ButtonTextSubtle(thingsSpawn, "RWrd_AtomSplit".Translate()))
                     {
                         var selectArtifact = new Dialog_SelectThings(this);

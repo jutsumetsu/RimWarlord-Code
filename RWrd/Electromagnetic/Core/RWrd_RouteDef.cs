@@ -29,7 +29,25 @@ namespace Electromagnetic.Core
         {
             if (this.backstoryFilter != null)
             {
-                return this.backstoryFilter.Matches(pawn.story.Adulthood) || this.backstoryFilter.Matches(pawn.story.Childhood);
+                bool flag;
+                bool flag2;
+                if (pawn.story.Adulthood != null)
+                {
+                    flag = this.backstoryFilter.Matches(pawn.story.Adulthood);
+                }
+                else
+                {
+                    flag = false;
+                }
+                if (pawn.story.Childhood != null)
+                {
+                    flag2 = this.backstoryFilter.Matches(pawn.story.Childhood);
+                }
+                else
+                {
+                    flag2 = false;
+                }
+                return flag || flag2;
             }
             else
             {

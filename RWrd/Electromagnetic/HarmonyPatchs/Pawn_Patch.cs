@@ -14,25 +14,25 @@ namespace Electromagnetic.HarmonyPatchs
 {
     public class Pawn_Patch
     {
-        [HarmonyPatch(typeof(Pawn))]
-        [HarmonyPatch(nameof(Pawn.Tick))]
+        [HarmonyPatch(typeof(TraitSet))]
+        [HarmonyPatch(nameof(TraitSet.GainTrait))]
         class Patch1
         {
             [HarmonyPostfix]
-            public static void TickPostFix(Pawn __instance)
+            public static void GainTraitPostFix(TraitSet __instance, Trait trait)
             {
-                if (__instance.RaceProps.Humanlike)
+                Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
+                if (trait.def == RWrd_DefOf.RWrd_Gifted && pawn.RaceProps.Humanlike)
                 {
-                    bool flag = __instance.IsHaveRoot();
-                    if (!flag)
+                    if (!pawn.IsHaveRoot())
                     {
-                        bool flag2 = __instance.story.traits.HasTrait(RWrd_DefOf.RWrd_Gifted);
-                        if (flag2)
-                        {
-                            Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, __instance, null);
-                            __instance.health.AddHediff(hediff, null, null, null);
-                        }
+                        Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, pawn);
+                        pawn.health.AddHediff(hediff);
                     }
+                    /*if (ModLister.BiotechInstalled)
+                    {
+
+                    }*/
                 }
             }
         }
@@ -70,7 +70,7 @@ namespace Electromagnetic.HarmonyPatchs
                                 if (target.Thing.GetType() == typeof(Pawn))
                                 {
                                     Pawn pawn = target.Pawn;
-                                    float num2 = num / 10;
+                                    float num2 = num / 5;
                                     int exp1 = (int)Math.Floor(num2);
                                     int exp2 = exp1 * 10;
                                     if (level == 0)

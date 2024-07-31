@@ -133,20 +133,24 @@
     <Compile Include="Electromagnetic\Core\Tools.cs" />
     <Compile Include="Electromagnetic\Core\TrainingCategory.cs" />
     <Compile Include="Electromagnetic\Core\WorkGiver_Training.cs" />
+    <Compile Include="Electromagnetic\Effect\FragmentsWorker.cs" />
+    <Compile Include="Electromagnetic\Effect\GameComponent_FragmentsManager.cs" />
+    <Compile Include="Electromagnetic\Effect\PowerfulPersonFragments.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\HarmonyInit.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\HealthPatch.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\Pawn_Patch.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\PostFix_EBFEndpoints_GetMaxHealthWithEBF.cs" />
+    <Compile Include="Electromagnetic\Setting\RWrdSettings.cs" />
     <Compile Include="Electromagnetic\Things\CompProperties_ThingStudiable.cs" />
     <Compile Include="Electromagnetic\Things\CompThingStudiable.cs" />
     <Compile Include="Electromagnetic\UI\Command_Electromagnetic.cs" />
+    <Compile Include="Electromagnetic\UI\Dialog_PowerIntroduce.cs" />
     <Compile Include="Electromagnetic\UI\Dialog_SelectThings.cs" />
     <Compile Include="Electromagnetic\UI\ITab_Pawn_RWrd.cs" />
     <Compile Include="Electromagnetic\UI\RWrd_ItemFilterDef.cs" />
     <Compile Include="Electromagnetic\UI\UIUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Electromagnetic\Core\RimWarlord.cs" />
-    <Compile Include="Electromagnetic\Core\RimWarlordDef.cs" />
     <Compile Include="Electromagnetic\Core\RWrd_DefOf.cs" />
     <Compile Include="Electromagnetic\Core\RWrd_RouteDef.cs" />
   </ItemGroup>

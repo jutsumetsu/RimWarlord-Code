@@ -149,7 +149,6 @@ namespace Electromagnetic.Core
             /*List<RWrd_RouteDef> allDefListForReading = DefDatabase<RWrd_RouteDef>.AllDefsListForReading;
             allDefListForReading.Remove(RWrd_DefOf.Base);
             RWrd_RouteDef route =  allDefListForReading.RandomElement<RWrd_RouteDef>();*/
-            root.UnlockRoute(RWrd_DefOf.Base);
         }
         /// <summary>
         /// 检查技能树

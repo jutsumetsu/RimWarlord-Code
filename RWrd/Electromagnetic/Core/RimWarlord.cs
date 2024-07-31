@@ -1,36 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using Electromagnetic.Setting;
+using Electromagnetic.UI;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace Electromagnetic.Core
 {
-    public class RimWarlord : IExposable
+    public class RimWarlord : Mod
     {
-        public void ExposeData()
+        RWrdSettings settings;
+        public RimWarlord(ModContentPack content) : base(content)
         {
-            Scribe_Defs.Look<RimWarlordDef>(ref this.def, "def");
+            this.settings = base.GetSettings<RWrdSettings>();
         }
-
-        public RimWarlord()
+        public override string SettingsCategory()
         {
-            this.def = this.def;
-            this.pawn = this.pawn;
+            return "RimWarlord".Translate();
         }
-
-        public RimWarlord(RimWarlordDef def, Pawn pawn)
+        public override void DoSettingsWindowContents(Rect inRect)
         {
-            this.def = def;
-            this.pawn = pawn;
+            Listing_Standard listingStandard = new Listing_Standard();
+            Rect rect1 = inRect.TakeLeftPart(inRect.width / 2f);
+            listingStandard.Begin(rect1);
+            listingStandard.CheckboxLabeled("RWrd_PowerfulPersonFragmentsEnabled".Translate(), ref RWrdSettings.PowerfulPersonFragments, "RWrd_PowerfulPersonFragmentsEnabledDesc".Translate());
+            listingStandard.End();
         }
-
-        public RimWarlord(RimWarlord other)
-        {
-            this.def = other.def;
-            this.pawn = other.pawn;
-        }
-
-        public RimWarlordDef def;
-        public Pawn pawn;
     }
 }
