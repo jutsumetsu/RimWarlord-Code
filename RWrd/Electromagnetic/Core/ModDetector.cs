@@ -19,6 +19,16 @@ namespace Electromagnetic.Core
             }
         }
         /// <summary>
+        /// Save Our Ship 2加载检测
+        /// </summary>
+        public static bool SOSIsLoaded
+        {
+            get
+            {
+                return ModDetector.RunningActiveMods.Any((ModContentPack pack) => pack.Name.Contains("Save Our Ship"));
+            }
+        }
+        /// <summary>
         /// 卫生模组加载检测
         /// </summary>
         public static bool DBHIsLoaded

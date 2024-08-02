@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Electromagnetic.Setting;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -120,7 +121,7 @@ namespace Electromagnetic.Core
             bool flag = num <= 0f;
             if (!flag)
             {
-                float num2 = this.exp + num;
+                float num2 = this.exp + num * RWrdSettings.XpFactor;
                 this.exp = ((num2 > this.MaxExp) ? this.MaxExp : num2);
             }
         }

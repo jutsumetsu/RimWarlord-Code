@@ -56,5 +56,10 @@ namespace Electromagnetic.Core
         public static StatDef HygieneRateMultiplier;
         [MayRequire("DubsBadHygiene")]
         public static StatDef BladderRateMultiplier;
+
+        [MayRequire("saveourship2")]
+        public static StatDef HypoxiaResistance;
+        [MayRequire("saveourship2")]
+        public static StatDef DecompressionResistance;
     }
 }

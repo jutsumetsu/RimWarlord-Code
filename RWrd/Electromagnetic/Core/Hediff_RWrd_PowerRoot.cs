@@ -7,6 +7,7 @@ using Verse;
 using Verse.AI;
 using HarmonyLib;
 using UnityEngine;
+using Electromagnetic.Setting;
 
 namespace Electromagnetic.Core
 {
@@ -159,6 +160,14 @@ namespace Electromagnetic.Core
                     {
                         this.pawn.CheckRouteUnlock();
                         this.pawn.CheckAbilityLimiting();
+                    }
+                };
+                yield return new Command_Action
+                {
+                    defaultLabel = "Temporary",
+                    action = delegate ()
+                    {
+                        Log.Message(RWrdSettings.XpFactor.ToString());
                     }
                 };
             }
@@ -369,6 +378,19 @@ namespace Electromagnetic.Core
                         value = 0.8f,
                     };
                 }
+                if (ModDetector.SOSIsLoaded)
+                {
+                    yield return new StatModifier
+                    {
+                        stat = RWrd_DefOf.HypoxiaResistance,
+                        value = Math.Min(this.energy.level * 0.05f, 1f),
+                    };
+                    yield return new StatModifier
+                    {
+                        stat = RWrd_DefOf.DecompressionResistance,
+                        value = Math.Min(this.energy.level * 0.05f, 1f),
+                    };
+                }
             }
         }
         /// <summary>
@@ -415,7 +437,7 @@ namespace Electromagnetic.Core
                     stat = StatDefOf.Flammability,
                     value = 0,
                 };
-                if (ModDetector.DBHIsLoaded)
+                if (ModDetector.DBHIsLoaded && RWrdSettings.NoFoodDrinkRequired)
                 {
                     yield return new StatModifier
                     {
@@ -455,7 +477,7 @@ namespace Electromagnetic.Core
             get
             {
                 float num1;
-                float num2 = Math.Max(1 - this.energy.level * 0.05f, 0f);
+                float num2;
                 if (this.energy.level == 0)
                 {
                     num1 = 0.1f;
@@ -463,6 +485,14 @@ namespace Electromagnetic.Core
                 else
                 {
                     num1 = 0;
+                }
+                if (RWrdSettings.NoFoodDrinkRequired)
+                {
+                    num2 = Math.Max(1 - this.energy.level * 0.05f, 0f);
+                }
+                else
+                {
+                    num2 = 1;
                 }
                 if (this.stage == null)
                 {

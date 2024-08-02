@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Electromagnetic.Abilities;
+using Electromagnetic.Setting;
 using RimWorld;
 using Verse;
 using Verse.AI.Group;
@@ -237,7 +238,15 @@ namespace Electromagnetic.Core
             {
                 num1 = 0;
             }
-            float num2 = Math.Max(1 - root.energy.level * 0.05f, 0f);
+            float num2;
+            if (RWrdSettings.NoFoodDrinkRequired)
+            {
+                num2 = Math.Max(1 - root.energy.level * 0.05f, 0f);
+            }
+            else
+            {
+                num2 = 1;
+            }
             root.stage.painFactor = num1;
             root.stage.hungerRateFactor = num2;
             if (cr)
