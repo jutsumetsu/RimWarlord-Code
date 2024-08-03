@@ -162,14 +162,16 @@ namespace Electromagnetic.Core
                         this.pawn.CheckAbilityLimiting();
                     }
                 };
-                yield return new Command_Action
+                /*yield return new Command_Action
                 {
                     defaultLabel = "Temporary",
                     action = delegate ()
                     {
-                        Log.Message(RWrdSettings.XpFactor.ToString());
+                        var type = AccessTools.TypeByName("CharacterEditor.CEditor.API");
+                        Pawn pawn = Traverse.Create(type).Field("Pawn").GetValue<Pawn>();
+                        Log.Message(pawn.Name);
                     }
-                };
+                };*/
             }
             yield break;
         }

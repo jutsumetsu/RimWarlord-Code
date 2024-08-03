@@ -16,7 +16,7 @@ namespace Electromagnetic.HarmonyPatchs
     {
         [HarmonyPatch(typeof(TraitSet))]
         [HarmonyPatch(nameof(TraitSet.GainTrait))]
-        class Patch1
+        class GainTraitPatch
         {
             [HarmonyPostfix]
             public static void GainTraitPostFix(TraitSet __instance, Trait trait)
@@ -39,7 +39,7 @@ namespace Electromagnetic.HarmonyPatchs
         // Pawn伤害patch
         [HarmonyPatch(typeof(Verb_MeleeAttackDamage))]
         [HarmonyPatch("DamageInfosToApply")]
-        class Patch2
+        class DamagePatch
         {
             [HarmonyPrefix]
             public static bool DamageInfosToApply_Prefix(Verb_MeleeAttackDamage __instance, LocalTargetInfo target, ref IEnumerable<DamageInfo> __result)
@@ -157,7 +157,7 @@ namespace Electromagnetic.HarmonyPatchs
         }
         [HarmonyPatch(typeof(StatExtension))]
         [HarmonyPatch(nameof(StatExtension.GetStatValue))]
-        class Patch4
+        class PawnStatPatch
         {
             [HarmonyPostfix]
             public static void StatFix(Thing thing, StatDef stat, ref float __result)
@@ -180,9 +180,38 @@ namespace Electromagnetic.HarmonyPatchs
                         }
                         if (flag21)
                         {
-                            __result = Math.Max(__result, 0.1f);
+                            __result = Math.Max(__result, 0.01f);
                         }
                     }
+                }
+            }
+        }
+        [HarmonyPatch(typeof(RoofCollapserImmediate))]
+        [HarmonyPatch("DropRoofInCellPhaseOne")]
+        class ThickRockRoofPatch
+        {
+            [HarmonyPrefix]
+            public static bool NoThickRockRoofDead_Prefix(IntVec3 c, Map map, List<Thing> outCrushedThings)
+            {
+                try
+                {
+                    List<Thing> thingList = c.GetThingList(map);
+
+                    thingList.RemoveAll(thing =>
+                    {
+                        if (thing is Pawn pawn)
+                        {
+                            return pawn.IsHaveRoot();
+                        }
+                        return false;
+                    });
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"Exception in Patch5: {ex}");
+                    return true;
                 }
             }
         }

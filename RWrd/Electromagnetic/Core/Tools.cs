@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 
 namespace Electromagnetic.Core
@@ -33,5 +34,17 @@ namespace Electromagnetic.Core
         {
             return Math.Atan2((double)(p2.x - p1.x), (double)(p2.z - p1.z)) * 180.0 / 3.141592653589793;
         }
+        /// <summary>
+        /// 能量条材质
+        /// </summary>
+        public static readonly Texture2D EnergyBarTex = SolidColorMaterials.NewSolidColorTexture(new Color(1f, 0.84f, 0f));
+        /// <summary>
+        /// 能量条减少材质
+        /// </summary>
+        public static readonly Texture2D EnergyBarTexReduce = SolidColorMaterials.NewSolidColorTexture(new Color(0.73f, 0.65f, 0.24f));
+        /// <summary>
+        /// 能量条空材质
+        /// </summary>
+        public static readonly Texture2D EmptyBarTex = SolidColorMaterials.NewSolidColorTexture(Color.clear);
     }
 }

@@ -83,7 +83,7 @@ namespace Electromagnetic.Core
                     rect31.xMin = UIScaling.AdjustCoordToUIScalingFloor(rect31.xMin + delta * width);
                     rect31.width = UIScaling.AdjustCoordToUIScalingCeil((fillPercentage - delta) * width);
                     GUI.color = new Color(1f, 1f, 1f, num2);
-                    GenUI.DrawTextureWithMaterial(rect31, Gizmo_Psychic.EnergyBarTexReduce, null, default);
+                    GenUI.DrawTextureWithMaterial(rect31, Tools.EnergyBarTexReduce, null, default);
                     GUI.color = Color.white;
                 }
             }
@@ -130,7 +130,7 @@ namespace Electromagnetic.Core
             Rect rect4 = new Rect(rect.x, rect.y + 20f, 172f, 10f);
             Widgets.Label(rect2, label);
             Widgets.Label(rect3, a.ToString("F0") + " / " + b.ToString("F0"));
-            Widgets.FillableBar(rect4, a / b, Gizmo_Psychic.EnergyBarTex, Gizmo_Psychic.EmptyBarTex, false);
+            Widgets.FillableBar(rect4, a / b, Tools.EnergyBarTex, Tools.EmptyBarTex, false);
         }
         /// <summary>
         /// 绘制等级显示
@@ -374,17 +374,5 @@ namespace Electromagnetic.Core
         /// 力量流量标签
         /// </summary>
         public string PowerFlowLabel;
-        /// <summary>
-        /// 能量条材质
-        /// </summary>
-        private static readonly Texture2D EnergyBarTex = SolidColorMaterials.NewSolidColorTexture(new Color(1f, 0.84f, 0f));
-        /// <summary>
-        /// 能量条减少材质
-        /// </summary>
-        private static readonly Texture2D EnergyBarTexReduce = SolidColorMaterials.NewSolidColorTexture(new Color(0.73f, 0.65f, 0.24f));
-        /// <summary>
-        /// 能量条空材质
-        /// </summary>
-        private static readonly Texture2D EmptyBarTex = SolidColorMaterials.NewSolidColorTexture(Color.clear);
     }
 }
