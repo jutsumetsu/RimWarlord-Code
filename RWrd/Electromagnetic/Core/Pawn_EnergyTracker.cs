@@ -122,7 +122,11 @@ namespace Electromagnetic.Core
             if (!flag)
             {
                 float num2 = this.exp + num * RWrdSettings.XpFactor;
-                this.exp = ((num2 > this.MaxExp) ? this.MaxExp : num2);
+                this.exp = (num2 > this.MaxExp) ? this.MaxExp : num2;
+                if (this.level == LevelMax)
+                {
+                    this.pawn.UpdateStageInfo();
+                }
             }
         }
         /// <summary>
@@ -208,8 +212,8 @@ namespace Electromagnetic.Core
             {
                 this.level += 1;
                 this.OnPostSetLevel();
-                this.pawn.UpdateStageInfo();
                 this.exp = 0f;
+                this.pawn.UpdateStageInfo();
             }
         }
         /// <summary>

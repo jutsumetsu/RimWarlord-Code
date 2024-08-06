@@ -179,7 +179,7 @@ namespace Electromagnetic.UI
                 listing_Standard.Label("Rwrd_CompleteRealm".Translate() + ": " + this.root.energy.completerealm.ToString() + "/10000", -1f, null);
                 listing_Standard.Label("RWrd_PowerFlow".Translate() + ": " + this.root.energy.powerflow.ToString() + "/100000000", -1f, null);
                 //力量体系介绍按钮
-                Rect buttonRect = listing_Standard.GetRect(30f, 0.5f);
+                Rect buttonRect = listing_Standard.GetRect(40f, 0.5f);
                 if (Widgets.ButtonText(buttonRect, "RWrd_IntroduceButton".Translate()))
                 {
                     Find.WindowStack.Add(new Dialog_PowerIntroduce());
@@ -187,12 +187,12 @@ namespace Electromagnetic.UI
                 //原子分裂按钮
                 if (this.root.energy.level >= 75)
                 {
-                    Rect thingsSpawn = listing_Standard.GetRect(40f, 0.35f);
+                    Rect thingsSpawn = new Rect(buttonRect.x + buttonRect.width, buttonRect.y, buttonRect.width, buttonRect.height);
                     if (Mouse.IsOver(thingsSpawn))
                     {
                         TooltipHandler.TipRegion(thingsSpawn, "RWrd_ASIntroduce".Translate());
                     }
-                    if (Widgets.ButtonTextSubtle(thingsSpawn, "RWrd_AtomSplit".Translate()))
+                    if (Widgets.ButtonText(thingsSpawn, "RWrd_AtomSplit".Translate()))
                     {
                         var selectArtifact = new Dialog_SelectThings(this);
                         Find.WindowStack.Add(selectArtifact);

@@ -162,14 +162,29 @@ namespace Electromagnetic.Core
                         this.pawn.CheckAbilityLimiting();
                     }
                 };
+                if (Tools.IsChineseLanguage)
+                {
+                    yield return new Command_Action
+                    {
+                        defaultLabel = "釋天風模擬器",
+                        action = delegate ()
+                        {
+                            this.energy.level = this.energy.LevelMax;
+                            this.pawn.UpdateStageInfo();
+                            this.energy.SetExp(this.energy.MaxExp);
+                            this.energy.SetPowerFlow(95000000);
+                            this.energy.SetCompleteRealm(9700);
+                            this.pawn.CheckAbilityLimiting();
+                        }
+                    };
+                }
                 /*yield return new Command_Action
                 {
                     defaultLabel = "Temporary",
                     action = delegate ()
                     {
-                        var type = AccessTools.TypeByName("CharacterEditor.CEditor.API");
-                        Pawn pawn = Traverse.Create(type).Field("Pawn").GetValue<Pawn>();
-                        Log.Message(pawn.Name);
+                        int lf = this.energy.level + 1;
+                        int ntn = 0;
                     }
                 };*/
             }
@@ -223,41 +238,65 @@ namespace Electromagnetic.Core
             {
                 int lf = this.energy.level + 1;
                 int lf2 = lf + 1;
+                int oft = (int)Math.Floor((lf - 50) / 5f) * 4;
+                int oft2 = (int)Math.Floor((lf2 - 51) / 5f) * 4;
+                bool flag = oft > 0;
+                bool flag2 = lf == 100;
+                int ntn = 0;
+                if (flag2)
+                {
+                    if (this.energy.exp >= 9000)
+                    {
+                        ntn += 1;
+                    }
+                    if (this.energy.exp >= 9900)
+                    {
+                        ntn += 2;
+                    }
+                    if (this.energy.exp >= 9990)
+                    {
+                        ntn += 3;
+                    }
+                    if (this.energy.exp >= 9999)
+                    {
+                        ntn += 4;
+                    }
+                }
                 float cr = this.energy.completerealm;
                 yield return new PawnCapacityModifier
                 {
                     capacity = PawnCapacityDefOf.Consciousness,
-                    offset = Math.Min(lf, 50),
+                    offset = flag ? (flag2 ? Math.Min(lf, 50 + oft + ntn) : Math.Min(lf, 50 + oft)) : Math.Min(lf, 50),
                 };
                 yield return new PawnCapacityModifier
                 {
                     capacity = PawnCapacityDefOf.Moving,
-                    offset = Math.Min(lf, 50),
+                    offset = flag ? (flag2 ? Math.Min(lf, 50 + oft + ntn) : Math.Min(lf, 50 + oft)) : Math.Min(lf, 50),
                 };
                 yield return new PawnCapacityModifier
                 {
                     capacity = PawnCapacityDefOf.Sight,
-                    offset = Math.Min(lf2, 50),
+                    offset = flag ? (flag2 ? Math.Min(lf2, 50 + oft2 + ntn) : Math.Min(lf2, 50 + oft2)) : Math.Min(lf2, 50),
                 };
                 yield return new PawnCapacityModifier
                 {
                     capacity = PawnCapacityDefOf.Hearing,
-                    offset = Math.Min(lf2, 50),
+                    offset = flag ? (flag2 ? Math.Min(lf2, 50 + oft2 + ntn) : Math.Min(lf2, 50 + oft2)) : Math.Min(lf2, 50),
                 };
                 yield return new PawnCapacityModifier
                 {
                     capacity = PawnCapacityDefOf.BloodFiltration,
-                    offset = Math.Min(lf2, 50),
+                    offset = flag ? (flag2 ? Math.Min(lf2, 50 + oft2 + ntn) : Math.Min(lf2, 50 + oft2)) : Math.Min(lf2, 50),
                 };
                 yield return new PawnCapacityModifier
                 {
                     capacity = PawnCapacityDefOf.BloodPumping,
-                    offset = Math.Min(lf2, 50),
+                    offset = flag ? (flag2 ? Math.Min(lf2, 50 + oft2 + ntn) : Math.Min(lf2, 50 + oft2)) : Math.Min(lf2, 50),
                 };
                 yield return new PawnCapacityModifier
                 {
                     capacity = PawnCapacityDefOf.Breathing,
-                    offset = Math.Min(lf2, 50),
+                    offset = flag ? (flag2 ? Math.Min(lf2, 50 + oft2 + ntn) : Math.Min(lf2, 50 + oft2)) : Math.Min(lf2, 50),
                 };
                 yield return new PawnCapacityModifier
                 {
@@ -325,17 +364,17 @@ namespace Electromagnetic.Core
                 yield return new StatModifier
                 {
                     stat = StatDefOf.ArmorRating_Sharp,
-                    value = cr,
+                    value = cr * 4,
                 };
                 yield return new StatModifier
                 {
                     stat = StatDefOf.ArmorRating_Blunt,
-                    value = cr,
+                    value = cr * 4,
                 };
                 yield return new StatModifier
                 {
                     stat = StatDefOf.ArmorRating_Heat,
-                    value = cr,
+                    value = cr * 4,
                 };
                 yield return new StatModifier
                 {
@@ -360,7 +399,7 @@ namespace Electromagnetic.Core
                 yield return new StatModifier
                 {
                     stat = RWrd_DefOf.MeleeArmorPenetration,
-                    value = cr,
+                    value = cr * 4,
                 };
                 yield return new StatModifier
                 {

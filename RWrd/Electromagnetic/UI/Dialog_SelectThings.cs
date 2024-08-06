@@ -145,7 +145,7 @@ namespace Electromagnetic.UI
 
                     // 在按钮左侧绘制 Slider
                     Rect sliderRect = new Rect(iconRect.xMax + 180f, num, 120f, 32f);
-                    Widgets.Label(new Rect(sliderRect.x, sliderRect.y+5, sliderRect.width, 24f), sliderValues[thingDef].ToString());
+                    Widgets.Label(new Rect(sliderRect.x + sliderRect.x / 4, sliderRect.y+5, sliderRect.width, 24f), sliderValues[thingDef].ToString());
                     int maxStackLimit = thingDef.stackLimit;
                     sliderValues[thingDef] = (int)Widgets.HorizontalSlider(sliderRect, sliderValues[thingDef], 1f, maxStackLimit);
 

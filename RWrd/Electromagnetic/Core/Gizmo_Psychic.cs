@@ -144,7 +144,7 @@ namespace Electromagnetic.Core
         private void DrawUI2(Rect rect, float a, float b, int c, string label, string label2)
         {
             //等级标签位置
-            Rect rect2 = new Rect(rect.x, rect.y, 120f, 25f);
+            Rect rect2 = new Rect(rect.x, rect.y, 140f, 25f);
             //磁场转动匹数位置
             Rect rect3 = new Rect(rect.x + 85f, rect.y, 40f, 25f);
             //经验值标签位置
@@ -174,7 +174,7 @@ namespace Electromagnetic.Core
                 if (!Tools.IsChineseLanguage)
                 {
                     num = a / b;
-                    rect3 = new Rect(rect.x + 123f, rect.y, 40f, 25f);
+                    rect3 = new Rect(rect.x + 127f, rect.y, 40f, 25f);
                     Widgets.Label(rect3, num.ToString("P0"));
                 }
                 else
