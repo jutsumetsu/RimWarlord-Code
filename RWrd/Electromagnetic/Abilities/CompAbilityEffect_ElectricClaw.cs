@@ -46,43 +46,67 @@ namespace Electromagnetic.Abilities
             FleckDef[] effectSet = this.EffectSet;
             //生成技能释放特效
             FleckCreationData dataStatic = FleckMaker.GetDataStatic(this.parent.pawn.DrawPos, map, effectSet[0], 3f);
-            dataStatic.rotation = (float)Tools.PointsAngleTool(this.parent.pawn.Position, pawn.Position);
+            IntVec3 position = this.parent.pawn.Position;
+            float Rotation = (float)Tools.PointsAngleTool(position, pawn.Position);
+            dataStatic.rotation = Rotation;
             map.flecks.CreateFleck(dataStatic);
-            //暂停目标动作并击晕
             pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, false);
-            pawn.stances.stunner.StunFor(60, this.parent.pawn, false, false);
             //判断电爪抓人方向并设置目标位置
-            if (this.parent.pawn.Rotation == Rot4.North)
+            bool flag = 0 <= Rotation && Rotation <= 22.5;
+            bool flag2 = -22.5 <= Rotation && Rotation < 0;
+            if (flag || flag2)
             {
-                IntVec3 position = this.parent.pawn.Position;
                 position.z += 1;
                 pawn.Position = position;
+                pawn.Notify_Teleported(true, false);
             }
-            else if (this.parent.pawn.Rotation == Rot4.West)
+            else if (Rotation < -22.5 && Rotation >= -67.5)
             {
-                IntVec3 position = this.parent.pawn.Position;
+                position.z += 1;
                 position.x -= 1;
                 pawn.Position = position;
+                pawn.Notify_Teleported(true, false);
             }
-            else if (this.parent.pawn.Rotation == Rot4.South)
+            else if (Rotation < -67.5 && Rotation >= -112.5)
             {
-                IntVec3 position = this.parent.pawn.Position;
+                position.x -= 1;
+                pawn.Position = position;
+                pawn.Notify_Teleported(true, false);
+            }
+            else if (Rotation < -112.5 && Rotation >= -157.5)
+            {
+                position.x -= 1;
                 position.z -= 1;
                 pawn.Position = position;
+                pawn.Notify_Teleported(true, false);
             }
-            else if (this.parent.pawn.Rotation == Rot4.West)
+            else if (Rotation > 157.5 || Rotation < -157.5)
             {
-                IntVec3 position = this.parent.pawn.Position;
+                position.z -= 1;
+                pawn.Position = position;
+                pawn.Notify_Teleported(true, false);
+            }
+            else if (Rotation > 112.5 && Rotation <= 157.5)
+            {
+                position.z -= 1;
                 position.x += 1;
                 pawn.Position = position;
+                pawn.Notify_Teleported(true, false);
+            }
+            else if (Rotation > 67.5 && Rotation <= 112.5)
+            {
+                position.x += 1;
+                pawn.Position = position;
+                pawn.Notify_Teleported(true, false);
             }
             else
             {
-                IntVec3 position = this.parent.pawn.Position;
+                position.x += 1;
+                position.z += 1;
                 pawn.Position = position;
+                pawn.Notify_Teleported(true, false);
             }
             //继续击晕并赋予目标电极内力Hediff
-            pawn.stances.stunner.StunFor(60, this.parent.pawn, false, false);
             Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.RWrd_ElectricInternalEnergy, pawn, null);
             HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();
             hediffComp_Disappears.ticksToDisappear = 120;

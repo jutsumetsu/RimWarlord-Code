@@ -12,7 +12,9 @@ namespace Electromagnetic.Core
     [StaticConstructorOnStartup]
     public class Pawn_EnergyTracker : IExposable
     {
-        //判断是否满级
+        /// <summary>
+        /// 判断是否满级
+        /// </summary>
         public bool OnMaxLevel
         {
             get
@@ -20,7 +22,9 @@ namespace Electromagnetic.Core
                 return this.level == this.LevelMax;
             }
         }
-        //初始化
+        /// <summary>
+        /// 初始化
+        /// </summary>
         private void Init()
         {
             this.energy = 0f;
@@ -50,6 +54,9 @@ namespace Electromagnetic.Core
                 return this.exp;
             }
         }
+        /// <summary>
+        /// 最大经验值
+        /// </summary>
         public int MaxExp
         {
             get
@@ -62,6 +69,58 @@ namespace Electromagnetic.Core
                 {
                     return 10000;
                 }
+            }
+        }
+        /// <summary>
+        /// 经验补正因子
+        /// </summary>
+        public float ExpCorrectionFactor
+        {
+            get
+            {
+                int x = this.level;
+                float factor;
+                if (x <= 10)
+                {
+                    factor = 18.75f - 0.0231f * x;
+                }
+                else if (x <= 30)
+                {
+                    factor = 24.017f - 0.5499f * x;
+                }
+                else if (x <= 47)
+                {
+                    factor = 19.6392f - 0.4039f * x;
+                }
+                else if (x == 48)
+                {
+                    factor = 0.4539f;
+                }
+                else if (x > 48 && x <= 50)
+                {
+                    factor = 2.7268f - 0.04735f * x;
+                }
+                else if (x <= 75)
+                {
+                    factor = 0.7432f - 0.007678f * x;
+                }
+                else if (x <= 90)
+                {
+                    factor = 0.5484f - 0.005081f * x;
+                }
+                else if (x <= 97)
+                {
+                    factor = 0.3621f - 0.003011f * x;
+                }
+                else if (x == 98)
+                {
+                    factor = 0.06202f;
+                }
+                else
+                {
+                    factor = 0.05406f;
+                }
+                return factor;
             }
         }
         /// <summary>
@@ -130,7 +189,7 @@ namespace Electromagnetic.Core
             }
         }
         /// <summary>
-        /// 设置完全境界
+        /// 增加完全境界
         /// </summary>
         /// <param name="num">数值</param>
         public void SetCompleteRealm(float num)
@@ -145,7 +204,17 @@ namespace Electromagnetic.Core
             }
         }
         /// <summary>
-        /// 设置力量流量
+        /// 设置完全境界
+        /// </summary>
+        /// <param name="num">数值</param>
+        public void ForceSetCompleteRealm(float num)
+        {
+            this.completerealm = num;
+            this.pawn.CheckAbilityLimiting();
+            this.pawn.UpdateStageInfo(true);
+        }
+        /// <summary>
+        /// 增加力量流量
         /// </summary>
         /// <param name="num">数值</param>
         public void SetPowerFlow(int num)
@@ -156,6 +225,14 @@ namespace Electromagnetic.Core
                 int num2 = this.powerflow + num;
                 this.powerflow = (num2 > this.MaxPowerFlow ? this.MaxPowerFlow : num2);
             }
+        }
+        /// <summary>
+        /// 设置力量流量
+        /// </summary>
+        /// <param name="num">数值</param>
+        public void ForceSetPowerFlow(int num)
+        {
+            this.powerflow = num;
         }
         /// <summary>
         /// 升级检查

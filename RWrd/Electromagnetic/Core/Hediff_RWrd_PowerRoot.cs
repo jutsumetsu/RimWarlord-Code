@@ -169,12 +169,14 @@ namespace Electromagnetic.Core
                         defaultLabel = "釋天風模擬器",
                         action = delegate ()
                         {
-                            this.energy.level = this.energy.LevelMax;
-                            this.pawn.UpdateStageInfo();
+                            for (; this.energy.level < this.energy.LevelMax; this.energy.SetLevel())
+                            {
+                                this.energy.SetExp(this.energy.MaxExp);
+                            }
                             this.energy.SetExp(this.energy.MaxExp);
-                            this.energy.SetPowerFlow(95000000);
-                            this.energy.SetCompleteRealm(9700);
-                            this.pawn.CheckAbilityLimiting();
+                            this.pawn.UpdateStageInfo();
+                            this.energy.ForceSetPowerFlow(95000000);
+                            this.energy.ForceSetCompleteRealm(9700);
                         }
                     };
                 }

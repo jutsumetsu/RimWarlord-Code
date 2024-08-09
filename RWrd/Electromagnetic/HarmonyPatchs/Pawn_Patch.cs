@@ -70,7 +70,7 @@ namespace Electromagnetic.HarmonyPatchs
                                 if (target.Thing.GetType() == typeof(Pawn))
                                 {
                                     Pawn pawn = target.Pawn;
-                                    float num2 = num / 5;
+                                    float num2 = num / 5 * root.energy.ExpCorrectionFactor;
                                     int exp1 = (int)Math.Floor(num2);
                                     int exp2 = exp1 * 10;
                                     if (level == 0)
