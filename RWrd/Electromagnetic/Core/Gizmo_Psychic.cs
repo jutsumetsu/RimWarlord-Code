@@ -161,7 +161,7 @@ namespace Electromagnetic.Core
             if (!Tools.IsChineseLanguage)
             {
                 Text.Font = GameFont.Tiny;
-                rect4 = new Rect(rect.x + 155f, rect.y, 40f, 25f);
+                rect4 = new Rect(rect.x + 160f, rect.y, 40f, 25f);
                 Widgets.Label(rect4, label2);
             }
             else
@@ -231,25 +231,56 @@ namespace Electromagnetic.Core
             //千以内数值位置
             Rect rect7 = new Rect(rect.x + 85f, rect.y, 40f, 25f);
             int num = (int)Math.Floor(a / 10000);
+            int num2 = (int)Math.Floor(a / 1000);
             Widgets.Label(rect2, "RWrd_Ultimate".Translate());
             if (num > 0)
             {
-                Widgets.Label(rect3, num.ToString() + "RWrd_UltimatePower2".Translate());
+                if (!Tools.IsChineseLanguage)
+                {
+                    Widgets.Label(rect5, num2.ToString() + "RWrd_UltimatePower2".Translate());
+                }
+                else
+                {
+                    Widgets.Label(rect3, num.ToString() + "RWrd_UltimatePower2".Translate());
+                }
             }
             else if (a >= 1000)
             {
-                Widgets.Label(rect3, a.ToString());
-                Widgets.Label(rect4, "RWrd_UltimatePower".Translate());
+                if (!Tools.IsChineseLanguage)
+                {
+                    Widgets.Label(rect5, num2.ToString() + "RWrd_UltimatePower2".Translate());
+                }
+                else
+                {
+                    Widgets.Label(rect3, a.ToString());
+                    Widgets.Label(rect4, "RWrd_UltimatePower".Translate());
+                }
             }
             else if (a >= 100)
             {
-                Widgets.Label(rect7, a.ToString());
-                Widgets.Label(rect4, "RWrd_UltimatePower".Translate());
+                if (!Tools.IsChineseLanguage)
+                {
+                    Widgets.Label(rect5, a.ToString());
+                    Widgets.Label(rect4, "RWrd_UltimatePower".Translate());
+                }
+                else
+                {
+                    Widgets.Label(rect7, a.ToString());
+                    Widgets.Label(rect4, "RWrd_UltimatePower".Translate());
+                }
             }
             else if (a >= 10)
             {
-                Widgets.Label(rect6, a.ToString());
-                Widgets.Label(rect4, "RWrd_UltimatePower".Translate());
+                if (!Tools.IsChineseLanguage)
+                {
+                    Widgets.Label(rect5, a.ToString());
+                    Widgets.Label(rect4, "RWrd_UltimatePower".Translate());
+                }
+                else
+                {
+                    Widgets.Label(rect6, a.ToString());
+                    Widgets.Label(rect4, "RWrd_UltimatePower".Translate());
+                }
             }
             else
             {
@@ -277,19 +308,19 @@ namespace Electromagnetic.Core
             //完全境界标签位置
             Rect rect2 = new Rect(rect.x, rect.y, 90f, 25f);
             //百级以内完全境界数值位置
-            Rect rect3 = new Rect(rect.x + 90f, rect.y, 40f, 25f);
+            Rect rect3 = new Rect(rect.x + 90f, rect.y, 60f, 25f);
             //完全境界级数标签位置
-            Rect rect4 = new Rect(rect.x + 140f, rect.y, 40f, 25f);
+            Rect rect4 = new Rect(rect.x + 140f, rect.y, 60f, 25f);
             //最后境界前及十以内完全境界数值位置
-            Rect rect5 = new Rect(rect.x + 95f, rect.y, 40f, 25f);
+            Rect rect5 = new Rect(rect.x + 95f, rect.y, 60f, 25f);
             //最后境界数值位置
             Rect rect6 = new Rect(rect.x + 75f, rect.y, 60f, 25f);
             //千级以内完全境界数值位置
-            Rect rect7 = new Rect(rect.x + 85f, rect.y, 40f, 25f);
+            Rect rect7 = new Rect(rect.x + 85f, rect.y, 60f, 25f);
             //万级以内完全境界数值位置
-            Rect rect8 = new Rect(rect.x + 80f, rect.y, 40f, 25f);
+            Rect rect8 = new Rect(rect.x + 80f, rect.y, 60f, 25f);
             //一万级完全境界数值位置
-            Rect rect9 = new Rect(rect.x + 75f, rect.y, 40f, 25f);
+            Rect rect9 = new Rect(rect.x + 75f, rect.y, 60f, 25f);
             int c = (int)Math.Floor(a);
             bool flag = b >= 10 && b < 20;
             bool flag1 = c >= 2 && c < 10;
