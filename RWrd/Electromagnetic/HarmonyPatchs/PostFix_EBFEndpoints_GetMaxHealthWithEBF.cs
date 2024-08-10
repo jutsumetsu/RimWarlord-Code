@@ -27,6 +27,10 @@ namespace Electromagnetic.HarmonyPatchs
                 int pff = root.energy.PowerFlowFactor();
                 int level = root.energy.level + 1;
                 int multiplier = pff + level;
+                if (root.energy.IsUltimate)
+                {
+                    multiplier += (int)Math.Floor(root.energy.PowerEnergy);
+                }
                 __result *= multiplier;
             }
         }

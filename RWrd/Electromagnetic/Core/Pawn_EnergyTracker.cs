@@ -22,6 +22,35 @@ namespace Electromagnetic.Core
                 return this.level == this.LevelMax;
             }
         }
+        public bool IsUltimate
+        {
+            get
+            {
+                return this.PowerEnergy >= 1;
+            }
+        }
+        public float PowerEnergy
+        {
+            get
+            {
+                float EMPower;
+                if (this.level == LevelMax && this.exp >= 9000)
+                {
+                    EMPower = 1000000;
+                }
+                else if (this.level == 0)
+                {
+                    EMPower = 0;
+                }
+                else
+                {
+                    EMPower = this.level * 10000 + this.exp;
+                }
+                int cr = (int)Math.Floor(this.completerealm);
+                float preEnergy = EMPower * cr * this.powerflow / 1000000000000;
+                return (float)Math.Floor(preEnergy);
+            }
+        }
         /// <summary>
         /// 初始化
         /// </summary>
@@ -31,7 +60,6 @@ namespace Electromagnetic.Core
             this.exp = 0f;
             this.completerealm = 0f;
             this.powerflow = 0;
-            this.canSelfDestruct = false;
             this.OnPostSetLevel();
         }
         /// <summary>
@@ -143,6 +171,26 @@ namespace Electromagnetic.Core
                 return this.powerflow;
             }
         }
+        /// <summary>
+        /// 脱战能量回复数值
+        /// </summary>
+        public int PCTEnergy
+        {
+            get
+            {
+                return (int)Math.Floor(this.MaxEnergy * 0.06f);
+            }
+        }
+        /// <summary>
+        /// 战斗中能量回复数值
+        /// </summary>
+        public int PCTEnergyFight
+        {
+            get
+            {
+                return (int)Math.Floor(this.MaxEnergy * 0.02f);
+            }
+        }
 
         public Pawn_EnergyTracker(Pawn pawn)
         {
@@ -155,7 +203,7 @@ namespace Electromagnetic.Core
             this.Init();
         }
         /// <summary>
-        /// 设置能量
+        /// 增减能量
         /// </summary>
         /// <param name="num">数值</param>
         public void SetEnergy(float num)
@@ -169,6 +217,51 @@ namespace Electromagnetic.Core
             else
             {
                 this.energy = 0f;
+            }
+        }
+        /// <summary>
+        /// 能量回复
+        /// </summary>
+        public void EnergyRecharge()
+        {
+            bool flag = this.MaxEnergy > 5000;
+            bool drafted = this.pawn.Drafted;
+            bool NPC = this.pawn.Faction != Faction.OfPlayer;
+            if (!NPC)
+            {
+                if (!flag)
+                {
+                    if (drafted)
+                    {
+                        this.SetEnergy(100);
+                    }
+                    else
+                    {
+                        this.SetEnergy(300);
+                    }
+                }
+                else
+                {
+                    if (drafted)
+                    {
+                        this.SetEnergy(this.PCTEnergyFight);
+                    }
+                    else
+                    {
+                        this.SetEnergy(this.PCTEnergy);
+                    }
+                }
+            }
+            else
+            {
+                if (!flag)
+                {
+                    this.SetEnergy(100);
+                }
+                else
+                {
+                    this.SetEnergy(this.PCTEnergyFight);
+                }
             }
         }
         /// <summary>
@@ -309,7 +402,6 @@ namespace Electromagnetic.Core
             Scribe_Values.Look<float>(ref this.completerealm, "completerealm", 0f, false);
             Scribe_Values.Look<int>(ref this.powerflow, "powerflow", 0, false);
             Scribe_Values.Look<int>(ref this.level, "level", 0, false);
-            Scribe_Values.Look<bool>(ref this.canSelfDestruct, "canSelfDestruct", false, false);
             bool flag = Scribe.mode == LoadSaveMode.PostLoadInit;
         }
 

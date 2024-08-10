@@ -21,7 +21,7 @@ namespace Electromagnetic.UI
         {
             Listing_Standard listing_Standard = new Listing_Standard();
             listing_Standard.Begin(inRect);
-            listing_Standard.Label("RWrd_IntroduceMessage".Translate() + "RWrd_IntroduceMessage1".Translate());
+            listing_Standard.Label("RWrd_IntroduceMessage".Translate() + "RWrd_IntroduceMessage1".Translate() + "RWrd_IntroduceMessage2".Translate());
             listing_Standard.End();
         }
     }

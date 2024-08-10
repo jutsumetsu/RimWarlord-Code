@@ -60,14 +60,22 @@ namespace Electromagnetic.HarmonyPatchs
                             if (acr >= 1 && pff >= 1)
                             {
                                 float multiplier = acr + pff;
-                                multiplier = (int)Math.Floor(multiplier / 2);
+                                if (!root.energy.IsUltimate)
+                                {
+                                    multiplier = (int)Math.Floor(multiplier / 2);
+                                }
                                 float num = __instance.verbProps.AdjustedMeleeDamageAmount(__instance, __instance.CasterPawn);
                                 float armorPenetration = __instance.verbProps.AdjustedArmorPenetration(__instance, __instance.CasterPawn);
-                                /*armorPenetration += cr;*/
+                                armorPenetration += cr * 4;
                                 num = Rand.Range(num * 0.8f, num * 1.2f);
                                 num += level;
+                                if (root.energy.IsUltimate)
+                                {
+                                    num += root.energy.PowerEnergy;
+                                }
                                 num *= multiplier;
-                                if (target.Thing.GetType() == typeof(Pawn))
+                                bool ReachLimit = root.energy.level == root.energy.LevelMax && root.energy.exp == root.energy.MaxExp;
+                                if (target.Thing.GetType() == typeof(Pawn) && !ReachLimit)
                                 {
                                     Pawn pawn = target.Pawn;
                                     float num2 = num / 5 * root.energy.ExpCorrectionFactor;
@@ -151,6 +159,10 @@ namespace Electromagnetic.HarmonyPatchs
                     int pff = root.energy.PowerFlowFactor();
                     int level = root.energy.level + 1;
                     int multiplier = pff + level;
+                    if (root.energy.IsUltimate)
+                    {
+                        multiplier += (int)Math.Floor(root.energy.PowerEnergy);
+                    }
                     __result *= multiplier;
                 }
             }
@@ -167,9 +179,18 @@ namespace Electromagnetic.HarmonyPatchs
                     Pawn pawn = thing as Pawn;
                     if (pawn.IsHaveRoot())
                     {
+                        Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                        bool flag = stat.ToString() == nameof(StatDefOf.ArmorRating_Sharp);
+                        bool flag1 = stat.ToString() == nameof(StatDefOf.ArmorRating_Blunt);
+                        bool flag2 = stat.ToString() == nameof(StatDefOf.ArmorRating_Heat);
                         bool flag15 = stat.ToString() == nameof(StatDefOf.MeleeDodgeChance);
                         bool flag18 = stat.ToString() == nameof(StatDefOf.MeleeCooldownFactor);
                         bool flag21 = stat.ToString() == nameof(StatDefOf.IncomingDamageFactor);
+                        if (flag || flag1 || flag2)
+                        {
+                            float cr = root.energy.completerealm;
+                            __result += cr * 4;
+                        }
                         if (flag15)
                         {
                             __result = Math.Min(__result, 0.85f);

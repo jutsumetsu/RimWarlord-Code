@@ -50,6 +50,10 @@ namespace Electromagnetic.Abilities
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
                     int level = root.energy.level + 1 + masteryOffset;
                     int num = (int)Math.Floor(level / 5f);
+                    if (root.energy.IsUltimate)
+                    {
+                        num += (int)Math.Floor(root.energy.PowerEnergy);
+                    }
                     targetThing.HitPoints = Mathf.RoundToInt(targetThing.MaxHitPoints * Props.HardeningFactor * (num));
                 }
                 else

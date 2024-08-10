@@ -43,6 +43,10 @@ namespace Electromagnetic.Abilities
             //伤害计算
             int masteryOffset = (int)Math.Floor(mastery / 10f);
             float num = 20 + root.energy.level + masteryOffset;
+            if (this.root.energy.IsUltimate)
+            {
+                num += (int)Math.Floor(this.root.energy.PowerEnergy);
+            }
             int acr = root.energy.AvailableCompleteRealm();
             int pff = root.energy.PowerFlowFactor();
             float multiplier = acr + pff;

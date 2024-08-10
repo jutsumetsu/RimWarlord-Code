@@ -77,7 +77,7 @@ namespace Electromagnetic.Core
                 {
                     if (Tools.IsChineseLanguage)
                     {
-                        gizmo.PowerLabel = "RWrd_BM".Translate(flag3 ? this.energy.level.ToString() : " " + this.energy.level.ToString());
+                        gizmo.PowerLabel = "RWrd_BM".Translate(this.energy.level.ToString("D2"));
                     }
                     else
                     {
@@ -106,7 +106,14 @@ namespace Electromagnetic.Core
                     defaultLabel = "RWrd_IncreaseEXP".Translate(),
                     action = delegate ()
                     {
-                        this.energy.SetExp(1000f);
+                        if (this.energy.level != 0)
+                        {
+                            this.energy.SetExp(1000f);
+                        }
+                        else
+                        {
+                            this.energy.SetExp(10000f);
+                        }
                     }
                 };
                 yield return new Command_Action
@@ -114,7 +121,15 @@ namespace Electromagnetic.Core
                     defaultLabel = "RWrd_IncreaseEnergy".Translate(),
                     action = delegate ()
                     {
-                        this.energy.SetEnergy(1000f);
+                        if (this.energy.MaxEnergy <= 5000)
+                        {
+                            this.energy.SetEnergy(1000f);
+                        }
+                        else
+                        {
+                            float num = this.energy.MaxEnergy * 0.2f;
+                            this.energy.SetEnergy(num);
+                        }
                     }
                 };
                 yield return new Command_Action
@@ -122,7 +137,26 @@ namespace Electromagnetic.Core
                     defaultLabel = "RWrd_IncreaseCompleteRealm".Translate(),
                     action = delegate ()
                     {
-                        this.energy.SetCompleteRealm(0.1f);
+                        if (this.energy.completerealm >= 1000)
+                        {
+                            this.energy.SetCompleteRealm(1000);
+                        }
+                        else if (this.energy.completerealm >= 100)
+                        {
+                            this.energy.SetCompleteRealm(100);
+                        }
+                        else if (this.energy.completerealm >= 10)
+                        {
+                            this.energy.SetCompleteRealm(10);
+                        }
+                        else if (this.energy.completerealm >= 1)
+                        {
+                            this.energy.SetCompleteRealm(1);
+                        }
+                        else
+                        {
+                            this.energy.SetCompleteRealm(0.1f);
+                        }
                     }
                 };
                 yield return new Command_Action
@@ -130,7 +164,18 @@ namespace Electromagnetic.Core
                     defaultLabel = "RWrd_IncreasePowerFlow".Translate(),
                     action = delegate ()
                     {
-                        this.energy.SetPowerFlow(10000);
+                        if (this.energy.powerflow >= 10000000)
+                        {
+                            this.energy.SetPowerFlow(10000000);
+                        }
+                        else if (this.energy.powerflow >= 1000000)
+                        {
+                            this.energy.SetPowerFlow(1000000);
+                        }
+                        else
+                        {
+                            this.energy.SetPowerFlow(10000);
+                        }
                     }
                 };
                 yield return new Command_Action
@@ -174,9 +219,10 @@ namespace Electromagnetic.Core
                                 this.energy.SetExp(this.energy.MaxExp);
                             }
                             this.energy.SetExp(this.energy.MaxExp);
-                            this.pawn.UpdateStageInfo();
                             this.energy.ForceSetPowerFlow(95000000);
                             this.energy.ForceSetCompleteRealm(9700);
+                            this.pawn.UpdateStageInfo();
+                            this.pawn.UpdateStageInfo(true);
                         }
                     };
                 }
@@ -244,6 +290,9 @@ namespace Electromagnetic.Core
                 int oft2 = (int)Math.Floor((lf2 - 51) / 5f) * 4;
                 bool flag = oft > 0;
                 bool flag2 = lf == 100;
+                int limit;
+                int limit2;
+                bool ultimate = this.energy.IsUltimate;
                 int ntn = 0;
                 if (flag2)
                 {
@@ -264,41 +313,59 @@ namespace Electromagnetic.Core
                         ntn += 4;
                     }
                 }
+                if (flag)
+                {
+                    if (flag2)
+                    {
+                        limit = 50 + oft + ntn;
+                        limit2 = 50 + oft2 + ntn;
+                    }
+                    else
+                    {
+                        limit = 50 + oft;
+                        limit2 = 50 + oft2;
+                    }
+                }
+                else
+                {
+                    limit = 50;
+                    limit2 = 50;
+                }
                 float cr = this.energy.completerealm;
                 yield return new PawnCapacityModifier
                 {
                     capacity = PawnCapacityDefOf.Consciousness,
-                    offset = flag ? (flag2 ? Math.Min(lf, 50 + oft + ntn) : Math.Min(lf, 50 + oft)) : Math.Min(lf, 50),
+                    offset = ultimate ? lf + this.energy.PowerEnergy : Math.Min(lf, limit),
                 };
                 yield return new PawnCapacityModifier
                 {
                     capacity = PawnCapacityDefOf.Moving,
-                    offset = flag ? (flag2 ? Math.Min(lf, 50 + oft + ntn) : Math.Min(lf, 50 + oft)) : Math.Min(lf, 50),
+                    offset = ultimate ? lf + this.energy.PowerEnergy : Math.Min(lf, limit),
                 };
                 yield return new PawnCapacityModifier
                 {
                     capacity = PawnCapacityDefOf.Sight,
-                    offset = flag ? (flag2 ? Math.Min(lf2, 50 + oft2 + ntn) : Math.Min(lf2, 50 + oft2)) : Math.Min(lf2, 50),
+                    offset = ultimate ? lf2 + this.energy.PowerEnergy : Math.Min(lf2, limit2),
                 };
                 yield return new PawnCapacityModifier
                 {
                     capacity = PawnCapacityDefOf.Hearing,
-                    offset = flag ? (flag2 ? Math.Min(lf2, 50 + oft2 + ntn) : Math.Min(lf2, 50 + oft2)) : Math.Min(lf2, 50),
+                    offset = ultimate ? lf2 + this.energy.PowerEnergy : Math.Min(lf2, limit2),
                 };
                 yield return new PawnCapacityModifier
                 {
                     capacity = PawnCapacityDefOf.BloodFiltration,
-                    offset = flag ? (flag2 ? Math.Min(lf2, 50 + oft2 + ntn) : Math.Min(lf2, 50 + oft2)) : Math.Min(lf2, 50),
+                    offset = ultimate ? lf2 + this.energy.PowerEnergy : Math.Min(lf2, limit2),
                 };
                 yield return new PawnCapacityModifier
                 {
                     capacity = PawnCapacityDefOf.BloodPumping,
-                    offset = flag ? (flag2 ? Math.Min(lf2, 50 + oft2 + ntn) : Math.Min(lf2, 50 + oft2)) : Math.Min(lf2, 50),
+                    offset = ultimate ? lf2 + this.energy.PowerEnergy : Math.Min(lf2, limit2),
                 };
                 yield return new PawnCapacityModifier
                 {
                     capacity = PawnCapacityDefOf.Breathing,
-                    offset = flag ? (flag2 ? Math.Min(lf2, 50 + oft2 + ntn) : Math.Min(lf2, 50 + oft2)) : Math.Min(lf2, 50),
+                    offset = ultimate ? lf2 + this.energy.PowerEnergy : Math.Min(lf2, limit2),
                 };
                 yield return new PawnCapacityModifier
                 {
@@ -318,6 +385,10 @@ namespace Electromagnetic.Core
                 int acr = this.energy.AvailableCompleteRealm();
                 int level = this.energy.level;
                 int lf = level + 1;
+                if (this.energy.IsUltimate)
+                {
+                    lf += (int)Math.Floor(this.energy.PowerEnergy);
+                }
                 yield return new StatModifier
                 {
                     stat = StatDefOf.ShootingAccuracyPawn,
@@ -365,21 +436,6 @@ namespace Electromagnetic.Core
                 };
                 yield return new StatModifier
                 {
-                    stat = StatDefOf.ArmorRating_Sharp,
-                    value = cr * 4,
-                };
-                yield return new StatModifier
-                {
-                    stat = StatDefOf.ArmorRating_Blunt,
-                    value = cr * 4,
-                };
-                yield return new StatModifier
-                {
-                    stat = StatDefOf.ArmorRating_Heat,
-                    value = cr * 4,
-                };
-                yield return new StatModifier
-                {
                     stat = StatDefOf.MeleeDodgeChance,
                     value = acr * 4,
                 };
@@ -397,11 +453,6 @@ namespace Electromagnetic.Core
                 {
                     stat = StatDefOf.MeleeCooldownFactor,
                     value = -lf * 0.02f,
-                };
-                yield return new StatModifier
-                {
-                    stat = RWrd_DefOf.MeleeArmorPenetration,
-                    value = cr * 4,
                 };
                 yield return new StatModifier
                 {
@@ -445,6 +496,16 @@ namespace Electromagnetic.Core
             {
                 int level = this.energy.level;
                 int lf = level + 1;
+                float lifeFactor;
+                if (this.energy.IsUltimate)
+                {
+                    lf += (int)Math.Floor(this.energy.PowerEnergy);
+                    lifeFactor = 999999999;
+                }
+                else
+                {
+                    lifeFactor = 3.75f;
+                }
                 yield return new StatModifier
                 {
                     stat = StatDefOf.CarryingCapacity,
@@ -468,7 +529,7 @@ namespace Electromagnetic.Core
                 yield return new StatModifier
                 {
                     stat = StatDefOf.LifespanFactor,
-                    value = 3.75f,
+                    value = lifeFactor,
                 };
                 yield return new StatModifier
                 {
@@ -649,24 +710,7 @@ namespace Electromagnetic.Core
             }
             if (Find.TickManager.TicksGame % 180 == 0)
             {
-                if (this.pawn.Faction != Faction.OfPlayer)
-                {
-                    //NPC能量回复
-                    this.energy.SetEnergy(100);
-                }
-                else
-                {
-                    if (this.pawn.Drafted)
-                    {
-                        //战斗状态下能量回复
-                        this.energy.SetEnergy(100);
-                    }
-                    else
-                    {
-                        //脱战状态下能量回复
-                        this.energy.SetEnergy(300);
-                    }
-                }
+                this.energy.EnergyRecharge();
             }
         }
         public int meleeAttackCounter = 0;

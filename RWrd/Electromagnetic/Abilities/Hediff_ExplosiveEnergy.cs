@@ -28,6 +28,10 @@ namespace Electromagnetic.Abilities
             //伤害计算
             Hediff_RWrd_PowerRoot root = this.root;
             int num = damage + root.energy.level;
+            if (this.root.energy.IsUltimate)
+            {
+                num += (int)Math.Floor(this.root.energy.PowerEnergy);
+            }
             int acr = root.energy.AvailableCompleteRealm();
             int pff = root.energy.PowerFlowFactor();
             int multiplier = acr + pff;

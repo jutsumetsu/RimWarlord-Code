@@ -10,7 +10,7 @@ namespace Electromagnetic.Abilities
 {
     public static class ShieldsSystem_RWrd
     {
-        private static HarmonyMethod MyMethod(this string name)
+        private static HarmonyMethod ShieldMethod(this string name)
         {
             return new HarmonyMethod(typeof(ShieldsSystem_RWrd), name, null);
         }
@@ -20,9 +20,9 @@ namespace Electromagnetic.Abilities
             if (!flag)
             {
                 ShieldsSystem_RWrd.drawPatchesApplied = true;
-                HarmonyInit.PatchMain.instance.Patch(AccessTools.Method(typeof(Pawn), "SpawnSetup", null, null), null, "OnPawnSpawn".MyMethod(), null, null);
-                HarmonyInit.PatchMain.instance.Patch(AccessTools.Method(typeof(Pawn), "DeSpawn", null, null), null, "OnPawnDespawn".MyMethod(), null, null);
-                HarmonyInit.PatchMain.instance.Patch(AccessTools.Method(typeof(Pawn), "DrawAt", null, null), null, "PawnPostDrawAt".MyMethod(), null, null);
+                HarmonyInit.PatchMain.instance.Patch(AccessTools.Method(typeof(Pawn), "SpawnSetup", null, null), null, "OnPawnSpawn".ShieldMethod(), null, null);
+                HarmonyInit.PatchMain.instance.Patch(AccessTools.Method(typeof(Pawn), "DeSpawn", null, null), null, "OnPawnDespawn".ShieldMethod(), null, null);
+                HarmonyInit.PatchMain.instance.Patch(AccessTools.Method(typeof(Pawn), "DrawAt", null, null), null, "PawnPostDrawAt".ShieldMethod(), null, null);
             }
         }
         public static void ApplyShieldPatches()
@@ -31,8 +31,8 @@ namespace Electromagnetic.Abilities
             if (!flag)
             {
                 ShieldsSystem_RWrd.shieldPatchesApplied = true;
-                HarmonyInit.PatchMain.instance.Patch(AccessTools.Method(typeof(ThingWithComps), "PreApplyDamage", null, null), null, "PostPreApplyDamage".MyMethod(), null, null);
-                HarmonyInit.PatchMain.instance.Patch(AccessTools.Method(typeof(Verb), "CanHitTarget", null, null), null, "CanHitTargetFrom_Postfix".MyMethod(), null, null);
+                HarmonyInit.PatchMain.instance.Patch(AccessTools.Method(typeof(ThingWithComps), "PreApplyDamage", null, null), null, "PostPreApplyDamage".ShieldMethod(), null, null);
+                HarmonyInit.PatchMain.instance.Patch(AccessTools.Method(typeof(Verb), "CanHitTarget", null, null), null, "CanHitTargetFrom_Postfix".ShieldMethod(), null, null);
             }
         }
         public static void OnPawnSpawn(Pawn __instance)

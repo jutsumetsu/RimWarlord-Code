@@ -66,7 +66,7 @@ namespace Electromagnetic.Core
             //能量显示
             rect3.width = 180f;
             rect3.height = rect.height / 2f;
-            this.DrawUI(rect3, this.root.energy.energy, this.root.energy.MaxEnergy, this.EnergyLabel);
+            this.DrawEnergyUI(rect3, this.root.energy.energy, this.root.energy.MaxEnergy, this.EnergyLabel);
             //能量消耗预览
             if (command_Electromagnetic != null)
             {
@@ -87,21 +87,28 @@ namespace Electromagnetic.Core
                     GUI.color = Color.white;
                 }
             }
-            //等级显示
+            //等级or终极修为显示
             Rect rect4 = rect2;
             rect4.width = 180f;
             rect4.yMin = rect2.y + 30;
-            this.DrawUI2(rect4, this.root.energy.Exp, this.root.energy.MaxExp, this.root.energy.level, this.PowerLabel.Translate(), this.ExpLabel.Translate());
+            if (!this.root.energy.IsUltimate)
+            {
+                this.DrawLevelUI(rect4, this.root.energy.Exp, this.root.energy.MaxExp, this.root.energy.level, this.PowerLabel.Translate(), this.ExpLabel.Translate());
+            }
+            else
+            {
+                this.DrawUltimateUI(rect4, this.root.energy.PowerEnergy);
+            }
             //完全境界显示
             Rect rect5 = rect2;
             rect5.width = 180f;
             rect5.yMin = rect4.y + 18;
-            this.DrawUI3(rect5, this.root.energy.CompleteRealm, this.root.energy.AvailableCompleteRealm(), this.CompleteRealmLabel.Translate());
+            this.DrawCompleteRealmUI(rect5, this.root.energy.CompleteRealm, this.root.energy.AvailableCompleteRealm(), this.CompleteRealmLabel.Translate());
             //力量流量显示
             Rect rect6 = rect2;
             rect6.width = 180f;
             rect6.yMin = rect5.y + 18;
-            this.DrawUI4(rect6, this.root.energy.PowerFlow, this.PowerFlowLabel.Translate());
+            this.DrawPowerFlowUI(rect6, this.root.energy.PowerFlow, this.PowerFlowLabel.Translate());
             Text.Anchor = TextAnchor.UpperLeft;
             return new GizmoResult(GizmoState.Clear);
         }
@@ -112,7 +119,7 @@ namespace Electromagnetic.Core
         /// <param name="a">当前能量值</param>
         /// <param name="b">最大能量值</param>
         /// <param name="label">能量值标签</param>
-        private void DrawUI(Rect rect, float a, float b, string label)
+        private void DrawEnergyUI(Rect rect, float a, float b, string label)
         {
             if (!Tools.IsChineseLanguage)
             {
@@ -123,9 +130,9 @@ namespace Electromagnetic.Core
                 Text.Font = GameFont.Small;
             }
             //能量值标签位置
-            Rect rect2 = new Rect(rect.x, rect.y, 60f, 25f);
+            Rect rect2 = new Rect(rect.x, rect.y, 50f, 25f);
             //数值位置
-            Rect rect3 = new Rect(rect.x + 60f, rect.y, 100f, 25f);
+            Rect rect3 = new Rect(rect.x + 50f, rect.y, 130f, 25f);
             //能量条位置
             Rect rect4 = new Rect(rect.x, rect.y + 20f, 172f, 10f);
             Widgets.Label(rect2, label);
@@ -141,12 +148,12 @@ namespace Electromagnetic.Core
         /// <param name="c">当前等级</param>
         /// <param name="label">等级标签</param>
         /// <param name="label2">经验值标签</param>
-        private void DrawUI2(Rect rect, float a, float b, int c, string label, string label2)
+        private void DrawLevelUI(Rect rect, float a, float b, int c, string label, string label2)
         {
             //等级标签位置
             Rect rect2 = new Rect(rect.x, rect.y, 140f, 25f);
             //磁场转动匹数位置
-            Rect rect3 = new Rect(rect.x + 85f, rect.y, 40f, 25f);
+            Rect rect3 = new Rect(rect.x + 90f, rect.y, 40f, 25f);
             //经验值标签位置
             Rect rect4 = new Rect(rect.x + 140f, rect.y, 40f, 25f);
             //电推伏特位置
@@ -154,7 +161,7 @@ namespace Electromagnetic.Core
             if (!Tools.IsChineseLanguage)
             {
                 Text.Font = GameFont.Tiny;
-                rect4 = new Rect(rect.x + 150f, rect.y, 40f, 25f);
+                rect4 = new Rect(rect.x + 155f, rect.y, 40f, 25f);
                 Widgets.Label(rect4, label2);
             }
             else
@@ -174,7 +181,7 @@ namespace Electromagnetic.Core
                 if (!Tools.IsChineseLanguage)
                 {
                     num = a / b;
-                    rect3 = new Rect(rect.x + 127f, rect.y, 40f, 25f);
+                    rect3 = new Rect(rect.x + 130f, rect.y, 40f, 25f);
                     Widgets.Label(rect3, num.ToString("P0"));
                 }
                 else
@@ -197,13 +204,67 @@ namespace Electromagnetic.Core
             }
         }
         /// <summary>
+        /// 绘制终极修为显示
+        /// </summary>
+        /// <param name="rect">矩形区域</param>
+        /// <param name="a">终极修为数值</param>
+        private void DrawUltimateUI(Rect rect, float a)
+        {
+            if (!Tools.IsChineseLanguage)
+            {
+                Text.Font = GameFont.Tiny;
+            }
+            else
+            {
+                Text.Font = GameFont.Small;
+            }
+            //终极修为标签位置
+            Rect rect2 = new Rect(rect.x, rect.y, 90f, 25f);
+            //万以内数值位置
+            Rect rect3 = new Rect(rect.x + 80f, rect.y, 80f, 25f);
+            //修为单位位置
+            Rect rect4 = new Rect(rect.x + 140f, rect.y, 40f, 25f);
+            //十以内数值位置
+            Rect rect5 = new Rect(rect.x + 95f, rect.y, 40f, 25f);
+            //百以内数值位置
+            Rect rect6 = new Rect(rect.x + 90f, rect.y, 40f, 25f);
+            //千以内数值位置
+            Rect rect7 = new Rect(rect.x + 85f, rect.y, 40f, 25f);
+            int num = (int)Math.Floor(a / 10000);
+            Widgets.Label(rect2, "RWrd_Ultimate".Translate());
+            if (num > 0)
+            {
+                Widgets.Label(rect3, num.ToString() + "RWrd_UltimatePower2".Translate());
+            }
+            else if (a >= 1000)
+            {
+                Widgets.Label(rect3, a.ToString());
+                Widgets.Label(rect4, "RWrd_UltimatePower".Translate());
+            }
+            else if (a >= 100)
+            {
+                Widgets.Label(rect7, a.ToString());
+                Widgets.Label(rect4, "RWrd_UltimatePower".Translate());
+            }
+            else if (a >= 10)
+            {
+                Widgets.Label(rect6, a.ToString());
+                Widgets.Label(rect4, "RWrd_UltimatePower".Translate());
+            }
+            else
+            {
+                Widgets.Label(rect5, a.ToString());
+                Widgets.Label(rect4, "RWrd_UltimatePower".Translate());
+            }
+        }
+        /// <summary>
         /// 绘制完全境界显示
         /// </summary>
         /// <param name="rect">矩形区域</param>
         /// <param name="a">完全境界数值</param>
         /// <param name="b">有效完全境界数值</param>
         /// <param name="label">完全境界标签</param>
-        private void DrawUI3(Rect rect, float a, int b, string label)
+        private void DrawCompleteRealmUI(Rect rect, float a, int b, string label)
         {
             if (!Tools.IsChineseLanguage)
             {
@@ -328,7 +389,7 @@ namespace Electromagnetic.Core
         /// <param name="rect">矩形区域</param>
         /// <param name="a">力量流量数值</param>
         /// <param name="label">单位标签</param>
-        private void DrawUI4(Rect rect, int a, string label)
+        private void DrawPowerFlowUI(Rect rect, int a, string label)
         {
             if (!Tools.IsChineseLanguage)
             {

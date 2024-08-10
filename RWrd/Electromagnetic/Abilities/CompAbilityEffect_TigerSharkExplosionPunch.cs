@@ -50,6 +50,10 @@ namespace Electromagnetic.Abilities
                 //伤害计算
                 Hediff_RWrd_PowerRoot root = Pawn.GetRoot();
                 num += root.energy.level;
+                if (root.energy.IsUltimate)
+                {
+                    num += (int)Math.Floor(root.energy.PowerEnergy);
+                }
                 int acr = root.energy.AvailableCompleteRealm();
                 int pff = root.energy.PowerFlowFactor();
                 int multiplier = acr + pff;

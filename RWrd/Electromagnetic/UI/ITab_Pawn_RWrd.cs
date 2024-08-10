@@ -176,6 +176,10 @@ namespace Electromagnetic.UI
                 listing_Standard.Label("RWrd_EarnXP".Translate(), -1f, null);
                 listing_Standard.Gap(10f);
                 Text.Font = GameFont.Small;
+                if (this.root.energy.IsUltimate)
+                {
+                    listing_Standard.Label("RWrd_Ultimate".Translate() + ": " + this.root.energy.PowerEnergy.ToString() + "RWrd_UltimatePower".Translate(), -1f, null);
+                }
                 listing_Standard.Label("Rwrd_CompleteRealm".Translate() + ": " + this.root.energy.completerealm.ToString() + "/10000", -1f, null);
                 listing_Standard.Label("RWrd_PowerFlow".Translate() + ": " + this.root.energy.powerflow.ToString() + "/100000000", -1f, null);
                 //力量体系介绍按钮

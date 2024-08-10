@@ -30,6 +30,10 @@ namespace Electromagnetic.Abilities
                         //随机治愈伤势
                         int level = this.root.energy.level;
                         int lf1 = Math.Max(level - 50, 0);
+                        if (this.root.energy.IsUltimate)
+                        {
+                            lf1 += (int)Math.Floor(this.root.energy.PowerEnergy);
+                        }
                         int lf2 = lf1 * 2;
                         list.RandomElement<Hediff_Injury>().Heal(30f + lf2);
                     }

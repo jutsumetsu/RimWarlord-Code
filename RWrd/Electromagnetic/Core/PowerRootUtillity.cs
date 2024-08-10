@@ -266,6 +266,7 @@ namespace Electromagnetic.Core
                 root.stage.statFactors = root.GetStatFactorList.ToList();
                 root.stage.capMods = root.GetPCMList.ToList();
             }
+            pawn.health.Notify_HediffChanged(root);
         }
     }
 }

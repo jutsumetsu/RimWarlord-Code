@@ -69,7 +69,7 @@ namespace Electromagnetic.Abilities
                     ((Hediff_RWrd_PowerRoot)hediff).energy.SetEnergy(this.EnergyReduce);
                     ((Hediff_RWrd_PowerRoot)hediff).energy.SetExp(0.1f * (float)(-(float)this.Props.rEnergy));
                     ((RWrd_PsyCastBase)this.parent).SetMastery(0.2f);
-                    ((Hediff_RWrd_PowerRoot)hediff).energy.SetCompleteRealm(0.0002f);
+                    ((Hediff_RWrd_PowerRoot)hediff).energy.SetCompleteRealm(0.000001f);
                     break;
                 }
             }
