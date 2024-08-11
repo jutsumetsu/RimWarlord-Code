@@ -29,10 +29,6 @@ namespace Electromagnetic.HarmonyPatchs
                         Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, pawn);
                         pawn.health.AddHediff(hediff);
                     }
-                    /*if (ModLister.BiotechInstalled)
-                    {
-
-                    }*/
                 }
             }
         }
@@ -167,6 +163,7 @@ namespace Electromagnetic.HarmonyPatchs
                 }
             }
         }
+        //属性加成
         [HarmonyPatch(typeof(StatExtension))]
         [HarmonyPatch(nameof(StatExtension.GetStatValue))]
         class PawnStatPatch
@@ -207,6 +204,7 @@ namespace Electromagnetic.HarmonyPatchs
                 }
             }
         }
+        //强者不死于厚岩顶
         [HarmonyPatch(typeof(RoofCollapserImmediate))]
         [HarmonyPatch("DropRoofInCellPhaseOne")]
         class ThickRockRoofPatch
@@ -233,6 +231,109 @@ namespace Electromagnetic.HarmonyPatchs
                 {
                     Log.Error($"Exception in Patch5: {ex}");
                     return true;
+                }
+            }
+        }
+        //强者不死于杂鱼
+        [HarmonyPatch(typeof(Thing))]
+        [HarmonyPatch("TakeDamage")]
+        public class Patch_Thing_TakeDamage
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(ref DamageInfo dinfo, Thing __instance)
+            {
+                if (__instance is Pawn pawn)
+                {
+                    if (pawn.IsHaveRoot())
+                    {
+                        Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                        int lf = root.energy.level + 1;
+                        float uf = 0;
+                        if (root.energy.IsUltimate)
+                        {
+                            lf = (root.energy.level + 1) * 2;
+                            uf = root.energy.PowerEnergy * 3;
+                        }
+                        float num = 10;
+                        num += lf + uf;
+                        Log.Message(pawn.Name.ToStringShort + "'s Damage Immunity Threshold: " + num.ToString());
+                        if (dinfo.Amount < num * 1.5f)
+                        {
+                            dinfo.SetAmount(num);
+                        }
+                        else if (dinfo.Amount <= num)
+                        {
+                            dinfo.SetAmount(0f);
+                        }
+                    }
+                }
+                return true;
+            }
+        }
+        //强者免疫疾病事件
+        [HarmonyPatch(typeof(IncidentWorker_Disease))]
+        [HarmonyPatch("PotentialVictims")]
+        public class Patch_IncidentWorker_Disease_PotentialVictims
+        {
+            [HarmonyPostfix]
+            public static void Postfix(ref IEnumerable<Pawn> __result, IncidentWorker_Disease __instance)
+            {
+                __result = __result.Where(pawn => !pawn.IsHaveRoot());
+            }
+        }
+        //强者免疫地块污染
+        [HarmonyPatch(typeof(PollutionUtility))]
+        [HarmonyPatch("PawnPollutionTick")]
+        public static class Patch_PollutionUtility_PawnPollutionTick
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(Pawn pawn)
+            {
+                if (pawn.IsHaveRoot())
+                {
+
+                    return false;
+                }
+
+                return true;
+            }
+        }
+        //强者免疫毒气
+        [HarmonyPatch(typeof(GasUtility))]
+        [HarmonyPatch("PawnGasEffectsTick")]
+        public static class Patch_GasUtility_PawnGasEffectsTick
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(Pawn pawn)
+            {
+                if (pawn.IsHaveRoot())
+                {
+
+                    return false;
+                }
+
+                return true;
+            }
+        }
+        //磁场力量遗传
+        [HarmonyPatch(typeof(QuestManager))]
+        [HarmonyPatch("Notify_PawnBorn")]
+        public static class Patch_QuestManager_Notify_PawnBorn
+        {
+            [HarmonyPrefix]
+            public static void Prefix(Thing baby, Thing birther, Pawn mother, Pawn father)
+            {
+                if (baby is Pawn babyPawn)
+                {
+                    bool hasRootParent = (mother != null && mother.IsHaveRoot() == true) ||
+                                         (father != null && father.IsHaveRoot() == true);
+
+                    if (hasRootParent)
+                    {
+                        /*HediffDef hediffToAdd = RWrd_DefOf.Hediff_RWrd_PowerRoot;
+                        babyPawn.health.AddHediff(hediffToAdd);*/
+                        babyPawn.story.traits.GainTrait(new Trait(RWrd_DefOf.RWrd_Gifted));
+                    }
                 }
             }
         }
