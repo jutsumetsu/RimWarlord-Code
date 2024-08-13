@@ -14,7 +14,15 @@ namespace Electromagnetic.Abilities
         public override void PostTick()
         {
             base.PostTick();
-            bool flag = Find.TickManager.TicksGame % 125 == 0;
+            int level = 0;
+            float multiper = 1;
+            if (this.root != null)
+            {
+                level = this.root.energy.level;
+                multiper = 1.25f - level * 0.01f;
+            }
+            int timeInterval = (int)Math.Ceiling(125 * multiper);
+            bool flag = Find.TickManager.TicksGame % timeInterval == 0;
             bool flag2 = flag;
             if (flag2)
             {
@@ -28,14 +36,13 @@ namespace Electromagnetic.Abilities
                     if (this.root != null)
                     {
                         //随机治愈伤势
-                        int level = this.root.energy.level;
                         int lf1 = Math.Max(level - 50, 0);
                         if (this.root.energy.IsUltimate)
                         {
                             lf1 += (int)Math.Floor(this.root.energy.PowerEnergy);
                         }
                         int lf2 = lf1 * 2;
-                        list.RandomElement<Hediff_Injury>().Heal(30f + lf2);
+                        list.RandomElement<Hediff_Injury>().Heal(60f + lf2);
                     }
                     else
                     {
@@ -43,7 +50,7 @@ namespace Electromagnetic.Abilities
                     }
                     flag3 = true;
                 }
-                else
+                else if (!flag5 && level >= 50)
                 {
                     //缺失部位列表
                     List<BodyPartRecord> nonMissingParts = this.pawn.health.hediffSet.GetNotMissingParts(BodyPartHeight.Undefined, BodyPartDepth.Undefined, null, null).ToList<BodyPartRecord>();

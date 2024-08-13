@@ -254,16 +254,20 @@ namespace Electromagnetic.HarmonyPatchs
                             lf = (root.energy.level + 1) * 2;
                             uf = root.energy.PowerEnergy * 3;
                         }
-                        float num = 10;
+                        float num = 12;
                         num += lf + uf;
-                        Log.Message(pawn.Name.ToStringShort + "'s Damage Immunity Threshold: " + num.ToString());
-                        if (dinfo.Amount < num * 1.5f)
+                        Log.Message(pawn.Name.ToStringShort + "'s Damage Immunity Threshold: " + num.ToString() + " Current damage: " + dinfo.Amount.ToString());
+                        if (dinfo.Amount <= num)
+                        {
+                            dinfo.SetAmount(0f);
+                        }
+                        else if (dinfo.Amount <= num * 1.5f)
                         {
                             dinfo.SetAmount(num);
                         }
-                        else if (dinfo.Amount <= num)
+                        else if ( dinfo.Amount <= num * 2)
                         {
-                            dinfo.SetAmount(0f);
+                            dinfo.SetAmount(num * 1.25f);
                         }
                     }
                 }
