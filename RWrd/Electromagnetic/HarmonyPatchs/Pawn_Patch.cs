@@ -9,6 +9,7 @@ using UnityEngine;
 using System.Net.NetworkInformation;
 using System.Linq;
 using Electromagnetic.Abilities;
+using Electromagnetic.Setting;
 
 namespace Electromagnetic.HarmonyPatchs
 {
@@ -96,6 +97,28 @@ namespace Electromagnetic.HarmonyPatchs
                                 DamageInfo damageInfo = new DamageInfo(def, num, armorPenetration, -1f, casterPawn, null, source, DamageInfo.SourceCategory.ThingOrUnknown, null, false, true, QualityCategory.Normal, true);
                                 damageInfo.SetBodyRegion(BodyPartHeight.Undefined, BodyPartDepth.Outside);
                                 damageInfos.Add(damageInfo);
+
+                                float radius = 0.7f + (float)Math.Ceiling(level / 20f) * 0.5f;
+                                if (root.energy.IsUltimate)
+                                {
+                                    radius += 1.8f;
+                                }
+                                List<Thing> list = new List<Thing>
+                                {
+                                    target.Thing
+                                };
+                                foreach (Pawn pawn2 in casterPawn.MapHeld.mapPawns.AllPawns)
+                                {
+                                    bool flag = pawn2.Faction == casterPawn.Faction;
+                                    if (flag)
+                                    {
+                                        list.Add(pawn2);
+                                    }
+                                }
+                                if (radius > 1f && RWrdSettings.PowerfulEnergyWave)
+                                {
+                                    GenExplosion.DoExplosion(target.Thing.PositionHeld, target.Thing.MapHeld, radius, RWrd_DefOf.RWrd_PowerfulWave, casterPawn, (int)root.energy.DamageImmunityThreshold - 5, 0, null, null, null, null, null, 0, 1, null, false, null, 0, 1, 0, false, null, list, null, RWrdSettings.DoVisualWaveEffect, 1, 0, false, null, 0);
+                                }
 
                                 if (__instance.tool != null && __instance.tool.extraMeleeDamages != null)
                                 {
@@ -194,6 +217,8 @@ namespace Electromagnetic.HarmonyPatchs
                         }
                         if (flag18)
                         {
+                            int lf = root.energy.level + 1;
+                            __result += -lf * 0.02f;
                             __result = Math.Max(__result, 0.05f);
                         }
                         if (flag21)
@@ -247,15 +272,7 @@ namespace Electromagnetic.HarmonyPatchs
                     if (pawn.IsHaveRoot())
                     {
                         Hediff_RWrd_PowerRoot root = pawn.GetRoot();
-                        int lf = root.energy.level + 1;
-                        float uf = 0;
-                        if (root.energy.IsUltimate)
-                        {
-                            lf = (root.energy.level + 1) * 2;
-                            uf = root.energy.PowerEnergy * 3;
-                        }
-                        float num = 12;
-                        num += lf + uf;
+                        float num = root.energy.DamageImmunityThreshold;
                         Log.Message(pawn.Name.ToStringShort + "'s Damage Immunity Threshold: " + num.ToString() + " Current damage: " + dinfo.Amount.ToString());
                         if (dinfo.Amount <= num)
                         {
@@ -334,8 +351,8 @@ namespace Electromagnetic.HarmonyPatchs
 
                     if (hasRootParent)
                     {
-                        /*HediffDef hediffToAdd = RWrd_DefOf.Hediff_RWrd_PowerRoot;
-                        babyPawn.health.AddHediff(hediffToAdd);*/
+                        Hediff root = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, babyPawn);
+                        babyPawn.health.AddHediff(root);
                         babyPawn.story.traits.GainTrait(new Trait(RWrd_DefOf.RWrd_Gifted));
                     }
                 }

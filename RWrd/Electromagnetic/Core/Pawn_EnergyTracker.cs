@@ -171,6 +171,22 @@ namespace Electromagnetic.Core
                 return this.powerflow;
             }
         }
+        public float DamageImmunityThreshold
+        {
+            get
+            {
+                float num = 12;
+                int lf = this.level + 1;
+                float uf = 0;
+                if (this.IsUltimate)
+                {
+                    lf *= 2;
+                    uf = this.PowerEnergy * 3;
+                }
+                num += lf + uf;
+                return num;
+            }
+        }
         /// <summary>
         /// 脱战能量回复数值
         /// </summary>

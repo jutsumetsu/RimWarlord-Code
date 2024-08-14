@@ -27,6 +27,11 @@ namespace Electromagnetic.Core
             listingStandard.Begin(inRect);
             listingStandard.CheckboxLabeled("RWrd_NoFoodDrinkRequired".Translate(), ref RWrdSettings.NoFoodDrinkRequired, "RWrd_NoFoodDrinkRequiredDesc".Translate());
             listingStandard.CheckboxLabeled("RWrd_PowerfulPersonFragmentsEnabled".Translate(), ref RWrdSettings.PowerfulPersonFragments, "RWrd_PowerfulPersonFragmentsEnabledDesc".Translate());
+            listingStandard.CheckboxLabeled("RWrd_PowerfulEnergyWave".Translate(), ref RWrdSettings.PowerfulEnergyWave, "RWrd_PowerfulEnergyWaveDesc".Translate());
+            if (RWrdSettings.PowerfulEnergyWave)
+            {
+                listingStandard.CheckboxLabeled("RWrd_DoVisualWaveEffect".Translate(), ref RWrdSettings.DoVisualWaveEffect, "RWrd_DoVisualWaveEffectDesc".Translate());
+            }
 
             listingStandard.NewColumn();
             string text = RWrdSettings.ExpMultiplier.ToString();

@@ -47,6 +47,8 @@ namespace Electromagnetic.Core
         public static HediffDef BadBack;
         public static HediffDef Flu;
         public static HediffDef Frail;
+        //伤害类型
+        public static DamageDef RWrd_PowerfulWave;
         //人物属性
         public static StatDef MeleeArmorPenetration;
 

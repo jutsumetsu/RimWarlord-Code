@@ -115,6 +115,7 @@
     <Compile Include="Electromagnetic\Abilities\TeslaProjectile.cs" />
     <Compile Include="Electromagnetic\Core\AIUtility.cs" />
     <Compile Include="Electromagnetic\Core\Building_Training.cs" />
+    <Compile Include="Electromagnetic\Core\DamageWorker_EnergyWave.cs" />
     <Compile Include="Electromagnetic\Core\Gizmo_Psychic.cs" />
     <Compile Include="Electromagnetic\Core\Hediff_RWrd_PowerRoot.cs" />
     <Compile Include="Electromagnetic\Core\JobDriver_RWrd_General_Training.cs" />

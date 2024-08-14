@@ -449,11 +449,11 @@ namespace Electromagnetic.Core
                     stat = StatDefOf.ComfyTemperatureMin,
                     value = -50 - 50 * lf,
                 };
-                yield return new StatModifier
+                /*yield return new StatModifier
                 {
                     stat = StatDefOf.MeleeCooldownFactor,
                     value = -lf * 0.02f,
-                };
+                };*/
                 yield return new StatModifier
                 {
                     stat = StatDefOf.InjuryHealingFactor,
@@ -539,6 +539,11 @@ namespace Electromagnetic.Core
                 yield return new StatModifier
                 {
                     stat = StatDefOf.Flammability,
+                    value = 0,
+                };
+                yield return new StatModifier
+                {
+                    stat = StatDefOf.StaggerDurationFactor,
                     value = 0,
                 };
                 if (ModDetector.DBHIsLoaded && RWrdSettings.NoFoodDrinkRequired)
