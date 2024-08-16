@@ -111,45 +111,62 @@ namespace Electromagnetic.Core
             }
         }
         /// <summary>
-        /// 随机生成力量之源
+        /// 初始等级
         /// </summary>
-        /// <param name="pawn"></param>
-        /// <param name="root">力量之源</param>
-        /// <param name="currentRWrd">等级Def</param>
-        /// <param name="route">技能树</param>
-        public static void RandomPowerRootSpawn(Pawn pawn, Hediff_RWrd_PowerRoot root)
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public static int InitialLevel(this Hediff_RWrd_PowerRoot root)
         {
-            int num = (int)(pawn.kindDef.combatPower / 100f);
-            bool flag = num < 5;
-            if (flag)
+            int num = 0;
+            Pawn pawn = root.pawn;
+            if (pawn.story.Childhood is WarlordBackstoryDef)
             {
-                num = UnityEngine.Random.Range(0, 3);
+                WarlordBackstoryDef warlordChildhood = pawn.story.Childhood as WarlordBackstoryDef;
+                num = UnityEngine.Random.Range(warlordChildhood.minLevel, warlordChildhood.maxLevel);
+                Log.Message(pawn.Name.ToStringShort + "'s warlordChildhood:" + pawn.story.Childhood.title + "[" + warlordChildhood.minLevel + "," + warlordChildhood.maxLevel + ")");
             }
-            else
+            if (pawn.story.Adulthood is WarlordBackstoryDef)
             {
-                bool flag2 = num < 8;
-                if (flag2)
+                WarlordBackstoryDef warlordAdulthood = pawn.story.Adulthood as WarlordBackstoryDef;
+                if (num < warlordAdulthood.maxLevel)
                 {
-                    num = UnityEngine.Random.Range(3, 7);
+                    int adultMin = Math.Max(num, warlordAdulthood.minLevel);
+                    num = UnityEngine.Random.Range(adultMin, warlordAdulthood.maxLevel);
+                }
+                Log.Message(pawn.Name.ToStringShort + "'s warlordAdulthood:" + pawn.story.Adulthood.title + "[" + warlordAdulthood.minLevel + "," + warlordAdulthood.maxLevel + ")");
+            }
+            if (num == 0)
+            {
+                int cP = (int)(pawn.kindDef.combatPower / 100f);
+                bool flag = cP < 5;
+                if (flag)
+                {
+                    cP = UnityEngine.Random.Range(0, 3);
                 }
                 else
                 {
-                    bool flag3 = num < 10;
-                    if (flag3)
+                    bool flag2 = cP < 8;
+                    if (flag2)
                     {
-                        num = UnityEngine.Random.Range(8, 10);
+                        cP = UnityEngine.Random.Range(3, 7);
+                    }
+                    else
+                    {
+                        bool flag3 = cP < 10;
+                        if (flag3)
+                        {
+                            cP = UnityEngine.Random.Range(8, 10);
+                        }
                     }
                 }
+                bool flag4 = cP > 10;
+                if (flag4)
+                {
+                    cP = 10;
+                }
+                num = cP;
             }
-            bool flag4 = num > 10;
-            if (flag4)
-            {
-                num = 10;
-            }
-            root.energy.level = num;
-            /*List<RWrd_RouteDef> allDefListForReading = DefDatabase<RWrd_RouteDef>.AllDefsListForReading;
-            allDefListForReading.Remove(RWrd_DefOf.Base);
-            RWrd_RouteDef route =  allDefListForReading.RandomElement<RWrd_RouteDef>();*/
+            return num;
         }
         /// <summary>
         /// 检查技能树

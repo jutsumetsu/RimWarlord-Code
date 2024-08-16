@@ -645,7 +645,7 @@ namespace Electromagnetic.Core
             if (flag3)
             {
                 //NPC生成
-                PowerRootUtillity.RandomPowerRootSpawn(this.pawn, this);
+                this.energy.level = this.InitialLevel();
                 this.energy.powerflow = UnityEngine.Random.Range(3, 51) * 10000;
                 this.energy.MaxEnergy = this.energy.powerflow / 100;
                 float prenum = this.pawn.ageTracker.AgeBiologicalTicks / 3600000f;
@@ -671,6 +671,7 @@ namespace Electromagnetic.Core
             else
             {
                 //殖民者生成
+                this.energy.level = this.InitialLevel();
                 this.energy.powerflow = UnityEngine.Random.Range(2, 11) * 50000;
                 this.energy.MaxEnergy = this.energy.powerflow / 100;
                 this.energy.completerealm = UnityEngine.Random.Range(1, 4) * 0.1f;

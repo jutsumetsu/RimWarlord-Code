@@ -133,6 +133,7 @@
     <Compile Include="Electromagnetic\Core\ThoughtWorker_NeedTrain.cs" />
     <Compile Include="Electromagnetic\Core\Tools.cs" />
     <Compile Include="Electromagnetic\Core\TrainingCategory.cs" />
+    <Compile Include="Electromagnetic\Core\WarlordBackstoryDef.cs" />
     <Compile Include="Electromagnetic\Core\WorkGiver_Training.cs" />
     <Compile Include="Electromagnetic\Effect\FragmentsWorker.cs" />
     <Compile Include="Electromagnetic\Effect\GameComponent_FragmentsManager.cs" />

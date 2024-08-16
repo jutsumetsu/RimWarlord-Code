@@ -90,6 +90,9 @@ namespace Electromagnetic.HarmonyPatchs
                                     }
                                 }
 
+                                Need need = casterPawn.needs.TryGetNeed<Need_Training>();
+                                need.CurLevel += 0.001f;
+
                                 List<DamageInfo> damageInfos = new List<DamageInfo>();
                                 DamageDef def = __instance.verbProps.meleeDamageDef;
                                 ThingDef source = __instance.EquipmentSource != null ? __instance.EquipmentSource.def : casterPawn.def;

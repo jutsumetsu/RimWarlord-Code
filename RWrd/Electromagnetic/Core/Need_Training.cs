@@ -36,11 +36,11 @@ namespace Electromagnetic.Core
         {
             get
             {
-                if (this.Disabled || this.IsBattle)
+                if (this.Disabled)
                 {
                     return 0;
                 }
-                else if (this.IsTraining)
+                else if (this.IsTraining || this.IsBattle)
                 {
                     return 1;
                 }
@@ -86,8 +86,10 @@ namespace Electromagnetic.Core
         }
         public Need_Training(Pawn pawn) : base(pawn)
         {
-            this.threshPercents = new List<float>();
-            this.threshPercents.Add(0.1f);
+            this.threshPercents = new List<float>
+            {
+                0.1f
+            };
             this.SetInitialLevel();
         }
         /// <summary>
