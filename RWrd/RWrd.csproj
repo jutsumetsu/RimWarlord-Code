@@ -73,6 +73,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Electromagnetic\Abilities\AntiGravityUtil.cs" />
     <Compile Include="Electromagnetic\Abilities\AttackType.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_ElectricClaw.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_GiveTargetHediff.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="Electromagnetic\Abilities\CompProperties_SpawnMoteSinging.cs" />
     <Compile Include="Electromagnetic\Abilities\HediffCompProperties_Draw_RWrd.cs" />
     <Compile Include="Electromagnetic\Abilities\HediffCompProperties_Shield_RWrd.cs" />
+    <Compile Include="Electromagnetic\Abilities\HediffComp_AntiGravity.cs" />
     <Compile Include="Electromagnetic\Abilities\HediffComp_Draw_RWrd.cs" />
     <Compile Include="Electromagnetic\Abilities\HediffComp_Shield_RWrd.cs" />
     <Compile Include="Electromagnetic\Abilities\Hediff_CellRecombination.cs" />
@@ -138,6 +140,7 @@
     <Compile Include="Electromagnetic\Effect\FragmentsWorker.cs" />
     <Compile Include="Electromagnetic\Effect\GameComponent_FragmentsManager.cs" />
     <Compile Include="Electromagnetic\Effect\PowerfulPersonFragments.cs" />
+    <Compile Include="Electromagnetic\HarmonyPatchs\AntiGravityPatches.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\HarmonyInit.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\HealthPatch.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\Pawn_Patch.cs" />

@@ -29,7 +29,7 @@ namespace Electromagnetic.Abilities
                 bool flag3 = false;
                 //伤势列表
                 List<Hediff_Injury> list = this.pawn.health.hediffSet.hediffs.OfType<Hediff_Injury>().ToList<Hediff_Injury>();
-                bool flag4 = list.Any<Hediff_Injury>();
+                bool flag4 = list.Any();
                 bool flag5 = flag4;
                 if (flag5)
                 {

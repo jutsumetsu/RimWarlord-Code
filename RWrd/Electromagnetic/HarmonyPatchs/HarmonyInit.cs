@@ -13,6 +13,7 @@ namespace Electromagnetic.HarmonyPatchs
             static PatchMain()
             {
                 HarmonyInit.PatchMain.instance.PatchAll(Assembly.GetExecutingAssembly());
+                AntiGravityPatches.Do(PatchMain.instance);
             }
             public static Harmony instance = new Harmony("RWrd.Harmony");
         }

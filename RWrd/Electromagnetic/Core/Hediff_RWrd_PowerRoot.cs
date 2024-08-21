@@ -392,7 +392,7 @@ namespace Electromagnetic.Core
                 yield return new StatModifier
                 {
                     stat = StatDefOf.ShootingAccuracyPawn,
-                    value = acr * 4,
+                    value = acr,
                 };
                 yield return new StatModifier
                 {
@@ -417,7 +417,7 @@ namespace Electromagnetic.Core
                 yield return new StatModifier
                 {
                     stat = StatDefOf.MeleeHitChance,
-                    value = acr * 4,
+                    value = acr,
                 };
                 yield return new StatModifier
                 {
@@ -437,7 +437,7 @@ namespace Electromagnetic.Core
                 yield return new StatModifier
                 {
                     stat = StatDefOf.MeleeDodgeChance,
-                    value = acr * 4,
+                    value = acr,
                 };
                 yield return new StatModifier
                 {
@@ -705,10 +705,6 @@ namespace Electromagnetic.Core
             base.Tick();
             //最大能量赋值
             this.energy.MaxEnergy = this.energy.PowerFlow / 100;
-            if (this.energy.IsUpdateLevelTiming())
-            {
-                this.energy.SetLevel();
-            }
             if (Find.TickManager.TicksGame % 360000 == 0)
             {
                 //随时间增加力量流量

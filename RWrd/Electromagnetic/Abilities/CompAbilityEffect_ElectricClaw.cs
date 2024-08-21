@@ -57,55 +57,41 @@ namespace Electromagnetic.Abilities
             if (flag || flag2)
             {
                 position.z += 1;
-                pawn.Position = position;
-                pawn.Notify_Teleported(true, false);
             }
             else if (Rotation < -22.5 && Rotation >= -67.5)
             {
                 position.z += 1;
                 position.x -= 1;
-                pawn.Position = position;
-                pawn.Notify_Teleported(true, false);
             }
             else if (Rotation < -67.5 && Rotation >= -112.5)
             {
                 position.x -= 1;
-                pawn.Position = position;
-                pawn.Notify_Teleported(true, false);
             }
             else if (Rotation < -112.5 && Rotation >= -157.5)
             {
                 position.x -= 1;
                 position.z -= 1;
-                pawn.Position = position;
-                pawn.Notify_Teleported(true, false);
             }
             else if (Rotation > 157.5 || Rotation < -157.5)
             {
                 position.z -= 1;
-                pawn.Position = position;
-                pawn.Notify_Teleported(true, false);
             }
             else if (Rotation > 112.5 && Rotation <= 157.5)
             {
                 position.z -= 1;
                 position.x += 1;
-                pawn.Position = position;
-                pawn.Notify_Teleported(true, false);
             }
             else if (Rotation > 67.5 && Rotation <= 112.5)
             {
                 position.x += 1;
-                pawn.Position = position;
-                pawn.Notify_Teleported(true, false);
             }
             else
             {
                 position.x += 1;
                 position.z += 1;
-                pawn.Position = position;
-                pawn.Notify_Teleported(true, false);
             }
+            pawn.Position = position;
+            pawn.Notify_Teleported(true, false);
             //继续击晕并赋予目标电极内力Hediff
             Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.RWrd_ElectricInternalEnergy, pawn, null);
             HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();

@@ -16,6 +16,7 @@ namespace Electromagnetic.UI
             doCloseX = true;
             closeOnClickedOutside = true;
             absorbInputAroundWindow = true;
+            forcePause = true;
         }
         public override void DoWindowContents(Rect inRect)
         {

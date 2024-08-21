@@ -28,26 +28,25 @@ namespace Electromagnetic.Abilities
         {
             get
             {
-                if (this.Props.masteryOffset != 0 || this.Props.masteryFactor != 0)
+                float rEnergy = (float)this.Props.rEnergy;
+                float mastery = (float)this.Ability.mastery;
+                float offset = (float)this.Props.masteryOffset;
+                float factor = (float)this.Props.masteryFactor;
+
+                if (offset != 0 && factor == 0)
                 {
-                    if (this.Props.masteryOffset != 0 & this.Props.masteryFactor == 0)
-                    {
-                        return (float)this.Props.rEnergy + (float)Math.Floor(this.Ability.mastery * this.Props.masteryOffset);
-                    }
-                    else if (this.Props.masteryOffset == 0 & this.Props.masteryFactor != 0)
-                    {
-                        return (float)this.Props.rEnergy * (float)Math.Floor(this.Ability.mastery * this.Props.masteryFactor);
-                    }
-                    else
-                    {
-                        Log.Error("masteryOffset and masteryFactor cannot exist at the same time!");
-                        return (float)this.Props.rEnergy;
-                    }
+                    return rEnergy + (float)Math.Floor(mastery * offset);
                 }
-                else
+                else if (offset == 0 && factor != 0)
                 {
-                    return (float)this.Props.rEnergy;
+                    return rEnergy * (float)Math.Floor(mastery * factor);
                 }
+                else if (offset != 0 || factor != 0)
+                {
+                    Log.Error("masteryOffset and masteryFactor cannot exist at the same time!");
+                }
+
+                return rEnergy;
             }
         }
         //初始化
@@ -67,7 +66,7 @@ namespace Electromagnetic.Abilities
                 if (flag)
                 {
                     ((Hediff_RWrd_PowerRoot)hediff).energy.SetEnergy(this.EnergyReduce);
-                    ((Hediff_RWrd_PowerRoot)hediff).energy.SetExp(0.1f * (float)(-(float)this.Props.rEnergy));
+                    ((Hediff_RWrd_PowerRoot)hediff).energy.SetExp(0.1f * -(float)this.Props.rEnergy);
                     ((RWrd_PsyCastBase)this.parent).SetMastery(0.2f);
                     ((Hediff_RWrd_PowerRoot)hediff).energy.SetCompleteRealm(0.000001f);
                     break;
@@ -104,7 +103,6 @@ namespace Electromagnetic.Abilities
             bool result;
             if (this.parent.pawn.IsHaveRoot())
             {
-                result = false;
                 Hediff_RWrd_PowerRoot root = this.parent.pawn.GetRoot();
                 if (-(float)this.Props.rEnergy > root.energy.energy)
                 {

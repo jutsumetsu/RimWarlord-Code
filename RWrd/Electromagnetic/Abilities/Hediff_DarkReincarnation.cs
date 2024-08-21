@@ -17,40 +17,33 @@ namespace Electromagnetic.Abilities
             List<IntVec3> range = GenRadial.RadialCellsAround(this.pawn.Position, 10f, true).ToList<IntVec3>();
             foreach (Pawn p in this.pawn.MapHeld.mapPawns.AllHumanlikeSpawned)
             {
-                bool flag = p == this.pawn;
-                if (!flag)
+                if (p == this.pawn || !range.Contains(p.Position))
                 {
-                   if (range.Contains(p.Position))
+                    continue; // 当pawn为施术者或不在范围内时跳过
+                }
+                Log.Message("Get pawn in range");
+                // 检查施术者是否倒地或死亡
+                if (pawn.Downed || pawn.Dead)
+                {
+                    continue;
+                }
+                if (p.jobs.curDriver is JobDriver_CastAbility jobDriver)
+                {
+                    Ability ability = jobDriver.job.ability;
+                    CompAbilityEffect_ReduceEnergy compAbilityEffect_ReduceEnergy = ability.CompOfType<CompAbilityEffect_ReduceEnergy>();
+                    if (compAbilityEffect_ReduceEnergy != null)
                     {
-                        Log.Message("Get pawn in range");
-                        bool downed = pawn.Downed;
-                        if (!downed)
+                        RWrd_PsyCastBase ability2 = (RWrd_PsyCastBase)this.pawn.abilities.GetAbility(ability.def);
+                        if (ability2 == null)
                         {
-                            bool dead = pawn.Dead;
-                            if (!dead)
-                            {
-                                if (p.jobs.curDriver.GetType() == typeof(JobDriver_CastAbility))
-                                {
-                                    JobDriver_CastAbility jobDriver = (JobDriver_CastAbility)p.jobs.curDriver;
-                                    Ability ability = jobDriver.job.ability;
-                                    CompAbilityEffect_ReduceEnergy compAbilityEffect_ReduceEnergy = ability.CompOfType<CompAbilityEffect_ReduceEnergy>();
-                                    if (compAbilityEffect_ReduceEnergy != null)
-                                    {
-                                        RWrd_PsyCastBase ability2 = (RWrd_PsyCastBase)this.pawn.abilities.GetAbility(ability.def);
-                                        if (ability2 == null)
-                                        {
-                                            this.pawn.abilities.GainAbility(ability.def);
-                                            ability2 = (RWrd_PsyCastBase)this.pawn.abilities.GetAbility(ability.def);
-                                            ability2.mastery = -100;
-                                            CompAbilityEffect_ReduceEnergy compAbilityEffect_ReduceEnergy2 = ability2.CompOfType<CompAbilityEffect_ReduceEnergy>();
-                                            compAbilityEffect_ReduceEnergy2.Props.isAshura = true;
-                                        }
-                                        float num = 0.1f * (float)Math.Ceiling(this.mastery / 10f) / 10f;
-                                        ability2.mastery += num;
-                                    }
-                                }
-                            }
+                            this.pawn.abilities.GainAbility(ability.def);
+                            ability2 = (RWrd_PsyCastBase)this.pawn.abilities.GetAbility(ability.def);
+                            ability2.mastery = -100;
+                            CompAbilityEffect_ReduceEnergy compAbilityEffect_ReduceEnergy2 = ability2.CompOfType<CompAbilityEffect_ReduceEnergy>();
+                            compAbilityEffect_ReduceEnergy2.Props.isAshura = true;
                         }
+                        float num = 0.1f * (float)Math.Ceiling(this.mastery / 10f) / 10f;
+                        ability2.mastery += num;
                     }
                 }
             }

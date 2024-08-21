@@ -18,54 +18,94 @@ namespace Electromagnetic.Abilities
         }
         public override bool IsApplicableTo(LocalTargetInfo target, bool showMessages = false)
         {
+            // 首先调用基类的 IsApplicableTo 方法进行基本的适用性检查
             bool flag = !base.IsApplicableTo(target, showMessages);
+
             bool result;
+
             if (flag)
             {
+                // 如果基类检查返回不适用，直接返回 false
                 result = false;
             }
             else
             {
+                // 检查 Psycast 是否有区域效果，并且 Psycast 是否能应用到目标
                 bool flag2 = !this.Psycast.def.HasAreaOfEffect && !this.Psycast.CanApplyPsycastTo(target);
+
                 if (flag2)
                 {
+                    // 如果 Psycast 没有区域效果且不能应用到目标，则进行以下处理
                     if (showMessages)
                     {
-                        Messages.Message(this.ability.def.LabelCap + ": " + "AbilityTargetPsychicallyDeaf".Translate(), target.ToTargetInfo(this.ability.pawn.Map), MessageTypeDefOf.RejectInput, false);
+                        // 显示消息，说明能力无法对目标应用
+                        Messages.Message(
+                            this.ability.def.LabelCap + ": " + "AbilityTargetPsychicallyDeaf".Translate(),
+                            target.ToTargetInfo(this.ability.pawn.Map),
+                            MessageTypeDefOf.RejectInput,
+                            false
+                        );
                     }
                     result = false;
                 }
                 else
                 {
+                    // 遍历 Psycast 的所有能力组件
                     foreach (AbilityComp abilityComp in this.Psycast.comps)
                     {
+                        // 检查能力组件的属性是否是 CompProperties_SpawnMoteCasting 类型
                         bool flag3 = abilityComp.props.GetType() == typeof(CompProperties_SpawnMoteCasting);
+
                         if (flag3)
                         {
+                            // 强制转换为 CompProperties_SpawnMoteCasting 类型
                             CompProperties_SpawnMoteCasting compProperties_SpawnMoteCasting = (CompProperties_SpawnMoteCasting)abilityComp.props;
+
+                            // 获取该组件的 Mote 定义
                             ThingDef moteCastDef = compProperties_SpawnMoteCasting.moteCastDef;
+
+                            // 检查施法者是否已经生成（即是否存在于场景中）
                             bool spawned = this.caster.Spawned;
+
                             if (spawned)
                             {
+                                // 确保 Mote 定义不为 null
                                 bool flag4 = compProperties_SpawnMoteCasting.moteCastDef != null;
+
                                 if (flag4)
                                 {
+                                    // 计算时间差，判断是否满足生成新 Mote 的条件
                                     this.timePast = Time.time - this.timeSet;
                                     bool flag5 = this.timePast >= 0.3f + RWrd_Verb_Cast.MoteCastFadeTime;
+
                                     if (flag5)
                                     {
-                                        MoteMaker.MakeAttachedOverlay(this.caster, moteCastDef, RWrd_Verb_Cast.MoteCastOffset, RWrd_Verb_Cast.MoteCastScale, 0.3f - RWrd_Verb_Cast.MoteCastFadeTime);
+                                        // 生成并附加 Mote 覆盖物
+                                        MoteMaker.MakeAttachedOverlay(
+                                            this.caster,
+                                            moteCastDef,
+                                            RWrd_Verb_Cast.MoteCastOffset,
+                                            RWrd_Verb_Cast.MoteCastScale,
+                                            0.3f - RWrd_Verb_Cast.MoteCastFadeTime
+                                        );
+
+                                        // 更新时间戳
                                         this.timeSet = Time.time;
                                     }
                                 }
                             }
                         }
                     }
+
+                    // 如果所有检查通过，返回 true
                     result = true;
                 }
             }
+
+            // 返回最终的适用性检查结果
             return result;
         }
+
         public override void OrderForceTarget(LocalTargetInfo target)
         {
             bool flag = this.IsApplicableTo(target, false);

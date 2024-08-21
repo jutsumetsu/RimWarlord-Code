@@ -119,15 +119,13 @@ namespace Electromagnetic.Core
         {
             int num = 0;
             Pawn pawn = root.pawn;
-            if (pawn.story.Childhood is WarlordBackstoryDef)
+            if (pawn.story.Childhood is WarlordBackstoryDef warlordChildhood)
             {
-                WarlordBackstoryDef warlordChildhood = pawn.story.Childhood as WarlordBackstoryDef;
                 num = UnityEngine.Random.Range(warlordChildhood.minLevel, warlordChildhood.maxLevel);
                 Log.Message(pawn.Name.ToStringShort + "'s warlordChildhood:" + pawn.story.Childhood.title + "[" + warlordChildhood.minLevel + "," + warlordChildhood.maxLevel + ")");
             }
-            if (pawn.story.Adulthood is WarlordBackstoryDef)
+            if (pawn.story.Adulthood is WarlordBackstoryDef warlordAdulthood)
             {
-                WarlordBackstoryDef warlordAdulthood = pawn.story.Adulthood as WarlordBackstoryDef;
                 if (num < warlordAdulthood.maxLevel)
                 {
                     int adultMin = Math.Max(num, warlordAdulthood.minLevel);

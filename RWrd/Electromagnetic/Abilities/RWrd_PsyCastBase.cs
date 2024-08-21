@@ -44,15 +44,19 @@ namespace Electromagnetic.Abilities
         }
         public override bool Activate(LocalTargetInfo target, LocalTargetInfo dest)
         {
+            // 检查是否需要显示灵能效果
             bool showPsycastEffects = this.def.showPsycastEffects;
             if (showPsycastEffects)
             {
+                // 检查是否有任何EffectComp具有Psycast属性
                 bool flag = base.EffectComps.Any((CompAbilityEffect c) => c.Props.psychic);
                 if (flag)
                 {
+                    //检查是否有区域效果
                     bool hasAreaOfEffect = this.def.HasAreaOfEffect;
                     if (hasAreaOfEffect)
                     {
+                        // 如果有区域效果，显示区域效果的粒子效果并播放声音
                         FleckMaker.Static(target.Cell, this.pawn.Map, FleckDefOf.PsycastAreaEffect, this.def.EffectRadius);
                         SoundDefOf.PsycastPsychicPulse.PlayOneShot(new TargetInfo(target.Cell, this.pawn.Map, false));
                     }
@@ -63,6 +67,7 @@ namespace Electromagnetic.Abilities
                 }
                 else
                 {
+                    // 如果没有灵能效果，但有区域效果并且可以使用区域效果来获取目标
                     bool flag2 = this.def.HasAreaOfEffect && this.def.canUseAoeToGetTargets;
                     if (flag2)
                     {

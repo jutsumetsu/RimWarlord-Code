@@ -75,7 +75,11 @@ namespace Electromagnetic.HarmonyPatchs
                                 if (target.Thing.GetType() == typeof(Pawn) && !ReachLimit)
                                 {
                                     Pawn pawn = target.Pawn;
-                                    float num2 = num / 5 * root.energy.ExpCorrectionFactor;
+                                    float num2 = num / 5;
+                                    if (RWrdSettings.EnableExpCorrectionFactor)
+                                    {
+                                        num2 *= root.energy.ExpCorrectionFactor;
+                                    }
                                     int exp1 = (int)Math.Floor(num2);
                                     int exp2 = exp1 * 10;
                                     if (level == 0)
@@ -118,6 +122,8 @@ namespace Electromagnetic.HarmonyPatchs
                                         list.Add(pawn2);
                                     }
                                 }
+                                radius *= RWrdSettings.WaveRangeFactor;
+                                radius = Math.Min(radius, 56);
                                 if (radius > 1f && RWrdSettings.PowerfulEnergyWave)
                                 {
                                     GenExplosion.DoExplosion(target.Thing.PositionHeld, target.Thing.MapHeld, radius, RWrd_DefOf.RWrd_PowerfulWave, casterPawn, (int)root.energy.DamageImmunityThreshold - 5, 0, null, null, null, null, null, 0, 1, null, false, null, 0, 1, 0, false, null, list, null, RWrdSettings.DoVisualWaveEffect, 1, 0, false, null, 0);

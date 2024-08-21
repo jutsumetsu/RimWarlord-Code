@@ -9,6 +9,7 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 using Electromagnetic.Core;
+using Electromagnetic.Setting;
 
 namespace Electromagnetic.UI
 {
@@ -32,6 +33,7 @@ namespace Electromagnetic.UI
             closeOnClickedOutside = false;
             absorbInputAroundWindow = false;
             allArtifactDefs = AllThingsDefs.ToList();
+            forcePause = true;
             this.parent = parent;
         }
         /// <summary>
@@ -108,6 +110,7 @@ namespace Electromagnetic.UI
             searchKey = Widgets.TextField(searchRect, searchKey);
             Text.Anchor = TextAnchor.UpperLeft;
 
+            Pawn pawn = parent.GetSelectedPawn();
 
             Rect outRect = new Rect(inRect);
             outRect.y = searchRect.yMax + 5;
@@ -130,29 +133,35 @@ namespace Electromagnetic.UI
                     iconRect.x += 24;
                     //物品图标
                     Widgets.ThingIcon(iconRect, thingDef);
+                    //物品名称
                     Rect rect = new Rect(iconRect.xMax + 5, num, viewRect.width * 0.7f, 32f);
                     Text.Anchor = TextAnchor.MiddleLeft;
-                    //物品名称
-                    Widgets.Label(rect, thingDef.LabelCap);
+                    Widgets.LabelFit(rect, thingDef.LabelCap);
                     Text.Anchor = TextAnchor.UpperLeft;
                     rect.x = rect.xMax + 10;
                     rect.width = 100;
 
-                    if (!sliderValues.ContainsKey(thingDef))
+                    if (!thingValues.ContainsKey(thingDef))
                     {
-                        sliderValues[thingDef] = 1; // 默认值
+                        thingValues[thingDef] = 1; // 默认值
                     }
 
                     // 在按钮左侧绘制 Slider
-                    Rect sliderRect = new Rect(iconRect.xMax + 180f, num, 120f, 32f);
+                    /*Rect sliderRect = new Rect(iconRect.xMax + 180f, num, 120f, 32f);
                     Widgets.Label(new Rect(sliderRect.x + sliderRect.x / 4, sliderRect.y+5, sliderRect.width, 24f), sliderValues[thingDef].ToString());
                     int maxStackLimit = thingDef.stackLimit;
-                    sliderValues[thingDef] = (int)Widgets.HorizontalSlider(sliderRect, sliderValues[thingDef], 1f, maxStackLimit);
+                    sliderValues[thingDef] = (int)Widgets.HorizontalSlider(sliderRect, sliderValues[thingDef], 1f, maxStackLimit);*/
+                    Rect textFieldNumeric = new Rect(iconRect.xMax + 345f, num, 50f, 32f);
+                    int textFieldNumber = thingValues[thingDef];
+                    string text = textFieldNumber.ToString();
+                    int maxNumber = (int)Math.Floor(pawn.GetRoot().energy.energy / CalculateValueToShow(thingDef));
+                    Widgets.TextFieldNumeric<int>(textFieldNumeric, ref textFieldNumber, ref text, 1f, Math.Min(thingDef.stackLimit, maxNumber));
+                    thingValues[thingDef] = textFieldNumber;
+
 
                     //能耗数值
-                    float valueToShow = CalculateValueToShow(thingDef) * sliderValues[thingDef];
+                    float valueToShow = CalculateValueToShow(thingDef) * thingValues[thingDef];
                     float valueToReduce = CalculateValueToShow(thingDef);
-                    Pawn pawn = parent.GetSelectedPawn();
                     bool isButtonEnabled = pawn != null && pawn.IsHaveRoot() && valueToShow <= pawn.GetRoot().energy.energy;
                     //能耗显示
                     if (Mouse.IsOver(rect))
@@ -164,7 +173,7 @@ namespace Electromagnetic.UI
                     {
                         if (isButtonEnabled)
                         {
-                            int itemCount = sliderValues[thingDef];
+                            int itemCount = thingValues[thingDef];
                             for (int i = 0; i < itemCount; i++)
                             {
                                 Thing thing = ThingMaker.MakeThing(thingDef, GenStuff.DefaultStuffFor(thingDef));
@@ -208,9 +217,7 @@ namespace Electromagnetic.UI
             return value;
         }
 
-
-
-        private Dictionary<ThingDef, int> sliderValues = new Dictionary<ThingDef, int>();
+        private Dictionary<ThingDef, int> thingValues = new Dictionary<ThingDef, int>();
 
     }
 }

@@ -291,6 +291,10 @@ namespace Electromagnetic.Core
             {
                 float num2 = this.exp + num * RWrdSettings.XpFactor;
                 this.exp = (num2 > this.MaxExp) ? this.MaxExp : num2;
+                if (this.IsUpdateLevelTiming() && this.level != RWrdSettings.GlobalLevelLimit)
+                {
+                    this.SetLevel();
+                }
                 if (this.level == LevelMax)
                 {
                     this.pawn.UpdateStageInfo();

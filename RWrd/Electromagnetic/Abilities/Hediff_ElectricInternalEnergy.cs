@@ -22,24 +22,12 @@ namespace Electromagnetic.Abilities
                 this.Trigger();
             }
         }
-        //特效集
-        public virtual FleckDef[] EffectSet
-        {
-            get
-            {
-                return new FleckDef[]
-                {
-                    RWrd_DefOf.RWrd_ElectricClawFleck
-                };
-            }
-        }
         //触发器
         private void Trigger()
         {
             Map map = this.pawn.Map;
             Pawn pawn = this.pawn;
             Hediff_RWrd_PowerRoot root = this.root;
-            FleckDef[] effectSet = this.EffectSet;
             //伤害计算
             int masteryOffset = (int)Math.Floor(mastery / 10f);
             float num = 20 + root.energy.level + masteryOffset;
@@ -53,7 +41,7 @@ namespace Electromagnetic.Abilities
             multiplier = (int)Math.Floor(multiplier / 2);
             num *= multiplier;
             //生成特效
-            FleckCreationData dataStatic1 = FleckMaker.GetDataStatic(this.pawn.DrawPos, map, effectSet[0], 1f);
+            FleckCreationData dataStatic1 = FleckMaker.GetDataStatic(this.pawn.DrawPos, map, RWrd_DefOf.RWrd_ElectricClawFleck, 1f);
             map.flecks.CreateFleck(dataStatic1);
             //造成伤害
             pawn.TakeDamage(new DamageInfo(DamageDefOf.Flame, num, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true));

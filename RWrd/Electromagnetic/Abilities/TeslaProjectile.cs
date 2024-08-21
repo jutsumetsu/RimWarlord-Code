@@ -53,24 +53,39 @@ namespace Electromagnetic.Abilities
         }
         protected override void Impact(Thing hitThing, bool blockedByShield = false)
         {
+            // 保存当前的 projectile 的 damageDef.isRanged 状态
             bool isRanged = this.def.projectile.damageDef.isRanged;
+            // 设置 damageDef.isRanged 为 true 以确保基础伤害计算的正确性
             this.def.projectile.damageDef.isRanged = true;
+
+            // 调用基类的 Impact 方法，执行默认的击中处理逻辑
             base.Impact(hitThing, true);
+
+            // 恢复 projectile 的 damageDef.isRanged 状态为之前的值
             this.def.projectile.damageDef.isRanged = isRanged;
+
+            // 如果 mainLauncher 为 null，则将其设置为 launcher
             bool flag = this.mainLauncher == null;
             if (flag)
             {
                 this.mainLauncher = this.launcher;
             }
+
+            // (已注释) 如果 equipmentDef 为 null，则将其设置为 "Gun_Autopistol"
             /*bool flag2 = this.equipmentDef == null;
             if (flag2)
             {
                 this.equipmentDef = ThingDef.Named("Gun_Autopistol");
             }*/
+
+            // 检查 TeslaProjectile 是否被偏转
             bool flag3 = TeslaProjectile.wasDeflected;
             if (flag3)
             {
+                // 如果被偏转，将偏转标记重置为 false
                 TeslaProjectile.wasDeflected = false;
+
+                // 以 30% 的几率摧毁所有相关对象
                 bool flag4 = Rand.Chance(0.3f);
                 if (flag4)
                 {
@@ -79,37 +94,60 @@ namespace Electromagnetic.Abilities
             }
             else
             {
+                // 如果没有击中任何目标并且当前未标记为已射击
                 bool flag5 = hitThing == null && !this.shotAnything;
                 if (flag5)
                 {
+                    // 标记为已射击
                     this.shotAnything = true;
                 }
                 else
                 {
+                    // 如果击中目标但尚未标记为已射击
                     bool flag6 = hitThing != null && !this.shotAnything;
                     if (flag6)
                     {
-                        BattleLogEntry_RangedImpact battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(this.launcher, hitThing, this.intendedTarget.Thing, this.equipmentDef, this.def, this.targetCoverDef);
+                        // 记录这一击的战斗日志
+                        BattleLogEntry_RangedImpact battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(
+                            this.launcher, hitThing, this.intendedTarget.Thing, this.equipmentDef, this.def, this.targetCoverDef
+                        );
                         Find.BattleLog.Add(battleLogEntry_RangedImpact);
+
+                        // 获取伤害信息并应用于目标
                         DamageInfo damageInfo = this.GetDamageInfo(hitThing);
                         hitThing.TakeDamage(damageInfo).AssociateWithLog(battleLogEntry_RangedImpact);
+
+                        // 如果属性设置为添加火焰效果且目标能够附加基础组件，创建并附加火焰
                         bool flag7 = this.Props.addFire && hitThing.TryGetComp<CompAttachBase>() != null && hitThing.Map != null;
                         if (flag7)
                         {
                             Fire fire = (Fire)GenSpawn.Spawn(ThingDefOf.Fire, hitThing.Position, hitThing.Map, WipeMode.Vanish);
                             fire.AttachTo(hitThing);
                         }
+
+                        // 如果有影响半径，则创建爆炸效果
                         bool flag8 = this.Props.impactRadius > 0f;
                         if (flag8)
                         {
-                            GenExplosion.DoExplosion(hitThing.Position, base.Map, this.Props.impactRadius, this.Props.explosionDamageDef, base.Launcher, this.def.projectile.GetDamageAmount(1f, null), -1f, null, null, null, null, null, 0f, 1, null, false, null, 0f, 1, 0f, false, null, null, null, true, 1f, 0f, true, null, 1f, null, null);
+                            GenExplosion.DoExplosion(
+                                hitThing.Position, base.Map, this.Props.impactRadius, this.Props.explosionDamageDef,
+                                base.Launcher, this.def.projectile.GetDamageAmount(1f, null), -1f, null, null, null, null,
+                                null, 0f, 1, null, false, null, 0f, 1, 0f, false, null, null, null, true, 1f, 0f, true,
+                                null, 1f, null, null
+                            );
                         }
+
+                        // 播放击中声音效果
                         SoundDef impactSound = this.Props.impactSound;
                         if (impactSound != null)
                         {
                             impactSound.PlayOneShot(hitThing);
                         }
-                        /*this.RegisterHit(hitThing);*/
+
+                        // 注册击中事件
+                        this.RegisterHit(hitThing);
+
+                        // 如果未超过最大弹跳次数，尝试寻找下一个目标并射击
                         bool flag9 = this.numBounces < this.MaxBounceCount;
                         if (flag9)
                         {
@@ -120,11 +158,14 @@ namespace Electromagnetic.Abilities
                                 this.FireAt(thing);
                             }
                         }
+
+                        // 标记为已射击
                         this.shotAnything = true;
                     }
                 }
             }
         }
+
         protected virtual int MaxBounceCount
         {
             get
@@ -134,19 +175,28 @@ namespace Electromagnetic.Abilities
         }
         private void RegisterHit(Thing hitThing)
         {
+            // 注册当前对象（即调用 RegisterHit 方法的对象）对目标的击中
             this.RegisterHit(this, hitThing);
+
+            // 对所有项目中的 TeslaProjectile 对象执行击中注册
             foreach (TeslaProjectile projectile in this.allProjectiles)
             {
                 this.RegisterHit(projectile, hitThing);
             }
         }
+
         private void RegisterHit(TeslaProjectile projectile, Thing hitThing)
         {
+            // 检查目标是否已经被该 projectile 记录过
             bool flag = !projectile.prevTargets.Contains(hitThing);
+
             if (flag)
             {
+                // 如果目标未被记录，则将其添加到 prevTargets 列表中
                 projectile.prevTargets.Add(hitThing);
             }
+
+            // 将 projectile 的当前生命周期重置为 0
             projectile.curLifetime = 0;
         }
         public TeslaChainingProps Props
