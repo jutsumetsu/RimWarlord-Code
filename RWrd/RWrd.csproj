@@ -73,6 +73,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Electromagnetic\Abilities\AbilitySet.cs" />
     <Compile Include="Electromagnetic\Abilities\AntiGravityUtil.cs" />
     <Compile Include="Electromagnetic\Abilities\AttackType.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_ElectricClaw.cs" />
@@ -148,8 +149,13 @@
     <Compile Include="Electromagnetic\Setting\RWrdSettings.cs" />
     <Compile Include="Electromagnetic\Things\CompProperties_ThingStudiable.cs" />
     <Compile Include="Electromagnetic\Things\CompThingStudiable.cs" />
+    <Compile Include="Electromagnetic\UI\Command_ActionWithFloat.cs" />
     <Compile Include="Electromagnetic\UI\Command_Electromagnetic.cs" />
+    <Compile Include="Electromagnetic\UI\Dialog_AbilitySet.cs" />
+    <Compile Include="Electromagnetic\UI\Dialog_EditAbilitySets.cs" />
+    <Compile Include="Electromagnetic\UI\Dialog_OutputPower.cs" />
     <Compile Include="Electromagnetic\UI\Dialog_PowerIntroduce.cs" />
+    <Compile Include="Electromagnetic\UI\Dialog_RenameAbilitySet.cs" />
     <Compile Include="Electromagnetic\UI\Dialog_SelectThings.cs" />
     <Compile Include="Electromagnetic\UI\ITab_Pawn_RWrd.cs" />
     <Compile Include="Electromagnetic\UI\RWrd_ItemFilterDef.cs" />

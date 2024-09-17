@@ -27,16 +27,8 @@ namespace Electromagnetic.Abilities
             Pawn pawn = this.pawn;
             //伤害计算
             Hediff_RWrd_PowerRoot root = this.root;
-            int num = damage + root.energy.level;
-            if (this.root.energy.IsUltimate)
-            {
-                num += (int)Math.Floor(this.root.energy.PowerEnergy);
-            }
-            int acr = root.energy.AvailableCompleteRealm();
-            int pff = root.energy.PowerFlowFactor();
-            int multiplier = acr + pff;
-            multiplier = (int)Math.Floor(multiplier / 2f);
-            num *= multiplier;
+            int num = (int)Tools.FinalDamage(root, damage);
+            num = (int)Math.Floor(num * outputPower);
             //友伤豁免
             List<Thing> list = new List<Thing>();
             foreach (Pawn pawn2 in pawn.MapHeld.mapPawns.AllPawns)

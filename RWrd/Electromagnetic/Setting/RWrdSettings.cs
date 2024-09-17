@@ -13,7 +13,7 @@ namespace Electromagnetic.Setting
         {
             get
             {
-                return ExpMultiplier / 100;
+                return ExpMultiplier / 100f;
             }
         }
 
@@ -35,7 +35,7 @@ namespace Electromagnetic.Setting
 
             Scribe_Values.Look(ref ExpMultiplier, "expmultiplier", 100);
             Scribe_Values.Look(ref GlobalLevelLimit, "globallevellimit", 99);
-            Scribe_Values.Look(ref WaveRangeFactor, "waverangefactor", 99);
+            Scribe_Values.Look(ref WaveRangeFactor, "waverangefactor", 1);
             base.ExposeData();
         }
     }

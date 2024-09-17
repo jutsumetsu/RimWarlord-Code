@@ -68,7 +68,7 @@ namespace Electromagnetic.UI
             }
         }
 
-        public float RequestedPsysetsHeight { get; private set; }
+        public float RequestedAbilitySetsHeight { get; private set; }
         //是否可见
         public override bool IsVisible
         {
@@ -106,6 +106,7 @@ namespace Electromagnetic.UI
         private void InitCache()
         {
             this.root = pawn.GetRoot();
+            UIUtility.abilities = this.pawn.abilities;
             this.abilityPos.Clear();
         }
 
@@ -114,6 +115,7 @@ namespace Electromagnetic.UI
             base.CloseTab();
             this.pawn = null;
             this.root = null;
+            UIUtility.abilities = null;
             this.abilityPos.Clear();
         }
         //填充选项卡界面
@@ -183,23 +185,56 @@ namespace Electromagnetic.UI
                 listing_Standard.Label("Rwrd_CompleteRealm".Translate() + ": " + this.root.energy.completerealm.ToString() + "/10000", -1f, null);
                 listing_Standard.Label("RWrd_PowerFlow".Translate() + ": " + this.root.energy.powerflow.ToString() + "/100000000", -1f, null);
                 //力量体系介绍按钮
-                Rect buttonRect = listing_Standard.GetRect(40f, 0.5f);
+                Rect buttonRect = listing_Standard.GetRect(40f, 1f);
+                Rect buttonLeft = listing_Standard.GetRect(40f, 0.5f);
+                Rect buttonRight = new Rect(buttonLeft.x + buttonLeft.width, buttonLeft.y, buttonLeft.width, buttonLeft.height);
+                Rect buttonRect2 = listing_Standard.GetRect(40f, 1f);
                 if (Widgets.ButtonText(buttonRect, "RWrd_IntroduceButton".Translate()))
                 {
                     Find.WindowStack.Add(new Dialog_PowerIntroduce());
                 }
-                //原子分裂按钮
-                if (this.root.energy.level >= 75)
+                //原子分裂按钮&&出力设置按钮&&技能组按钮
+                if (this.root.energy.level < 75)
                 {
-                    Rect thingsSpawn = new Rect(buttonRect.x + buttonRect.width, buttonRect.y, buttonRect.width, buttonRect.height);
-                    if (Mouse.IsOver(thingsSpawn))
+                    if (Mouse.IsOver(buttonLeft))
                     {
-                        TooltipHandler.TipRegion(thingsSpawn, "RWrd_ASIntroduce".Translate());
+                        TooltipHandler.TipRegion(buttonLeft, "RWrd_OPIntroduce".Translate());
                     }
-                    if (Widgets.ButtonText(thingsSpawn, "RWrd_AtomSplit".Translate()))
+                    if (Widgets.ButtonText(buttonLeft, "RWrd_OutputPower".Translate()))
+                    {
+                        var powerOption = new Dialog_OutputPower(this);
+                        Find.WindowStack.Add(powerOption);
+                    }
+                    if (Widgets.ButtonText(buttonRight, "RWrd_AbilitySets".Translate()))
+                    {
+                        var editSets = new Dialog_EditAbilitySets(this);
+                        Find.WindowStack.Add(editSets);
+                    }
+                }
+                else
+                {
+                    if (Mouse.IsOver(buttonLeft))
+                    {
+                        TooltipHandler.TipRegion(buttonLeft, "RWrd_OPIntroduce".Translate());
+                    }
+                    if (Widgets.ButtonText(buttonLeft, "RWrd_OutputPower".Translate()))
+                    {
+                        var powerOption = new Dialog_OutputPower(this);
+                        Find.WindowStack.Add(powerOption);
+                    }
+                    if (Mouse.IsOver(buttonRight))
+                    {
+                        TooltipHandler.TipRegion(buttonRight, "RWrd_ASIntroduce".Translate());
+                    }
+                    if (Widgets.ButtonText(buttonRight, "RWrd_AtomSplit".Translate()))
                     {
                         var selectArtifact = new Dialog_SelectThings(this);
                         Find.WindowStack.Add(selectArtifact);
+                    }
+                    if (Widgets.ButtonText(buttonRect2, "RWrd_AbilitySets".Translate()))
+                    {
+                        var editSets = new Dialog_EditAbilitySets(this);
+                        Find.WindowStack.Add(editSets);
                     }
                 }
                 listing_Standard.End();
@@ -279,7 +314,7 @@ namespace Electromagnetic.UI
             TooltipHandler.TipRegion(inRect, () => string.Format("{0}\n\n{1}\n{2}", abilityDef.label, abilityDef.description, flag ? ("\n" + "RWrd_Locked".Translate().Resolve()) + "\n" + node.unlockRequired : "\n" + "RWrd_Mastery".Translate().Resolve() + mastery.ToString()), abilityDef.GetHashCode());
 
         }
-        public void DoPathAbilities(Rect inRect, RWrd_RouteDef path, Dictionary<AbilityDef, Vector2> abilityPos, Action<Rect, AbilityDef, RWrd_RouteNode> doAbility)
+        public static void DoPathAbilities(Rect inRect, RWrd_RouteDef path, Dictionary<AbilityDef, Vector2> abilityPos, Action<Rect, AbilityDef, RWrd_RouteNode> doAbility)
         {
             // 获取每个节点的技能和对应层级
             var routeNodes = path.routeNodes;
@@ -340,7 +375,7 @@ namespace Electromagnetic.UI
                             {
                                 foreach (var abilityDef in node.abilities)
                                 {
-                                    Widgets.DrawLine(abilityPos[abilityDef], abilityPos[abilityDef2], (this.pawn.abilities.GetAbility(abilityDef) != null) ? Color.white : Color.grey, 2f);
+                                    Widgets.DrawLine(abilityPos[abilityDef], abilityPos[abilityDef2], (UIUtility.abilities.GetAbility(abilityDef) != null) ? Color.white : Color.grey, 2f);
                                 }
                             }
                         }
@@ -386,6 +421,51 @@ namespace Electromagnetic.UI
         {
             this.curThings = things;
         }
+        public void DoAbilitySets(Rect inRect)
+        {
+            var dialogTitleLabel = new Rect(inRect.x, inRect.y, 300, 24);
+            Widgets.Label(dialogTitleLabel, "RWrd_AbilitySetSetting".Translate(pawn.Name.ToStringShort));
+            Listing_Standard listing_Standard = new Listing_Standard();
+            Rect outRect = new Rect(inRect);
+            outRect.y += 30;
+            outRect.yMax -= 70f;
+            listing_Standard.Begin(outRect);
+            if (this.root.abilitySets.Count > 0)
+            {
+                foreach (AbilitySet abilitySet in this.root.abilitySets.ToList<AbilitySet>())
+                {
+                    Rect rect = listing_Standard.GetRect(30f, 1f);
+                    Widgets.Label(rect.LeftHalf().LeftHalf(), abilitySet.Name);
+                    bool flag = Widgets.ButtonText(rect.LeftHalf().RightHalf(), "RWrd_Rename".Translate(), true, true, true, null);
+                    if (flag)
+                    {
+                        Find.WindowStack.Add(new Dialog_RenameAbilitySet(abilitySet));
+                    }
+                    bool flag2 = Widgets.ButtonText(rect.RightHalf().LeftHalf(), "RWrd_Edit".Translate(), true, true, true, null);
+                    if (flag2)
+                    {
+                        Find.WindowStack.Add(new Dialog_AbilitySet(abilitySet, this.pawn));
+                    }
+                    bool flag3 = Widgets.ButtonText(rect.RightHalf().RightHalf(), "RWrd_Remove".Translate(), true, true, true, null);
+                    if (flag3)
+                    {
+                        this.root.RemoveAbilitySet(abilitySet);
+                    }
+                }
+            }
+            bool flag4 = Widgets.ButtonText(listing_Standard.GetRect(70f, 1f).LeftHalf().ContractedBy(5f), "RWrd_CreateAbilitySet".Translate(), true, true, true, null);
+            if (flag4)
+            {
+                AbilitySet abilitySet2 = new AbilitySet
+                {
+                    Name = "RWrd_Untitled".Translate()
+                };
+                this.root.abilitySets.Add(abilitySet2);
+                Find.WindowStack.Add(new Dialog_AbilitySet(abilitySet2, this.pawn));
+            }
+            this.RequestedAbilitySetsHeight = listing_Standard.CurHeight + 70f;
+            listing_Standard.End();
+        }
 
         private readonly Dictionary<AbilityDef, Vector2> abilityPos = new Dictionary<AbilityDef, Vector2>();
         //private readonly Dictionary<string, List<RWrd_RouteDef>> pathsByTab = new Dictionary<string, List<RWrd_RouteDef>>();
@@ -393,11 +473,11 @@ namespace Electromagnetic.UI
         public Thing curThings;
         private string curTab;
         private bool devMode;
-        private Hediff_RWrd_PowerRoot root;
+        public Hediff_RWrd_PowerRoot root;
         private float lastPathsHeight;
         private int pathsPerRow;
         private Vector2 pathsScrollPos;
-        private Pawn pawn;
+        public Pawn pawn;
         private Vector2 psysetsScrollPos;
         private static readonly float[][] abilityTreeXOffsets = new float[][]
         {

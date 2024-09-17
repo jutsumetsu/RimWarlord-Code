@@ -17,5 +17,6 @@ namespace Electromagnetic.Abilities
         public float masteryOffset = 0;
         public bool isCommon = false;
         public bool isAshura = false;
+        public bool isAttack = false;
     }
 }

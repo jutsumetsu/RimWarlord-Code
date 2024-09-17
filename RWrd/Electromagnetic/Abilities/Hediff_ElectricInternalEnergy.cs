@@ -30,16 +30,9 @@ namespace Electromagnetic.Abilities
             Hediff_RWrd_PowerRoot root = this.root;
             //伤害计算
             int masteryOffset = (int)Math.Floor(mastery / 10f);
-            float num = 20 + root.energy.level + masteryOffset;
-            if (this.root.energy.IsUltimate)
-            {
-                num += (int)Math.Floor(this.root.energy.PowerEnergy);
-            }
-            int acr = root.energy.AvailableCompleteRealm();
-            int pff = root.energy.PowerFlowFactor();
-            float multiplier = acr + pff;
-            multiplier = (int)Math.Floor(multiplier / 2);
-            num *= multiplier;
+            float num = 20;
+            num = Tools.FinalDamage(root, num, masteryOffset);
+            num *= outputPower;
             //生成特效
             FleckCreationData dataStatic1 = FleckMaker.GetDataStatic(this.pawn.DrawPos, map, RWrd_DefOf.RWrd_ElectricClawFleck, 1f);
             map.flecks.CreateFleck(dataStatic1);

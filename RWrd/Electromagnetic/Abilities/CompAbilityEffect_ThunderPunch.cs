@@ -63,24 +63,15 @@ namespace Electromagnetic.Abilities
             SoundInfo info = SoundInfo.InMap(new TargetInfo(pawn.Position, map, false), MaintenanceType.None);
             SoundDefOf.Pawn_Melee_Punch_HitPawn.PlayOneShot(info);
             int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
-            int num = 40 + masteryOffset;
+            float num = 40;
             if (Pawn.IsHaveRoot())
             {
                 //伤害计算
                 Hediff_RWrd_PowerRoot root = Pawn.GetRoot();
-                num += root.energy.level;
-                if (root.energy.IsUltimate)
-                {
-                    num += (int)Math.Floor(root.energy.PowerEnergy);
-                }
-                int acr = root.energy.AvailableCompleteRealm();
-                int pff = root.energy.PowerFlowFactor();
-                int multiplier = acr + pff;
-                multiplier = (int)Math.Floor(multiplier / 2f);
-                num *= multiplier;
+                num = Tools.FinalDamage(root, num, masteryOffset);
+                num *= Ability.outputPower;
             }
-            pawn.TakeDamage(new DamageInfo(DamageDefOf.Flame, (float)num, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true));
+            pawn.TakeDamage(new DamageInfo(DamageDefOf.Flame, num, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true));
         }
-        private HashSet<Faction> affectedFactionCache = new HashSet<Faction>();
     }
 }

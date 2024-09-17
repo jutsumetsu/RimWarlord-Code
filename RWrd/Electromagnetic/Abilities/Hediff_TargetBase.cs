@@ -12,5 +12,6 @@ namespace Electromagnetic.Abilities
     {
         public Hediff_RWrd_PowerRoot root;
         public float mastery;
+        public float outputPower;
     }
 }

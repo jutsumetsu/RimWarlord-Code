@@ -13,9 +13,6 @@ using Electromagnetic.Setting;
 
 namespace Electromagnetic.UI
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-    public class HotSwappableAttribute : Attribute { }
-    [HotSwappable]
     public class Dialog_SelectThings : Window
     {
         public override Vector2 InitialSize => new Vector2(620f, 500f);
@@ -30,7 +27,7 @@ namespace Electromagnetic.UI
         {
             doCloseButton = false;
             doCloseX = true;
-            closeOnClickedOutside = false;
+            closeOnClickedOutside = true;
             absorbInputAroundWindow = false;
             allArtifactDefs = AllThingsDefs.ToList();
             forcePause = true;
@@ -110,7 +107,11 @@ namespace Electromagnetic.UI
             searchKey = Widgets.TextField(searchRect, searchKey);
             Text.Anchor = TextAnchor.UpperLeft;
 
-            Pawn pawn = parent.GetSelectedPawn();
+            Pawn pawn = parent.pawn;
+            if (parent.GetSelectedPawn() == null)
+            {
+                Close();
+            }
 
             Rect outRect = new Rect(inRect);
             outRect.y = searchRect.yMax + 5;

@@ -41,6 +41,14 @@ namespace Electromagnetic.Abilities
                 Log.Error("Target thing is null");
                 return;
             }
+            // 目标是否为Pawn
+            Pawn targetPawn = targetThing as Pawn;
+            if (targetPawn != null)
+            {
+                RepairPawnEquipment(targetPawn);
+                return;
+            }
+
             Pawn Caster = this.parent.pawn;
             try
             {
@@ -68,8 +76,34 @@ namespace Electromagnetic.Abilities
                 Log.Error($"Error applying MatterHardening: {ex}");
             }
             //Log.Message("done");
+        }
 
+        public void RepairPawnEquipment(Pawn pawn)
+        {
+            if (pawn == null)
+                return;
 
+            Pawn caster = this.parent.pawn;
+
+            List<ThingWithComps> toHeal = (from t in pawn.equipment.AllEquipmentListForReading.Concat(pawn.apparel.WornApparel)
+                                           where t.def.useHitPoints
+                                           select t).ToList();
+
+            foreach (ThingWithComps item in toHeal)
+            {
+                if (caster.IsHaveRoot())
+                {
+                    Hediff_RWrd_PowerRoot root = caster.GetRoot();
+                    int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
+                    int level = root.energy.level + 1 + masteryOffset;
+                    int num = (int)Math.Floor(level / 5f);
+                    item.HitPoints = Mathf.RoundToInt(item.MaxHitPoints * Props.HardeningFactor * (num));
+                }
+                else
+                {
+                    item.HitPoints = Mathf.RoundToInt(item.MaxHitPoints * Props.HardeningFactor * 1);
+                }
+            }
         }
     }
 }

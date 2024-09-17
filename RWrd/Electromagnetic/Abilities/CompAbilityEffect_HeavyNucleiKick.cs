@@ -57,16 +57,9 @@ namespace Electromagnetic.Abilities
                     //伤害计算
                     Hediff_RWrd_PowerRoot root = caster.GetRoot();
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
-                    int num = 40 + root.energy.level + masteryOffset;
-                    if (root.energy.IsUltimate)
-                    {
-                        num += (int)Math.Floor(root.energy.PowerEnergy);
-                    }
-                    int acr = root.energy.AvailableCompleteRealm();
-                    int pff = root.energy.PowerFlowFactor();
-                    int multiplier = acr + pff;
-                    multiplier = (int)Math.Floor(multiplier / 2f);
-                    num *= multiplier;
+                    int num = 40;
+                    num = (int)Tools.FinalDamage(root, num, masteryOffset);
+                    num = (int)Math.Floor(num * Ability.outputPower);
                     //关闭友伤
                     List<Thing> list = new List<Thing>();
                     foreach (Pawn pawn2 in pawn.MapHeld.mapPawns.AllPawns)

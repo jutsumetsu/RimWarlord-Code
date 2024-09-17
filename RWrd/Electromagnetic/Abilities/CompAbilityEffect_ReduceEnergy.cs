@@ -127,7 +127,12 @@ namespace Electromagnetic.Abilities
         {
             get
             {
-                if (this.Ability.mastery < 0)
+                bool flag = false;
+                if (this.root.abilitySets.Count > 0 && root.abilitysetIndex < this.root.abilitySets.Count)
+                {
+                    flag = !this.root.abilitySets[root.abilitysetIndex].Abilities.Contains(Ability.def);
+                }
+                if (this.Ability.mastery < 0 || flag)
                 {
                     return true;
                 }

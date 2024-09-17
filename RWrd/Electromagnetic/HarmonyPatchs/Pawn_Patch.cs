@@ -56,21 +56,12 @@ namespace Electromagnetic.HarmonyPatchs
                             float cr = root.energy.completerealm;
                             if (acr >= 1 && pff >= 1)
                             {
-                                float multiplier = acr + pff;
-                                if (!root.energy.IsUltimate)
-                                {
-                                    multiplier = (int)Math.Floor(multiplier / 2);
-                                }
                                 float num = __instance.verbProps.AdjustedMeleeDamageAmount(__instance, __instance.CasterPawn);
                                 float armorPenetration = __instance.verbProps.AdjustedArmorPenetration(__instance, __instance.CasterPawn);
                                 armorPenetration += cr * 4;
                                 num = Rand.Range(num * 0.8f, num * 1.2f);
-                                num += level;
-                                if (root.energy.IsUltimate)
-                                {
-                                    num += root.energy.PowerEnergy;
-                                }
-                                num *= multiplier;
+                                num = Tools.FinalDamage(root, num);
+                                num *= root.energy.outputPower;
                                 bool ReachLimit = root.energy.level == root.energy.LevelMax && root.energy.exp == root.energy.MaxExp;
                                 if (target.Thing.GetType() == typeof(Pawn) && !ReachLimit)
                                 {

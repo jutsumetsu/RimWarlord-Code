@@ -67,7 +67,7 @@ namespace Electromagnetic.Things
                 }
             }
         }
-        //不晓得干啥的
+        //信息超链接
         private IEnumerable<Dialog_InfoCard.Hyperlink> GetRelatedQuestHyperlinks()
         {
             List<Quest> quests = Find.QuestManager.QuestsListForReading;

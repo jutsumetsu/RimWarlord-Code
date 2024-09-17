@@ -51,6 +51,22 @@ namespace Electromagnetic.Core
                 return (float)Math.Floor(preEnergy);
             }
         }
+        public float Multiplier
+        {
+            get
+            {
+                int acr = this.AvailableCompleteRealm();
+                int pff = this.PowerFlowFactor();
+                if (!this.IsUltimate)
+                {
+                    return (int)Math.Floor((acr + pff) / 2f);
+                }
+                else
+                {
+                    return acr + pff;
+                }
+            }
+        }
         /// <summary>
         /// 初始化
         /// </summary>
@@ -420,6 +436,7 @@ namespace Electromagnetic.Core
             Scribe_Values.Look<float>(ref this.MaxEnergy, "maxenergy", 0f, false);
             Scribe_Values.Look<float>(ref this.exp, "exp", 0f, false);
             Scribe_Values.Look<float>(ref this.completerealm, "completerealm", 0f, false);
+            Scribe_Values.Look<float>(ref this.outputPower, "outputpower", 1f, false);
             Scribe_Values.Look<int>(ref this.powerflow, "powerflow", 0, false);
             Scribe_Values.Look<int>(ref this.level, "level", 0, false);
             bool flag = Scribe.mode == LoadSaveMode.PostLoadInit;
@@ -476,5 +493,9 @@ namespace Electromagnetic.Core
         public int LevelMin = 0;
 
         public bool canSelfDestruct = false;
+        /// <summary>
+        /// 出力上限
+        /// </summary>
+        public float outputPower = 1;
     }
 }

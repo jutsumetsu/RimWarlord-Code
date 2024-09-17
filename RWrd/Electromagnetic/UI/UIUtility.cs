@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -172,5 +173,6 @@ namespace Electromagnetic.UI
             }
             yield break;
         }
+        public static Pawn_AbilityTracker abilities;
     }
 }

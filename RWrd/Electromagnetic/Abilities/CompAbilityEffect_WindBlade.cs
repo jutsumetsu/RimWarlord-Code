@@ -59,21 +59,13 @@ namespace Electromagnetic.Abilities
             }
             DamageDef named = DefDatabase<DamageDef>.GetNamed("Cut", true);
             int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
-            int num2 = 30 + masteryOffset;
+            int num2 = 30;
             if (Pawn.IsHaveRoot())
             {
                 //计算伤害
                 Hediff_RWrd_PowerRoot root = Pawn.GetRoot();
-                num2 += root.energy.level;
-                if (root.energy.IsUltimate)
-                {
-                    num2 += (int)Math.Floor(root.energy.PowerEnergy);
-                }
-                int acr = root.energy.AvailableCompleteRealm();
-                int pff = root.energy.PowerFlowFactor();
-                int multiplier = acr + pff;
-                multiplier = (int)Math.Floor(multiplier / 2f);
-                num2 *= multiplier;
+                num2 = (int)Tools.FinalDamage(root, num2, masteryOffset);
+                num2 = (int)Math.Floor(num2 * Ability.outputPower);
             }
             //友伤豁免
             List<Thing> list = new List<Thing>();

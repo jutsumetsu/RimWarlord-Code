@@ -35,6 +35,24 @@ namespace Electromagnetic.Core
             return Math.Atan2((double)(p2.x - p1.x), (double)(p2.z - p1.z)) * 180.0 / 3.141592653589793;
         }
         /// <summary>
+        /// 最终伤害计算
+        /// </summary>
+        /// <param name="root">力量之源</param>
+        /// <param name="baseDamage">基础伤害</param>
+        /// <param name="masteryOffset">精通加成</param>
+        /// <returns></returns>
+        public static float FinalDamage(Hediff_RWrd_PowerRoot root, float baseDamage, float masteryOffset = 0)
+        {
+            float damageAmount = 0;
+            damageAmount += baseDamage + root.energy.level + masteryOffset;
+            if (root.energy.IsUltimate)
+            {
+                damageAmount += (int)Math.Floor(root.energy.PowerEnergy);
+            }
+            damageAmount *= root.energy.Multiplier;
+            return damageAmount;
+        }
+        /// <summary>
         /// 能量条材质
         /// </summary>
         public static readonly Texture2D EnergyBarTex = SolidColorMaterials.NewSolidColorTexture(new Color(1f, 0.84f, 0f));
@@ -46,5 +64,6 @@ namespace Electromagnetic.Core
         /// 能量条空材质
         /// </summary>
         public static readonly Texture2D EmptyBarTex = SolidColorMaterials.NewSolidColorTexture(Color.clear);
+        public static readonly Texture2D AbilitySetNext = ContentFinder<Texture2D>.Get("UI/Gizmos/AbilitySet_Next", true);
     }
 }

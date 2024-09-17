@@ -157,6 +157,7 @@ namespace Electromagnetic.Abilities
         {
             base.ExposeData();
             Scribe_Values.Look<float>(ref this.mastery, "mastery", 0f, false);
+            Scribe_Values.Look<float>(ref this.outputPower, "outputpowerability", 0f, false);
         }
         /// <summary>
         /// 设置精通值
@@ -171,6 +172,7 @@ namespace Electromagnetic.Abilities
             }
         }
         public float mastery = 0;
+        public float outputPower = 1;
         public float MaxMastery = 100;
     }
 }

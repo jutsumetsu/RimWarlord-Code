@@ -8,48 +8,12 @@ using Verse.AI;
 using HarmonyLib;
 using UnityEngine;
 using Electromagnetic.Setting;
+using Electromagnetic.UI;
 
 namespace Electromagnetic.Core
 {
     public class Hediff_RWrd_PowerRoot : HediffWithComps
     {
-        //显示标签
-        public override string LabelInBrackets
-        {
-            get
-            {
-                bool flag = this.energy.level == 0;
-                bool flag2 = this.energy.level >= 10;
-                string text;
-                if (flag)
-                {
-                    text = "RWrd_BE".Translate();
-                }
-                else
-                {
-                    if (Tools.IsChineseLanguage)
-                    {
-                        text = "RWrd_BM".Translate(flag2 ? this.energy.level.ToString() : " " + this.energy.level.ToString());
-                    }
-                    else
-                    {
-                        text = "RWrd_BM".Translate(this.energy.level.ToString());
-                    }
-                }
-                return string.Concat(new string[]
-                {
-                    text,
-                    ",",
-                    Math.Round((double)this.energy.Energy, 2).ToString(),
-                    ",",
-                    Math.Round((double)this.energy.Exp, 2).ToString(),
-                    ",",
-                    Math.Round((double)this.energy.CompleteRealm, 2).ToString(),
-                    ",",
-                    Math.Round((double)this.energy.PowerFlow, 2).ToString()
-                });
-            }
-        }
         //获取Gizmo
         public override IEnumerable<Gizmo> GetGizmos()
         {
@@ -64,10 +28,12 @@ namespace Electromagnetic.Core
                     this.pawn.CheckAbilityLimiting();
                     this.reeStartInit = true;
                 }
-                Gizmo_Psychic gizmo = new Gizmo_Psychic(this.pawn, this);
-                gizmo.EnergyLabel = "RWrd_EP_Energy".Translate();
-                gizmo.CompleteRealmLabel = "Rwrd_CompleteRealm".Translate();
-                gizmo.PowerFlowLabel = "RWrd_PowerFlow".Translate();
+                Gizmo_Psychic gizmo = new Gizmo_Psychic(this.pawn, this)
+                {
+                    EnergyLabel = "RWrd_EP_Energy".Translate(),
+                    CompleteRealmLabel = "Rwrd_CompleteRealm".Translate(),
+                    PowerFlowLabel = "RWrd_PowerFlow".Translate()
+                };
                 if (flag2)
                 {
                     gizmo.PowerLabel = "RWrd_BE".Translate();
@@ -87,6 +53,20 @@ namespace Electromagnetic.Core
                 }
                 yield return gizmo;
                 gizmo = null;
+            }
+            if (abilitySets.Count > 0)
+            {
+                var nextIndex = abilitysetIndex + 1;
+                if (nextIndex > this.abilitySets.Count) nextIndex = 0;
+                yield return new Command_ActionWithFloat
+                {
+                    defaultLabel = "RWrd_AbilitySetsNext".Translate(),
+                    defaultDesc = "RWrd_AbilitySetsDesc".Translate(AbilitySetLabel(abilitysetIndex), AbilitySetLabel(nextIndex)),
+                    icon = Tools.AbilitySetNext,
+                    action = () => abilitysetIndex = nextIndex,
+                    Order = 0f,
+                    floatMenuGetter = GetAbilitySetFloatMenuOptions
+                };
             }
             bool godMode = DebugSettings.godMode;
             if (godMode)
@@ -237,6 +217,41 @@ namespace Electromagnetic.Core
                 };*/
             }
             yield break;
+        }
+        /// <summary>
+        /// 技能组名字
+        /// </summary>
+        /// <param name="index">索引</param>
+        /// <returns></returns>
+        private string AbilitySetLabel(int index)
+        {
+            if (index == abilitySets.Count) return "RWrd_AllAbility".Translate();
+            return this.abilitySets[index].Name;
+        }
+        /// <summary>
+        /// 获取技能组浮动菜单选项
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<FloatMenuOption> GetAbilitySetFloatMenuOptions()
+        {
+            for (var i = 0; i <= abilitySets.Count; i++)
+            {
+                var index = i;
+                yield return new FloatMenuOption(this.AbilitySetLabel(index), delegate ()
+                {
+                    this.abilitysetIndex = index;
+                });
+            }
+            yield break;
+        }
+        /// <summary>
+        /// 移除技能组
+        /// </summary>
+        /// <param name="set"></param>
+        public void RemoveAbilitySet(AbilitySet set)
+        {
+            this.abilitySets.Remove(set);
+            this.abilitysetIndex = Mathf.Clamp(this.abilitysetIndex, 0, this.abilitySets.Count);
         }
         public override void PostRemoved()
         {
@@ -688,13 +703,19 @@ namespace Electromagnetic.Core
             Scribe_Deep.Look<Pawn_EnergyTracker>(ref this.energy, "energy", Array.Empty<object>());
             Scribe_Values.Look<bool>(ref this.IsInit, "IsInit", false, false);
             Scribe_Values.Look<bool>(ref this.openingBasicAbility, "openingBasicAbility", false, false);
+            Scribe_Values.Look<int>(ref this.abilitysetIndex, "abilitysetIndex", 0, false);
             Scribe_Collections.Look<RWrd_RouteDef>(ref this.routes, "routes", LookMode.Def, Array.Empty<object>());
+            Scribe_Collections.Look<AbilitySet>(ref this.abilitySets, "abilitysets", LookMode.Deep, Array.Empty<object>());
             bool flag = Scribe.mode == LoadSaveMode.PostLoadInit;
             if (flag)
             {
                 if (this.routes == null)
                 {
                     this.routes = new List<RWrd_RouteDef>();
+                }
+                if (this.abilitySets == null)
+                {
+                    this.abilitySets = new List<AbilitySet>();
                 }
                 this.energy.pawn = this.pawn;
                 this.pawn.CheckRouteUnlock();
@@ -729,5 +750,8 @@ namespace Electromagnetic.Core
         public bool reeStartInit = false;
 
         public HediffStage stage;
+
+        public List<AbilitySet> abilitySets = new List<AbilitySet>();
+        public int abilitysetIndex;
     }
 }
