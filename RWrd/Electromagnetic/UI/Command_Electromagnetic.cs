@@ -36,7 +36,9 @@ namespace Electromagnetic.UI
             get
             {
                 CompAbilityEffect_ReduceEnergy compAbilityEffect_ReduceEnergy = ability.CompOfType<CompAbilityEffect_ReduceEnergy>();
-                return -compAbilityEffect_ReduceEnergy.EnergyReduce;
+                float energyReduce = -compAbilityEffect_ReduceEnergy.EnergyReduce;
+                energyReduce *= Ability.outputPower;
+                return (int)Math.Floor(energyReduce);
             }
         }
         private new RWrd_PsyCastBase Ability

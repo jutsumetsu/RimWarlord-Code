@@ -113,11 +113,12 @@ namespace Electromagnetic.HarmonyPatchs
                                         list.Add(pawn2);
                                     }
                                 }
-                                radius *= RWrdSettings.WaveRangeFactor;
+                                radius *= RWrdSettings.WaveRangeFactor * root.energy.waveRange;
                                 radius = Math.Min(radius, 56);
-                                if (radius > 1f && RWrdSettings.PowerfulEnergyWave)
+                                int waveDamage = (int)Math.Floor((root.energy.DamageImmunityThreshold - 5) * root.energy.wavePower);
+                                if (radius > 1f && RWrdSettings.PowerfulEnergyWave && root.energy.personalEnergyWave)
                                 {
-                                    GenExplosion.DoExplosion(target.Thing.PositionHeld, target.Thing.MapHeld, radius, RWrd_DefOf.RWrd_PowerfulWave, casterPawn, (int)root.energy.DamageImmunityThreshold - 5, 0, null, null, null, null, null, 0, 1, null, false, null, 0, 1, 0, false, null, list, null, RWrdSettings.DoVisualWaveEffect, 1, 0, false, null, 0);
+                                    GenExplosion.DoExplosion(target.Thing.PositionHeld, target.Thing.MapHeld, radius, RWrd_DefOf.RWrd_PowerfulWave, casterPawn, waveDamage, 0, null, null, null, null, null, 0, 1, null, false, null, 0, 1, 0, false, null, list, null, RWrdSettings.DoVisualWaveEffect, 1, 0, false, null, 0);
                                 }
 
                                 if (__instance.tool != null && __instance.tool.extraMeleeDamages != null)

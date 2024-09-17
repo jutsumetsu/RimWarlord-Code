@@ -65,7 +65,7 @@ namespace Electromagnetic.Abilities
                 bool flag = hediff.GetType() == typeof(Hediff_RWrd_PowerRoot);
                 if (flag)
                 {
-                    ((Hediff_RWrd_PowerRoot)hediff).energy.SetEnergy(this.EnergyReduce);
+                    ((Hediff_RWrd_PowerRoot)hediff).energy.SetEnergy((int)Math.Floor(this.EnergyReduce * Ability.outputPower));
                     ((Hediff_RWrd_PowerRoot)hediff).energy.SetExp(0.1f * -(float)this.Props.rEnergy);
                     ((RWrd_PsyCastBase)this.parent).SetMastery(0.2f);
                     ((Hediff_RWrd_PowerRoot)hediff).energy.SetCompleteRealm(0.000001f);

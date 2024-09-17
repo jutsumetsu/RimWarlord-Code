@@ -33,6 +33,10 @@ namespace Electromagnetic.Core
             work.tickAction = delegate ()
             {
                 bool canFunction = this.CanFunction;
+                if (this.pawn.needs.joy != null)
+                {
+                    JoyUtility.JoyTickCheckEnd(this.pawn, JoyTickFullJoyAction.None, 1f, null);
+                }
                 if (canFunction)
                 {
                     Pawn actor = work.actor;

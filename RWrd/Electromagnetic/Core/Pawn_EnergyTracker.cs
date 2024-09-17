@@ -437,8 +437,11 @@ namespace Electromagnetic.Core
             Scribe_Values.Look<float>(ref this.exp, "exp", 0f, false);
             Scribe_Values.Look<float>(ref this.completerealm, "completerealm", 0f, false);
             Scribe_Values.Look<float>(ref this.outputPower, "outputpower", 1f, false);
+            Scribe_Values.Look<float>(ref this.wavePower, "wavePower", 1f, false);
+            Scribe_Values.Look<float>(ref this.waveRange, "waveRange", 1f, false);
             Scribe_Values.Look<int>(ref this.powerflow, "powerflow", 0, false);
             Scribe_Values.Look<int>(ref this.level, "level", 0, false);
+            Scribe_Values.Look<bool>(ref this.personalEnergyWave, "personalEnergyWave", true, false);
             bool flag = Scribe.mode == LoadSaveMode.PostLoadInit;
         }
 
@@ -497,5 +500,15 @@ namespace Electromagnetic.Core
         /// 出力上限
         /// </summary>
         public float outputPower = 1;
+        /// <summary>
+        /// 余波出力
+        /// </summary>
+        public float wavePower = 1;
+        /// <summary>
+        /// 余波范围
+        /// </summary>
+        public float waveRange = 1;
+
+        public bool personalEnergyWave = true;
     }
 }
