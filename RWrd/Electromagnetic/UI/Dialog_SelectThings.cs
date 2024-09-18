@@ -155,7 +155,7 @@ namespace Electromagnetic.UI
                     Rect textFieldNumeric = new Rect(iconRect.xMax + 345f, num, 50f, 32f);
                     int textFieldNumber = thingValues[thingDef];
                     string text = textFieldNumber.ToString();
-                    int maxNumber = (int)Math.Floor(pawn.GetRoot().energy.energy / CalculateValueToShow(thingDef));
+                    int maxNumber = (int)Math.Floor(pawn.GetPowerRoot().energy.energy / CalculateValueToShow(thingDef));
                     Widgets.TextFieldNumeric<int>(textFieldNumeric, ref textFieldNumber, ref text, 1f, Math.Min(thingDef.stackLimit, maxNumber));
                     thingValues[thingDef] = textFieldNumber;
 
@@ -163,7 +163,7 @@ namespace Electromagnetic.UI
                     //能耗数值
                     float valueToShow = CalculateValueToShow(thingDef) * thingValues[thingDef];
                     float valueToReduce = CalculateValueToShow(thingDef);
-                    bool isButtonEnabled = pawn != null && pawn.IsHaveRoot() && valueToShow <= pawn.GetRoot().energy.energy;
+                    bool isButtonEnabled = pawn != null && pawn.IsHavePowerRoot() && valueToShow <= pawn.GetPowerRoot().energy.energy;
                     //能耗显示
                     if (Mouse.IsOver(rect))
                     {
@@ -181,8 +181,8 @@ namespace Electromagnetic.UI
                                 parent.AssignArtifact(thing);
                                 SoundDefOf.Click.PlayOneShotOnCamera();
                                 GenPlace.TryPlaceThing(thing, pawn.Position, pawn.Map, ThingPlaceMode.Near);
-                                pawn.GetRoot().energy.SetEnergy((float)(-valueToReduce));
-                                pawn.GetRoot().energy.SetExp(0.1f * (float)(-(float)valueToReduce));
+                                pawn.GetPowerRoot().energy.SetEnergy((float)(-valueToReduce));
+                                pawn.GetPowerRoot().energy.SetExp(0.1f * (float)(-(float)valueToReduce));
                             }
 
                             Close();

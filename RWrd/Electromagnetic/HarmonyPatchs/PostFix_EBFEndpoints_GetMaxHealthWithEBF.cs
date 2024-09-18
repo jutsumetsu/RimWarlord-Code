@@ -21,9 +21,9 @@ namespace Electromagnetic.HarmonyPatchs
         [HarmonyPostfix]
         public static void Postfix(Pawn pawn, ref float __result)
         {
-            if (pawn.IsHaveRoot())
+            if (pawn.IsHavePowerRoot())
             {
-                Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                 int pff = root.energy.PowerFlowFactor();
                 int level = root.energy.level + 1;
                 int multiplier = pff + level;

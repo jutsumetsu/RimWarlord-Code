@@ -45,10 +45,10 @@ namespace Electromagnetic.Abilities
             SoundDefOf.Pawn_Melee_Punch_HitPawn.PlayOneShot(info);
             int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
             float num = 20;
-            if (Pawn.IsHaveRoot())
+            if (Pawn.IsHavePowerRoot())
             {
                 //伤害计算
-                Hediff_RWrd_PowerRoot root = Pawn.GetRoot();
+                Hediff_RWrd_PowerRoot root = Pawn.GetPowerRoot();
                 num = Tools.FinalDamage(root, num, masteryOffset);
                 num *= Ability.outputPower;
             }
@@ -58,7 +58,7 @@ namespace Electromagnetic.Abilities
             HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();
             hediffComp_Disappears.ticksToDisappear = 60;
             Hediff_ExplosiveEnergy hediff1 = hediff as Hediff_ExplosiveEnergy;
-            hediff1.root = this.parent.pawn.GetRoot();
+            hediff1.root = this.parent.pawn.GetPowerRoot();
             hediff1.outputPower = Ability.outputPower;
             int num2 = (int)Math.Ceiling(this.Ability.mastery / 40f);
             hediff1.Severity = 0.1f * num2;

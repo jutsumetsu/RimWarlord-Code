@@ -61,7 +61,7 @@ namespace Electromagnetic.Core
         {
             get
             {
-                return !this.pawn.IsHaveRoot() || !this.pawn.Spawned;
+                return !this.pawn.IsHavePowerRoot() || !this.pawn.Spawned;
             }
         }
         /// <summary>
@@ -116,7 +116,7 @@ namespace Electromagnetic.Core
                     JobDriver jobDriver = this.pawn.jobs.curDriver;
                     if (!this.IsTraining && !this.IsBattle)
                     {
-                        Hediff_RWrd_PowerRoot root = this.pawn.GetRoot();
+                        Hediff_RWrd_PowerRoot root = this.pawn.GetPowerRoot();
                         float num = 0.00005f * root.energy.trainDesireFactor;
                         this.CurLevel -= num;
                     }

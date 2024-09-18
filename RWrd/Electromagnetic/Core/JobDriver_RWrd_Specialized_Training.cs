@@ -21,7 +21,7 @@ namespace Electromagnetic.Core
         protected override IEnumerable<Toil> MakeNewToils()
         {
             JitterHandler jitterer = this.fieldJitterer.GetValue(this.pawn.Drawer) as JitterHandler;
-            Hediff_RWrd_PowerRoot root = this.pawn.GetRoot();
+            Hediff_RWrd_PowerRoot root = this.pawn.GetPowerRoot();
             Need need = this.pawn.needs.TryGetNeed<Need_Training>();
             int tick = this.ticktime;
             int counter = this.TrainingCounter;

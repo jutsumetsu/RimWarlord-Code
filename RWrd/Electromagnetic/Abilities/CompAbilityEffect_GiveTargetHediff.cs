@@ -78,7 +78,7 @@ namespace Electromagnetic.Abilities
                 }
                 //传入力量之源参数
                 Hediff_TargetBase hediff1 = hediff as Hediff_TargetBase;
-                hediff1.root = this.parent.pawn.GetRoot();
+                hediff1.root = this.parent.pawn.GetPowerRoot();
                 hediff1.mastery = this.Ability.mastery;
                 target.health.AddHediff(hediff1, null, null, null);
             }

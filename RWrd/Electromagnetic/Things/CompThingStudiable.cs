@@ -113,17 +113,17 @@ namespace Electromagnetic.Things
                 yield break;
             }
             //无力量之源
-            bool flag2 = !pawn.IsHaveRoot();
+            bool flag2 = !pawn.IsHavePowerRoot();
             if (flag2)
             {
                 yield return new FloatMenuOption("RWrd_CannotStudy".Translate() + " (" + "RWrd_NoRoot".Translate() + ")", null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
                 yield break;
             }
             //已有对应技能树
-            bool flag3 = pawn.IsHaveRoot() && this.Props.route != null;
+            bool flag3 = pawn.IsHavePowerRoot() && this.Props.route != null;
             if (flag3)
             {
-                Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                 if (root.routes.Contains(this.Props.route))
                 {
                     yield return new FloatMenuOption("RWrd_CannotStudy".Translate() + " (" + "RWrd_AlreadyHasRoute".Translate() + ")", null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
@@ -131,7 +131,7 @@ namespace Electromagnetic.Things
                 }
             }
             //已有对应技能
-            bool flag4 = pawn.IsHaveRoot() && this.Props.ability != null;
+            bool flag4 = pawn.IsHavePowerRoot() && this.Props.ability != null;
             if (flag4)
             {
                 if (pawn.abilities.GetAbility(this.Props.ability) != null)

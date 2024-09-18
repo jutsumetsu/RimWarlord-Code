@@ -313,7 +313,7 @@ namespace Electromagnetic.Core
                 }
                 if (this.level == LevelMax)
                 {
-                    this.pawn.UpdateStageInfo();
+                    this.pawn.UpdatePowerRootStageInfo();
                 }
             }
         }
@@ -328,8 +328,8 @@ namespace Electromagnetic.Core
             {
                 float num2 = this.completerealm + num;
                 this.completerealm = (num2 > this.MaxCompleteRealm ? this.MaxCompleteRealm : num2);
-                this.pawn.CheckAbilityLimiting();
-                this.pawn.UpdateStageInfo(true);
+                this.pawn.CheckEMAbilityLimiting();
+                this.pawn.UpdatePowerRootStageInfo(true);
             }
         }
         /// <summary>
@@ -339,8 +339,8 @@ namespace Electromagnetic.Core
         public void ForceSetCompleteRealm(float num)
         {
             this.completerealm = num;
-            this.pawn.CheckAbilityLimiting();
-            this.pawn.UpdateStageInfo(true);
+            this.pawn.CheckEMAbilityLimiting();
+            this.pawn.UpdatePowerRootStageInfo(true);
         }
         /// <summary>
         /// 增加力量流量
@@ -419,7 +419,7 @@ namespace Electromagnetic.Core
                 this.level += 1;
                 this.OnPostSetLevel();
                 this.exp = 0f;
-                this.pawn.UpdateStageInfo();
+                this.pawn.UpdatePowerRootStageInfo();
             }
         }
         /// <summary>
@@ -427,7 +427,7 @@ namespace Electromagnetic.Core
         /// </summary>
         private void OnPostSetLevel()
         {
-            this.pawn.CheckAbilityLimiting();
+            this.pawn.CheckEMAbilityLimiting();
         }
 
         public void ExposeData()

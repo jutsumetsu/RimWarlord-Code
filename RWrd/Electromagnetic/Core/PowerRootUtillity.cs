@@ -16,7 +16,7 @@ namespace Electromagnetic.Core
         /// </summary>
         /// <param name="pawn"></param>
         /// <returns></returns>
-        public static bool IsHaveRoot(this Pawn pawn)
+        public static bool IsHavePowerRoot(this Pawn pawn)
         {
             if (pawn == null)
             {
@@ -32,9 +32,9 @@ namespace Electromagnetic.Core
         /// </summary>
         /// <param name="pawn"></param>
         /// <returns></returns>
-        public static Hediff_RWrd_PowerRoot GetRoot(this Pawn pawn)
+        public static Hediff_RWrd_PowerRoot GetPowerRoot(this Pawn pawn)
         {
-            return pawn.IsHaveRoot() ? ((Hediff_RWrd_PowerRoot)pawn.health.hediffSet.GetFirstHediffOfDef(RWrd_DefOf.Hediff_RWrd_PowerRoot, false)) : null;
+            return pawn.IsHavePowerRoot() ? ((Hediff_RWrd_PowerRoot)pawn.health.hediffSet.GetFirstHediffOfDef(RWrd_DefOf.Hediff_RWrd_PowerRoot, false)) : null;
         }
         /// <summary>
         /// 检查技能树解锁
@@ -42,12 +42,12 @@ namespace Electromagnetic.Core
         /// <param name="pawn"></param>
         public static void CheckRouteUnlock(this Pawn pawn, Hediff_RWrd_PowerRoot root = null)
         {
-            bool flag = pawn.IsHaveRoot();
+            bool flag = pawn.IsHavePowerRoot();
             if (flag || root != null)
             {
                 if (root == null)
                 {
-                    root = pawn.GetRoot();
+                    root = pawn.GetPowerRoot();
                 }
                 IEnumerable<RWrd_RouteDef> paths = DefDatabase<RWrd_RouteDef>.AllDefs;
                 foreach (var path in paths)
@@ -66,14 +66,14 @@ namespace Electromagnetic.Core
         /// 检查等级技能限制
         /// </summary>
         /// <param name="pawn"></param>
-        public static void CheckAbilityLimiting(this Pawn pawn, Hediff_RWrd_PowerRoot root = null)
+        public static void CheckEMAbilityLimiting(this Pawn pawn, Hediff_RWrd_PowerRoot root = null)
         {
-            bool flag = pawn.IsHaveRoot();
+            bool flag = pawn.IsHavePowerRoot();
             if (flag || root != null)
             {
                 if (root == null)
                 {
-                    root = pawn.GetRoot();
+                    root = pawn.GetPowerRoot();
                 }
                 int level = root.energy.level;
                 List<Ability> list = new List<Ability>();
@@ -83,7 +83,7 @@ namespace Electromagnetic.Core
                 {
                     foreach (RWrd_RouteDef route in root.routes)
                     {
-                        list2.AddRange(pawn.CheckAbilities(route));
+                        list2.AddRange(pawn.CheckEMAbilityTree(route));
                     }
                 }
                 foreach (Ability ability in pawn.abilities.abilities)
@@ -172,7 +172,7 @@ namespace Electromagnetic.Core
         /// <param name="pawn">小人实例</param>
         /// <param name="route">技能树</param>
         /// <returns></returns>
-        public static List<Ability> CheckAbilities(this Pawn pawn, RWrd_RouteDef route)
+        public static List<Ability> CheckEMAbilityTree(this Pawn pawn, RWrd_RouteDef route)
         {
             List<Ability> list = new List<Ability>();
             foreach (RWrd_RouteNode rwrd_RouteNode in route.routeNodes)
@@ -213,7 +213,7 @@ namespace Electromagnetic.Core
         /// </summary>
         /// <param name="pawn">小人实例</param>
         /// <param name="route">技能树</param>
-        public static void RemoveAbilities(this Pawn pawn, RWrd_RouteDef route)
+        public static void RemoveEMAbilityTree(this Pawn pawn, RWrd_RouteDef route)
         {
             foreach (var node in route.routeNodes)
             {
@@ -241,9 +241,9 @@ namespace Electromagnetic.Core
         /// 更新Stage信息
         /// </summary>
         /// <param name="cr">完全境界设置识别</param>
-        public static void UpdateStageInfo(this Pawn pawn, bool cr = false)
+        public static void UpdatePowerRootStageInfo(this Pawn pawn, bool cr = false)
         {
-            Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+            Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
             float num1;
             if (root.energy.level == 0)
             {

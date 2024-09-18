@@ -66,10 +66,10 @@ namespace Electromagnetic.Core
                     this.StudyComp.LearnAbilities(this.pawn);
                     if (this.StudyComp.Props.route != null)
                     {
-                        Hediff_RWrd_PowerRoot root = this.pawn.GetRoot();
+                        Hediff_RWrd_PowerRoot root = this.pawn.GetPowerRoot();
                         root.UnlockRoute(this.StudyComp.Props.route);
                     }
-                    this.pawn.CheckAbilityLimiting();
+                    this.pawn.CheckEMAbilityLimiting();
                     this.pawn.jobs.curDriver.ReadyForNextToil();
                 }
             };

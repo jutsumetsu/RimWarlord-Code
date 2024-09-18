@@ -25,7 +25,7 @@ namespace Electromagnetic.Core
                 bool flag3 = this.energy.level >= 10;
                 if (flag1)
                 {
-                    this.pawn.CheckAbilityLimiting();
+                    this.pawn.CheckEMAbilityLimiting();
                     this.reeStartInit = true;
                 }
                 Gizmo_Psychic gizmo = new Gizmo_Psychic(this.pawn, this)
@@ -78,7 +78,7 @@ namespace Electromagnetic.Core
                     {
                         this.energy.SetExp(this.energy.MaxExp);
                         this.energy.SetLevel();
-                        this.pawn.CheckAbilityLimiting();
+                        this.pawn.CheckEMAbilityLimiting();
                     }
                 };
                 yield return new Command_Action
@@ -165,7 +165,7 @@ namespace Electromagnetic.Core
                     {
                         this.RemoveRWrdAbilities();
                         this.UnlockRoute(RWrd_DefOf.Base);
-                        this.pawn.CheckAbilityLimiting();
+                        this.pawn.CheckEMAbilityLimiting();
                     }
                 };
                 yield return new Command_Action
@@ -175,7 +175,7 @@ namespace Electromagnetic.Core
                     {
                         this.RemoveRWrdAbilities();
                         this.UnlockRoute(RWrd_DefOf.SixSecret);
-                        this.pawn.CheckAbilityLimiting();
+                        this.pawn.CheckEMAbilityLimiting();
                     }
                 };
                 yield return new Command_Action
@@ -184,7 +184,7 @@ namespace Electromagnetic.Core
                     action = delegate ()
                     {
                         this.pawn.CheckRouteUnlock();
-                        this.pawn.CheckAbilityLimiting();
+                        this.pawn.CheckEMAbilityLimiting();
                     }
                 };
                 if (Tools.IsChineseLanguage)
@@ -201,8 +201,8 @@ namespace Electromagnetic.Core
                             this.energy.SetExp(this.energy.MaxExp);
                             this.energy.ForceSetPowerFlow(95000000);
                             this.energy.ForceSetCompleteRealm(9700);
-                            this.pawn.UpdateStageInfo();
-                            this.pawn.UpdateStageInfo(true);
+                            this.pawn.UpdatePowerRootStageInfo();
+                            this.pawn.UpdatePowerRootStageInfo(true);
                         }
                     };
                 }
@@ -255,7 +255,7 @@ namespace Electromagnetic.Core
         }
         public override void PostRemoved()
         {
-            this.pawn.CheckAbilityLimiting();
+            this.pawn.CheckEMAbilityLimiting();
             this.RemoveRWrdAbilities();
             base.PostRemoved();
         }
@@ -693,7 +693,7 @@ namespace Electromagnetic.Core
                 this.energy.trainDesireFactor = UnityEngine.Random.Range(1, 51);
             }
             this.pawn.CheckRouteUnlock(this);
-            this.pawn.CheckAbilityLimiting(this);
+            this.pawn.CheckEMAbilityLimiting(this);
             Log.Message("Root post make is called");
         }
         //保存数据

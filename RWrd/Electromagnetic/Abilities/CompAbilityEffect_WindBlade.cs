@@ -60,10 +60,10 @@ namespace Electromagnetic.Abilities
             DamageDef named = DefDatabase<DamageDef>.GetNamed("Cut", true);
             int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
             int num2 = 30;
-            if (Pawn.IsHaveRoot())
+            if (Pawn.IsHavePowerRoot())
             {
                 //计算伤害
-                Hediff_RWrd_PowerRoot root = Pawn.GetRoot();
+                Hediff_RWrd_PowerRoot root = Pawn.GetPowerRoot();
                 num2 = (int)Tools.FinalDamage(root, num2, masteryOffset);
                 num2 = (int)Math.Floor(num2 * Ability.outputPower);
             }

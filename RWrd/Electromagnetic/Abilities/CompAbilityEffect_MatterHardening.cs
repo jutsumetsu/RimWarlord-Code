@@ -52,9 +52,9 @@ namespace Electromagnetic.Abilities
             Pawn Caster = this.parent.pawn;
             try
             {
-                if (Caster.IsHaveRoot())
+                if (Caster.IsHavePowerRoot())
                 {
-                    Hediff_RWrd_PowerRoot root = Caster.GetRoot();
+                    Hediff_RWrd_PowerRoot root = Caster.GetPowerRoot();
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
                     int level = root.energy.level + 1 + masteryOffset;
                     int num = (int)Math.Floor(level / 5f);
@@ -91,9 +91,9 @@ namespace Electromagnetic.Abilities
 
             foreach (ThingWithComps item in toHeal)
             {
-                if (caster.IsHaveRoot())
+                if (caster.IsHavePowerRoot())
                 {
-                    Hediff_RWrd_PowerRoot root = caster.GetRoot();
+                    Hediff_RWrd_PowerRoot root = caster.GetPowerRoot();
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
                     int level = root.energy.level + 1 + masteryOffset;
                     int num = (int)Math.Floor(level / 5f);

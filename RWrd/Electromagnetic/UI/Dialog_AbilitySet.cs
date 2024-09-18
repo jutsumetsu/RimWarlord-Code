@@ -17,7 +17,7 @@ namespace Electromagnetic.UI
         {
             this.abilitySet = abilitySet;
             this.pawn = pawn;
-            this.root = pawn.GetRoot();
+            this.root = pawn.GetPowerRoot();
             this.doCloseButton = false;
             this.doCloseX = true;
             this.forcePause = true;

@@ -64,10 +64,10 @@ namespace Electromagnetic.Abilities
             SoundDefOf.Pawn_Melee_Punch_HitPawn.PlayOneShot(info);
             int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
             float num = 40;
-            if (Pawn.IsHaveRoot())
+            if (Pawn.IsHavePowerRoot())
             {
                 //伤害计算
-                Hediff_RWrd_PowerRoot root = Pawn.GetRoot();
+                Hediff_RWrd_PowerRoot root = Pawn.GetPowerRoot();
                 num = Tools.FinalDamage(root, num, masteryOffset);
                 num *= Ability.outputPower;
             }

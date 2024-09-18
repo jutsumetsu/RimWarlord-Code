@@ -64,10 +64,10 @@ namespace Electromagnetic.Abilities
             base.Apply(target, dest);
             Pawn pawn = (Pawn)((Thing)target);
             //判断目标是否是磁场强者
-            if (pawn.IsHaveRoot())
+            if (pawn.IsHavePowerRoot())
             {
-                Hediff_RWrd_PowerRoot root1 = this.parent.pawn.GetRoot();
-                Hediff_RWrd_PowerRoot root2 = pawn.GetRoot();
+                Hediff_RWrd_PowerRoot root1 = this.parent.pawn.GetPowerRoot();
+                Hediff_RWrd_PowerRoot root2 = pawn.GetPowerRoot();
                 //双方磁场力量差距
                 int num = root1.energy.level - root2.energy.level;
                 //判断自己是否强于目标

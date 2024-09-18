@@ -32,9 +32,9 @@ namespace Electromagnetic.Abilities
             get
             {
                 Pawn pawn = this.Pawn;
-                if (pawn.IsHaveRoot())
+                if (pawn.IsHavePowerRoot())
                 {
-                    Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                    Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                     return root.energy.PowerFlow;
                 }
 
@@ -46,9 +46,9 @@ namespace Electromagnetic.Abilities
             get
             {
                 Pawn pawn = this.Pawn;
-                if (pawn.IsHaveRoot())
+                if (pawn.IsHavePowerRoot())
                 {
-                    Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                    Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                     return root.energy.energy;
                 }
 

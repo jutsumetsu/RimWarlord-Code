@@ -53,7 +53,7 @@ namespace Electromagnetic.Abilities
         public override void Initialize(AbilityCompProperties props)
         {
             base.Initialize(props);
-            Hediff_RWrd_PowerRoot hediff_RWrd_PowerRoot = this.parent.pawn.GetRoot();
+            Hediff_RWrd_PowerRoot hediff_RWrd_PowerRoot = this.parent.pawn.GetPowerRoot();
             this.root = hediff_RWrd_PowerRoot;
             this.Initialized = true;
         }
@@ -88,7 +88,7 @@ namespace Electromagnetic.Abilities
             //在失去力量后移除技能
             if (flag2)
             {
-                bool flag3 = this.parent.pawn.GetRoot() == null;
+                bool flag3 = this.parent.pawn.GetPowerRoot() == null;
                 if (flag3)
                 {
                     this.parent.pawn.abilities.RemoveAbility(this.parent.def);
@@ -101,9 +101,9 @@ namespace Electromagnetic.Abilities
         public override bool GizmoDisabled(out string reason)
         {
             bool result;
-            if (this.parent.pawn.IsHaveRoot())
+            if (this.parent.pawn.IsHavePowerRoot())
             {
-                Hediff_RWrd_PowerRoot root = this.parent.pawn.GetRoot();
+                Hediff_RWrd_PowerRoot root = this.parent.pawn.GetPowerRoot();
                 if (-(float)this.Props.rEnergy > root.energy.energy)
                 {
                     result = true;

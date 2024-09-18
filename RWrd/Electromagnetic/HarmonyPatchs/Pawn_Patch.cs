@@ -25,7 +25,7 @@ namespace Electromagnetic.HarmonyPatchs
                 Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
                 if (trait.def == RWrd_DefOf.RWrd_Gifted && pawn.RaceProps.Humanlike)
                 {
-                    if (!pawn.IsHaveRoot())
+                    if (!pawn.IsHavePowerRoot())
                     {
                         Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, pawn);
                         pawn.health.AddHediff(hediff);
@@ -47,7 +47,7 @@ namespace Electromagnetic.HarmonyPatchs
                     {
                         Pawn casterPawn = __instance.CasterPawn;
 
-                        Hediff_RWrd_PowerRoot root = casterPawn.GetRoot();
+                        Hediff_RWrd_PowerRoot root = casterPawn.GetPowerRoot();
                         if (root != null)
                         {
                             int acr = root.energy.AvailableCompleteRealm();
@@ -173,9 +173,9 @@ namespace Electromagnetic.HarmonyPatchs
             [HarmonyPostfix]
             public static void BodyPartFix(Pawn pawn, ref float __result)
             {
-                if (pawn.IsHaveRoot())
+                if (pawn.IsHavePowerRoot())
                 {
-                    Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                    Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                     int pff = root.energy.PowerFlowFactor();
                     int level = root.energy.level + 1;
                     int multiplier = pff + level;
@@ -198,9 +198,9 @@ namespace Electromagnetic.HarmonyPatchs
                 if (thing.GetType() == typeof(Pawn))
                 {
                     Pawn pawn = thing as Pawn;
-                    if (pawn.IsHaveRoot())
+                    if (pawn.IsHavePowerRoot())
                     {
-                        Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                        Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                         bool flag = stat.ToString() == nameof(StatDefOf.ArmorRating_Sharp);
                         bool flag1 = stat.ToString() == nameof(StatDefOf.ArmorRating_Blunt);
                         bool flag2 = stat.ToString() == nameof(StatDefOf.ArmorRating_Heat);
@@ -246,7 +246,7 @@ namespace Electromagnetic.HarmonyPatchs
                     {
                         if (thing is Pawn pawn)
                         {
-                            return pawn.IsHaveRoot();
+                            return pawn.IsHavePowerRoot();
                         }
                         return false;
                     });
@@ -270,9 +270,9 @@ namespace Electromagnetic.HarmonyPatchs
             {
                 if (__instance is Pawn pawn)
                 {
-                    if (pawn.IsHaveRoot())
+                    if (pawn.IsHavePowerRoot())
                     {
-                        Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                        Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                         float num = root.energy.DamageImmunityThreshold;
                         Log.Message(pawn.Name.ToStringShort + "'s Damage Immunity Threshold: " + num.ToString() + " Current damage: " + dinfo.Amount.ToString());
                         if (dinfo.Amount <= num)
@@ -300,7 +300,7 @@ namespace Electromagnetic.HarmonyPatchs
             [HarmonyPostfix]
             public static void Postfix(ref IEnumerable<Pawn> __result, IncidentWorker_Disease __instance)
             {
-                __result = __result.Where(pawn => !pawn.IsHaveRoot());
+                __result = __result.Where(pawn => !pawn.IsHavePowerRoot());
             }
         }
         //强者免疫地块污染
@@ -311,7 +311,7 @@ namespace Electromagnetic.HarmonyPatchs
             [HarmonyPrefix]
             public static bool Prefix(Pawn pawn)
             {
-                if (pawn.IsHaveRoot())
+                if (pawn.IsHavePowerRoot())
                 {
 
                     return false;
@@ -328,7 +328,7 @@ namespace Electromagnetic.HarmonyPatchs
             [HarmonyPrefix]
             public static bool Prefix(Pawn pawn)
             {
-                if (pawn.IsHaveRoot())
+                if (pawn.IsHavePowerRoot())
                 {
 
                     return false;
@@ -347,8 +347,8 @@ namespace Electromagnetic.HarmonyPatchs
             {
                 if (baby is Pawn babyPawn)
                 {
-                    bool hasRootParent = (mother != null && mother.IsHaveRoot() == true) ||
-                                         (father != null && father.IsHaveRoot() == true);
+                    bool hasRootParent = (mother != null && mother.IsHavePowerRoot() == true) ||
+                                         (father != null && father.IsHavePowerRoot() == true);
 
                     if (hasRootParent)
                     {

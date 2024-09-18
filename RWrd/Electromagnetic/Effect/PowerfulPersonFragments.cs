@@ -29,7 +29,7 @@ namespace Electromagnetic.Effect
             bool flag = __state.map != null;
             if (flag)
             {
-                bool hasHediffA = __instance.IsHaveRoot();
+                bool hasHediffA = __instance.IsHavePowerRoot();
                 if (hasHediffA)
                 {
                     FleckMaker.Static(__state.pos, __state.map, PowerfulPersonFragments.Fragments(Rand.RangeInclusive(0, 3)), 1.5f);

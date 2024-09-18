@@ -27,9 +27,9 @@ namespace Electromagnetic.Core
         private bool PawnHasEnoughLevel(Pawn pawn)
         {
             bool result;
-            if (pawn.IsHaveRoot())
+            if (pawn.IsHavePowerRoot())
             {
-                Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                 int level = root.energy.level;
                 if (level >= requiredLevel)
                 {
@@ -54,9 +54,9 @@ namespace Electromagnetic.Core
         private bool PawnHasEnoughCompleteRealm(Pawn pawn)
         {
             bool result;
-            if (pawn.IsHaveRoot())
+            if (pawn.IsHavePowerRoot())
             {
-                Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                 float cr = root.energy.completerealm;
                 if (cr >= requiredCompleteRealm)
                 {
@@ -81,7 +81,7 @@ namespace Electromagnetic.Core
         private bool PawnHasUnlockPreAbility(Pawn pawn)
         {
             bool result;
-            if (pawn.IsHaveRoot())
+            if (pawn.IsHavePowerRoot())
             {
                 result = false;
                 if (this.requiredAbilities.Count > 0)

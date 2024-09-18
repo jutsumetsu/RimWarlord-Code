@@ -22,7 +22,7 @@ namespace Electromagnetic.Core
             {
                 return false;
             }
-            if (!pawn.IsHaveRoot())
+            if (!pawn.IsHavePowerRoot())
             {
                 return false;
             }

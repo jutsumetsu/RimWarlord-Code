@@ -35,9 +35,9 @@ namespace Electromagnetic.Abilities
             get
             {
                 Pawn pawn = (Pawn)base.Launcher;
-                if (pawn.IsHaveRoot())
+                if (pawn.IsHavePowerRoot())
                 {
-                    Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                    Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                     int level = root.energy.level;
                     int num = this.def.projectile.GetDamageAmount(1f, null);
                     num += 10;

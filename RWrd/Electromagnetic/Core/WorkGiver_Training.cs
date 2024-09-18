@@ -25,7 +25,7 @@ namespace Electromagnetic.Core
         }
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
-            bool flag = !pawn.IsHaveRoot();
+            bool flag = !pawn.IsHavePowerRoot();
             bool result;
             if (flag)
             {
@@ -33,7 +33,7 @@ namespace Electromagnetic.Core
             }
             else
             {
-                Hediff_RWrd_PowerRoot root = pawn.GetRoot();
+                Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                 Building_Training building_Training = t as Building_Training;
                 result = (building_Training != null && pawn.CanReserve(building_Training, 1, -1, null, forced));
             }

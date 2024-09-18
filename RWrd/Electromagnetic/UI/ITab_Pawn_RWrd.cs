@@ -105,7 +105,7 @@ namespace Electromagnetic.UI
         /// </summary>
         private void InitCache()
         {
-            this.root = pawn.GetRoot();
+            this.root = pawn.GetPowerRoot();
             UIUtility.abilities = this.pawn.abilities;
             this.abilityPos.Clear();
         }

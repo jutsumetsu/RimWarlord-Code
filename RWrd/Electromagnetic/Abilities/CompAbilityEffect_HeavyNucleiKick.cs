@@ -55,7 +55,7 @@ namespace Electromagnetic.Abilities
                     spawn = true;
                     Pawn pawn = enemy;
                     //伤害计算
-                    Hediff_RWrd_PowerRoot root = caster.GetRoot();
+                    Hediff_RWrd_PowerRoot root = caster.GetPowerRoot();
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
                     int num = 40;
                     num = (int)Tools.FinalDamage(root, num, masteryOffset);

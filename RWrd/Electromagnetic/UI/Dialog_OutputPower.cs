@@ -68,8 +68,8 @@ namespace Electromagnetic.UI
             rect.width = 100;
             //滑条绘制
             Rect sliderRect = new Rect(iconRect.xMax + 110f, num + 10f, 180f, 32f);
-            Widgets.Label(new Rect(sliderRect.xMax + 45f, num + 10f, sliderRect.width, 24f), pawn.GetRoot().energy.outputPower.ToString("P2"));
-            pawn.GetRoot().energy.outputPower = Widgets.HorizontalSlider(sliderRect, pawn.GetRoot().energy.outputPower, 0f, 1f);
+            Widgets.Label(new Rect(sliderRect.xMax + 45f, num + 10f, sliderRect.width, 24f), pawn.GetPowerRoot().energy.outputPower.ToString("P2"));
+            pawn.GetPowerRoot().energy.outputPower = Widgets.HorizontalSlider(sliderRect, pawn.GetPowerRoot().energy.outputPower, 0f, 1f);
             num += 35f;
             if (RWrdSettings.PowerfulEnergyWave)
             {
@@ -79,16 +79,16 @@ namespace Electromagnetic.UI
                 //名称显示
                 rect = new Rect(iconRect.xMax + 5, num, 105f, 32f);
                 Text.Anchor = TextAnchor.MiddleLeft;
-                Widgets.CheckboxLabeled(rect, "RWrd_EnergyWave".Translate(), ref pawn.GetRoot().energy.personalEnergyWave);
+                Widgets.CheckboxLabeled(rect, "RWrd_EnergyWave".Translate(), ref pawn.GetPowerRoot().energy.personalEnergyWave);
                 Text.Anchor = TextAnchor.UpperLeft;
                 rect.x = rect.xMax + 10;
                 rect.width = 100;
-                if (pawn.GetRoot().energy.personalEnergyWave)
+                if (pawn.GetPowerRoot().energy.personalEnergyWave)
                 {
                     //滑条绘制
                     sliderRect = new Rect(iconRect.xMax + 110f, num + 10f, 180f, 32f);
-                    Widgets.Label(new Rect(sliderRect.xMax + 45f, num + 10f, sliderRect.width, 24f), pawn.GetRoot().energy.wavePower.ToString("P2"));
-                    pawn.GetRoot().energy.wavePower = Widgets.HorizontalSlider(sliderRect, pawn.GetRoot().energy.wavePower, 0f, 1f);
+                    Widgets.Label(new Rect(sliderRect.xMax + 45f, num + 10f, sliderRect.width, 24f), pawn.GetPowerRoot().energy.wavePower.ToString("P2"));
+                    pawn.GetPowerRoot().energy.wavePower = Widgets.HorizontalSlider(sliderRect, pawn.GetPowerRoot().energy.wavePower, 0f, 1f);
                     num += 35f;
                     //绘制图标
                     iconRect = new Rect(0f, num, 32, 32);
@@ -102,8 +102,8 @@ namespace Electromagnetic.UI
                     rect.width = 100;
                     //滑条绘制
                     sliderRect = new Rect(iconRect.xMax + 110f, num + 10f, 180f, 32f);
-                    Widgets.Label(new Rect(sliderRect.xMax + 45f, num + 10f, sliderRect.width, 24f), pawn.GetRoot().energy.waveRange.ToString("P2"));
-                    pawn.GetRoot().energy.waveRange = Widgets.HorizontalSlider(sliderRect, pawn.GetRoot().energy.waveRange, 0f, 2f);
+                    Widgets.Label(new Rect(sliderRect.xMax + 45f, num + 10f, sliderRect.width, 24f), pawn.GetPowerRoot().energy.waveRange.ToString("P2"));
+                    pawn.GetPowerRoot().energy.waveRange = Widgets.HorizontalSlider(sliderRect, pawn.GetPowerRoot().energy.waveRange, 0f, 2f);
                     num += 35f;
                 }
                 else
