@@ -546,11 +546,14 @@ namespace Electromagnetic.Core
                     stat = StatDefOf.LifespanFactor,
                     value = lifeFactor,
                 };
-                yield return new StatModifier
+                if (RWrdSettings.NoRestRequired)
                 {
-                    stat = StatDefOf.RestFallRateFactor,
-                    value = 0,
-                };
+                    yield return new StatModifier
+                    {
+                        stat = StatDefOf.RestFallRateFactor,
+                        value = 0,
+                    };
+                }
                 yield return new StatModifier
                 {
                     stat = StatDefOf.Flammability,

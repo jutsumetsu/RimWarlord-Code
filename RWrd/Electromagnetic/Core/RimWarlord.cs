@@ -29,6 +29,8 @@ namespace Electromagnetic.Core
             listingStandard.CheckboxLabeled("RWrd_EnableExpCorrectionFactor".Translate(), ref RWrdSettings.EnableExpCorrectionFactor);
             //强者无需饮食
             listingStandard.CheckboxLabeled("RWrd_NoFoodDrinkRequired".Translate(), ref RWrdSettings.NoFoodDrinkRequired, "RWrd_NoFoodDrinkRequiredDesc".Translate());
+            //强者无需睡觉
+            listingStandard.CheckboxLabeled("RWrd_NoRestRequired".Translate(), ref RWrdSettings.NoRestRequired, "RWrd_NoRestRequiredDesc".Translate());
             //强者碎片
             listingStandard.CheckboxLabeled("RWrd_PowerfulPersonFragmentsEnabled".Translate(), ref RWrdSettings.PowerfulPersonFragments, "RWrd_PowerfulPersonFragmentsEnabledDesc".Translate());
             //余波

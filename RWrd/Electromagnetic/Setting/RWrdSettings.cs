@@ -19,6 +19,7 @@ namespace Electromagnetic.Setting
 
         public static bool EnableExpCorrectionFactor = true;
         public static bool NoFoodDrinkRequired = true;
+        public static bool NoRestRequired = true;
         public static bool PowerfulPersonFragments = false;
         public static bool PowerfulEnergyWave = true;
         public static bool DoVisualWaveEffect = true;
@@ -29,6 +30,7 @@ namespace Electromagnetic.Setting
         {
             Scribe_Values.Look(ref EnableExpCorrectionFactor, "enableexpcorrectionfactor", true);
             Scribe_Values.Look(ref NoFoodDrinkRequired, "nofooddrinkrequired", true);
+            Scribe_Values.Look(ref NoRestRequired, "norestrequired", true);
             Scribe_Values.Look(ref PowerfulPersonFragments, "powerfulpersonfragments", false);
             Scribe_Values.Look(ref PowerfulEnergyWave, "powerfulenergywave", true);
             Scribe_Values.Look(ref DoVisualWaveEffect, "dovisualwaveeffect", true);
