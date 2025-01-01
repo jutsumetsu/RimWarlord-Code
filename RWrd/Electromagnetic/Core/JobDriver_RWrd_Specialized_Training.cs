@@ -46,6 +46,7 @@ namespace Electromagnetic.Core
                         if (root != null)
                         {
                             int currentLevel = root.energy.level;
+                            float deltaCR = 0.0003f;
                             if (currentLevel == 0)
                             {
                                 root.energy.SetExp(200);
@@ -56,7 +57,15 @@ namespace Electromagnetic.Core
                                 root.energy.SetExp(25);
                                 counter += 1;
                             }
-                            root.energy.SetCompleteRealm(0.0003f);
+                            if (root.energy.OnMaxLevel)
+                            {
+                                deltaCR *= 5;
+                                if (root.energy.exp >= 9000)
+                                {
+                                    deltaCR *= 2;
+                                }
+                            }
+                            root.energy.SetCompleteRealm(deltaCR);
                             need.CurLevel += 0.1f;
                         }
                         tick = this.ticktime;

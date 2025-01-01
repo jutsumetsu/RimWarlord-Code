@@ -20,12 +20,13 @@ namespace Electromagnetic.Things
                 return (CompProperties_ThingStudiable)this.props;
             }
         }
+        public Pawn student = null;
         //学习进度百分比
         public float ProgressPercent
         {
             get
             {
-                return this.studyManager.GetStudyProgress(this.parent.def);
+                return this.studyManager.GetStudyProgress(this.parent.def, student);
             }
         }
         //是否完成
@@ -47,9 +48,10 @@ namespace Electromagnetic.Things
         //学习功能实现
         public void Study(float amount, Pawn studier = null)
         {
+            student = studier;
             amount *= 0.00825f;
             amount *= Find.Storyteller.difficulty.researchSpeedFactor;
-            this.studyManager.SetStudied(this.parent.def, amount);
+            this.studyManager.SetStudied(this.parent.def, studier, amount);
             if (studier != null)
             {
                 studier.skills.Learn(SkillDefOf.Intellectual, 0.1f, false, false);
@@ -98,7 +100,7 @@ namespace Electromagnetic.Things
         }
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn pawn)
         {
-            bool completed = this.Completed;
+            bool completed = this.studyManager.StudyComplete(this.parent.def, pawn);
             //已完成学习
             if (completed)
             {
@@ -172,6 +174,7 @@ namespace Electromagnetic.Things
                 {
                     if (this.Props.studyType == "research")
                     {
+                        student = pawn;
                         Job job = JobMaker.MakeJob(RWrd_DefOf.RWrd_ResearchDisc, this.parent, researchBench, researchBench.Position);
                         pawn.jobs.TryTakeOrderedJob(job, new JobTag?(JobTag.Misc), false);
                     }
@@ -191,11 +194,11 @@ namespace Electromagnetic.Things
                 if (flag2)
                 {
                     float num2 = num / (float)this.Props.cost;
-                    float studyProgress = this.studyManager.GetStudyProgress(this.parent.def);
+                    float studyProgress = this.studyManager.GetStudyProgress(this.parent.def, student);
                     bool flag3 = num2 > studyProgress;
                     if (flag3)
                     {
-                        this.studyManager.ForceSetStudiedProgress(this.parent.def, num2);
+                        this.studyManager.ForceSetStudiedProgress(this.parent.def, student, num2);
                     }
                 }
             }
