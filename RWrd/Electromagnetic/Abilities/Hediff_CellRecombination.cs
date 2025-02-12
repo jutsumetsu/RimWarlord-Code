@@ -36,13 +36,30 @@ namespace Electromagnetic.Abilities
                     if (this.root != null)
                     {
                         //随机治愈伤势
-                        int lf1 = Math.Max(level - 50, 0);
+                        int lf1 = Math.Max(level - 25, 0);
                         if (this.root.energy.IsUltimate)
                         {
                             lf1 += (int)Math.Floor(this.root.energy.PowerEnergy);
                         }
                         int lf2 = lf1 * 2;
-                        list.RandomElement<Hediff_Injury>().Heal(60f + lf2);
+                        int healPoint = (int)Math.Ceiling(UnityEngine.Random.Range(40f + lf1, 41f + lf2));
+                        if (level < 25)
+                        {
+                            list.RandomElement<Hediff_Injury>().Heal((int)Math.Ceiling(UnityEngine.Random.Range(40f + lf2, 41f + lf1)));
+                        }
+                        if (level >= 25)
+                        {
+                            list.RandomElement<Hediff_Injury>().Heal(healPoint);
+                            list.RandomElement<Hediff_Injury>().Heal(healPoint);
+                        }
+                        if (level >= 50)
+                        {
+                            list.RandomElement<Hediff_Injury>().Heal(healPoint);
+                        }
+                        if (level >= 75)
+                        {
+                            list.RandomElement<Hediff_Injury>().Heal(healPoint);
+                        }
                     }
                     else
                     {
@@ -50,13 +67,23 @@ namespace Electromagnetic.Abilities
                     }
                     flag3 = true;
                 }
-                else if (!flag5 && level >= 50)
+                else if (!flag5 && level >= 25)
                 {
                     //缺失部位列表
                     List<BodyPartRecord> nonMissingParts = this.pawn.health.hediffSet.GetNotMissingParts(BodyPartHeight.Undefined, BodyPartDepth.Undefined, null, null).ToList<BodyPartRecord>();
-                    List<BodyPartRecord> list2 = (from x in this.pawn.def.race.body.AllParts
-                                                  where this.pawn.health.hediffSet.PartIsMissing(x) && nonMissingParts.Contains(x.parent) && !this.pawn.health.hediffSet.AncestorHasDirectlyAddedParts(x)
-                                                  select x).ToList<BodyPartRecord>();
+                    List<BodyPartRecord> list2 = new List<BodyPartRecord>();
+                    if (level >= 50 || this.root.energy.completerealm >= 0.5f)
+                    {
+                        list2 = (from x in this.pawn.def.race.body.AllParts
+                                 where this.pawn.health.hediffSet.PartIsMissing(x) && nonMissingParts.Contains(x.parent) && !this.pawn.health.hediffSet.AncestorHasDirectlyAddedParts(x)
+                                 select x).ToList<BodyPartRecord>();
+                    }
+                    else
+                    {
+                        list2 = (from x in this.pawn.def.race.body.AllParts
+                                 where this.pawn.health.hediffSet.PartIsMissing(x) && nonMissingParts.Contains(x.parent) && !this.pawn.health.hediffSet.AncestorHasDirectlyAddedParts(x) && (x.depth != BodyPartDepth.Inside) && !x.IsInGroup(BodyPartGroupDefOf.Torso) && !x.IsInGroup(BodyPartGroupDefOf.UpperHead)
+                                 select x).ToList<BodyPartRecord>();
+                    }
                     bool flag6 = list2.Any<BodyPartRecord>();
                     bool flag7 = flag6;
                     if (flag7)

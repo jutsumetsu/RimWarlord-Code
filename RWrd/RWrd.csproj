@@ -76,6 +76,7 @@
     <Compile Include="Electromagnetic\Abilities\AbilitySet.cs" />
     <Compile Include="Electromagnetic\Abilities\AntiGravityUtil.cs" />
     <Compile Include="Electromagnetic\Abilities\AttackType.cs" />
+    <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_CellRecombination.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_ElectricClaw.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_GiveTargetHediff.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_HeavenLock.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_ThunderPunch.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_TigerSharkExplosionPunch.cs" />
     <Compile Include="Electromagnetic\Abilities\CompAbilityEffect_WindBlade.cs" />
+    <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityCellRecombination.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityElectricClaw.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityGiveTargetHediff.cs" />
     <Compile Include="Electromagnetic\Abilities\CompProperties_AbilityHeavenLock.cs" />

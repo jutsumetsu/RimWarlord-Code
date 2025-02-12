@@ -685,6 +685,7 @@ namespace Electromagnetic.Core
                 {
                     this.energy.completerealm = UnityEngine.Random.Range(1, 11) * 0.1f;
                 }
+                this.energy.trainDesireFactor = UnityEngine.Random.Range(1, 51);
             }
             else
             {
@@ -692,7 +693,25 @@ namespace Electromagnetic.Core
                 this.energy.level = this.InitialLevel();
                 this.energy.powerflow = UnityEngine.Random.Range(2, 11) * 50000;
                 this.energy.MaxEnergy = this.energy.powerflow / 100;
-                this.energy.completerealm = UnityEngine.Random.Range(1, 4) * 0.1f;
+                float prenum = this.pawn.ageTracker.AgeBiologicalTicks / 3600000f;
+                //年龄限制完全境界
+                int age = (int)Math.Floor(prenum);
+                if (age < 30)
+                {
+                    this.energy.completerealm = UnityEngine.Random.Range(1, 4) * 0.1f;
+                }
+                else if (age < 40)
+                {
+                    this.energy.completerealm = UnityEngine.Random.Range(1, 6) * 0.1f;
+                }
+                else if (age < 50)
+                {
+                    this.energy.completerealm = UnityEngine.Random.Range(1, 11) * 0.1f;
+                }
+                else
+                {
+                    this.energy.completerealm = UnityEngine.Random.Range(1, 11) * 0.1f;
+                }
                 this.energy.trainDesireFactor = UnityEngine.Random.Range(1, 51);
             }
             this.pawn.CheckRouteUnlock(this);
