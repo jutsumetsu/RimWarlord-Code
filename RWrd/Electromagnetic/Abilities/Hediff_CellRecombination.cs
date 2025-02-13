@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 
 namespace Electromagnetic.Abilities
@@ -18,7 +19,7 @@ namespace Electromagnetic.Abilities
             float multiper = 1;
             if (this.root != null)
             {
-                level = this.root.energy.level;
+                level = this.root.energy.availableLevel;
                 multiper = 1.25f - level * 0.01f;
             }
             int timeInterval = (int)Math.Ceiling(125 * multiper);
@@ -90,18 +91,25 @@ namespace Electromagnetic.Abilities
                     {
                         //再生缺失部位
                         BodyPartRecord part = list2.RandomElement<BodyPartRecord>();
+                        // 能量消耗
+                        float discount = 0.01f * (110 - level);
+                        int reduceEnergy = Mathf.CeilToInt(part.coverageAbsWithChildren * 1000 * discount);
                         List<Hediff_MissingPart> source = this.pawn.health.hediffSet.hediffs.OfType<Hediff_MissingPart>().ToList<Hediff_MissingPart>();
                         this.pawn.health.RestorePart(part, null, true);
                         List<Hediff_MissingPart> currentMissingHediffs2 = this.pawn.health.hediffSet.hediffs.OfType<Hediff_MissingPart>().ToList<Hediff_MissingPart>();
                         IEnumerable<Hediff_MissingPart> enumerable = from x in source
                                                                      where !currentMissingHediffs2.Contains(x)
                                                                      select x;
-                        foreach (Hediff_MissingPart hediff_MissingPart in enumerable)
+                        if (reduceEnergy <= root.energy.energy)
                         {
-                            //赋予再生Hediff
-                            Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.RWrd_Regenerating, this.pawn, hediff_MissingPart.Part);
-                            hediff.Severity = hediff_MissingPart.Part.def.GetMaxHealth(this.pawn) - 1f;
-                            this.pawn.health.AddHediff(hediff, null, null, null);
+                            root.energy.SetEnergy(-reduceEnergy);
+                            foreach (Hediff_MissingPart hediff_MissingPart in enumerable)
+                            {
+                                //赋予再生Hediff
+                                Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.RWrd_Regenerating, this.pawn, hediff_MissingPart.Part);
+                                hediff.Severity = hediff_MissingPart.Part.def.GetMaxHealth(this.pawn) - 1f;
+                                this.pawn.health.AddHediff(hediff, null, null, null);
+                            }
                         }
                         flag3 = true;
                     }

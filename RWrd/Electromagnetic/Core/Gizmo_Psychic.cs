@@ -93,7 +93,7 @@ namespace Electromagnetic.Core
             rect4.yMin = rect2.y + 30;
             if (!this.root.energy.IsUltimate)
             {
-                this.DrawLevelUI(rect4, this.root.energy.Exp, this.root.energy.MaxExp, this.root.energy.level, this.PowerLabel.Translate(), this.ExpLabel.Translate());
+                this.DrawLevelUI(rect4, this.root.energy.Exp, this.root.energy.MaxExp, this.root.energy.availableLevel, this.PowerLabel.Translate(), this.ExpLabel.Translate());
             }
             else
             {
@@ -108,7 +108,7 @@ namespace Electromagnetic.Core
             Rect rect6 = rect2;
             rect6.width = 180f;
             rect6.yMin = rect5.y + 18;
-            this.DrawPowerFlowUI(rect6, this.root.energy.PowerFlow, this.PowerFlowLabel.Translate());
+            this.DrawPowerFlowUI(rect6, this.root.energy.powerflow, this.PowerFlowLabel.Translate());
             Text.Anchor = TextAnchor.UpperLeft;
             return new GizmoResult(GizmoState.Clear);
         }
@@ -158,48 +158,85 @@ namespace Electromagnetic.Core
             Rect rect4 = new Rect(rect.x + 140f, rect.y, 40f, 25f);
             //电推伏特位置
             Rect rect5 = new Rect(rect.x + 65f, rect.y, 40f, 25f);
-            if (!Tools.IsChineseLanguage)
+            if (!this.pawn.IsLockedByEMPower())
             {
-                Text.Font = GameFont.Tiny;
-                rect4 = new Rect(rect.x + 160f, rect.y, 40f, 25f);
-                Widgets.Label(rect4, label2);
-            }
-            else
-            {
-                Text.Font = GameFont.Small;
-                Widgets.Label(rect4, label2);
-            }
-            Widgets.Label(rect2, label);
-            float num = a;
-            bool flag = num >= b;
-            if (flag)
-            {
-                num = b - 1;
-            }
-            if (c != 0)
-            {
+                Widgets.Label(rect2, label);
                 if (!Tools.IsChineseLanguage)
                 {
-                    num = a / b;
-                    rect3 = new Rect(rect.x + 130f, rect.y, 40f, 25f);
-                    Widgets.Label(rect3, num.ToString("P0"));
+                    Text.Font = GameFont.Tiny;
+                    rect4 = new Rect(rect.x + 160f, rect.y, 40f, 25f);
+                    Widgets.Label(rect4, label2);
                 }
                 else
                 {
-                    Widgets.Label(rect3, num.ToString("F0"));
+                    Text.Font = GameFont.Small;
+                    Widgets.Label(rect4, label2);
+                }
+                float num = a;
+                bool flag = num >= b;
+                if (flag)
+                {
+                    num = b - 1;
+                }
+                if (c != 0)
+                {
+                    if (!Tools.IsChineseLanguage)
+                    {
+                        num = a / b;
+                        rect3 = new Rect(rect.x + 130f, rect.y, 40f, 25f);
+                        Widgets.Label(rect3, num.ToString("P0"));
+                    }
+                    else
+                    {
+                        Widgets.Label(rect3, num.ToString("F0"));
+                    }
+                }
+                else
+                {
+                    if (!Tools.IsChineseLanguage)
+                    {
+                        num = a / b;
+                        rect5 = new Rect(rect.x + 110f, rect.y, 40f, 25f);
+                        Widgets.Label(rect5, num.ToString("P2"));
+                    }
+                    else
+                    {
+                        Widgets.Label(rect5, num.ToString("F0"));
+                    }
                 }
             }
             else
             {
-                if (!Tools.IsChineseLanguage)
+                if (c != 0)
                 {
-                    num = a / b;
-                    rect5 = new Rect(rect.x + 110f, rect.y, 40f, 25f);
-                    Widgets.Label(rect5, num.ToString("P2"));
+                    if (!Tools.IsChineseLanguage)
+                    {
+                        Text.Font = GameFont.Tiny;
+                        Widgets.Label(rect2, label);
+                    }
+                    else
+                    {
+                        Text.Font = GameFont.Small;
+                        Widgets.Label(rect2, label + label2);
+                    }
+                    rect4.x -= 30f;
+                    rect4.width *= 2;
+                    Widgets.Label(rect4, "RWrd_LockedHeaven".Translate());
                 }
                 else
                 {
-                    Widgets.Label(rect5, num.ToString("F0"));
+                    if (!Tools.IsChineseLanguage)
+                    {
+                        Text.Font = GameFont.Tiny;
+                        Widgets.Label(rect2, label);
+                    }
+                    else
+                    {
+                        Text.Font = GameFont.Small;
+                        Widgets.Label(rect2, label);
+                    }
+                    rect3.width *= 2;
+                    Widgets.Label(rect3, "RWrd_LockedHeaven".Translate());
                 }
             }
         }

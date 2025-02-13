@@ -21,8 +21,8 @@ namespace Electromagnetic.Core
             if (flag)
             {
                 bool flag1 = !this.reeStartInit;
-                bool flag2 = this.energy.level == 0;
-                bool flag3 = this.energy.level >= 10;
+                bool flag2 = this.energy.availableLevel == 0;
+                bool flag3 = this.energy.availableLevel >= 10;
                 if (flag1)
                 {
                     this.pawn.CheckEMAbilityLimiting();
@@ -43,11 +43,11 @@ namespace Electromagnetic.Core
                 {
                     if (Tools.IsChineseLanguage)
                     {
-                        gizmo.PowerLabel = "RWrd_BM".Translate(this.energy.level.ToString("D2"));
+                        gizmo.PowerLabel = "RWrd_BM".Translate(this.energy.availableLevel.ToString("D2"));
                     }
                     else
                     {
-                        gizmo.PowerLabel = "RWrd_BM".Translate(this.energy.level.ToString());
+                        gizmo.PowerLabel = "RWrd_BM".Translate(this.energy.availableLevel.ToString());
                     }
                     gizmo.ExpLabel = "RWrd_HorsePower".Translate();
                 }
@@ -76,7 +76,7 @@ namespace Electromagnetic.Core
                     defaultLabel = "RWrd_LevelUP".Translate(),
                     action = delegate ()
                     {
-                        this.energy.SetExp(this.energy.MaxExp);
+                        this.energy.ForceSetExp(this.energy.MaxExp);
                         this.energy.SetLevel();
                         this.pawn.CheckEMAbilityLimiting();
                     }
@@ -88,11 +88,11 @@ namespace Electromagnetic.Core
                     {
                         if (this.energy.level != 0)
                         {
-                            this.energy.SetExp(1000f);
+                            this.energy.ForceSetExp(1000f);
                         }
                         else
                         {
-                            this.energy.SetExp(10000f);
+                            this.energy.ForceSetExp(10000f);
                         }
                     }
                 };
@@ -196,9 +196,9 @@ namespace Electromagnetic.Core
                         {
                             for (; this.energy.level < this.energy.LevelMax; this.energy.SetLevel())
                             {
-                                this.energy.SetExp(this.energy.MaxExp);
+                                this.energy.ForceSetExp(this.energy.MaxExp);
                             }
-                            this.energy.SetExp(this.energy.MaxExp);
+                            this.energy.ForceSetExp(this.energy.MaxExp);
                             this.energy.ForceSetPowerFlow(95000000);
                             this.energy.ForceSetCompleteRealm(9700);
                             this.pawn.UpdatePowerRootStageInfo();
@@ -299,7 +299,7 @@ namespace Electromagnetic.Core
         {
             get
             {
-                int lf = this.energy.level + 1;
+                int lf = this.energy.availableLevel + 1;
                 int lf2 = lf + 1;
                 int oft = (int)Math.Floor((lf - 50) / 5f) * 4;
                 int oft2 = (int)Math.Floor((lf2 - 51) / 5f) * 4;
@@ -398,7 +398,7 @@ namespace Electromagnetic.Core
             {
                 float cr = this.energy.completerealm;
                 int acr = this.energy.AvailableCompleteRealm();
-                int level = this.energy.level;
+                int level = this.energy.availableLevel;
                 int lf = level + 1;
                 if (this.energy.IsUltimate)
                 {
@@ -509,7 +509,7 @@ namespace Electromagnetic.Core
         {
             get
             {
-                int level = this.energy.level;
+                int level = this.energy.availableLevel;
                 int lf = level + 1;
                 float lifeFactor;
                 if (this.energy.IsUltimate)
@@ -665,26 +665,55 @@ namespace Electromagnetic.Core
                 //NPC生成
                 this.energy.level = this.InitialLevel();
                 this.energy.powerflow = UnityEngine.Random.Range(3, 51) * 10000;
-                this.energy.MaxEnergy = this.energy.powerflow / 100;
                 float prenum = this.pawn.ageTracker.AgeBiologicalTicks / 3600000f;
                 //年龄限制完全境界
                 int age = (int)Math.Floor(prenum);
-                if (age < 30)
+                int randomNum;
+                int cacheNum;
+                // 根据年龄确定初始随机数范围
+                int initialMin = 1;
+                int initialMax;
+                if (age < 10)
                 {
-                    this.energy.completerealm = UnityEngine.Random.Range(1, 4) * 0.1f;
-                }
-                else if (age < 40)
-                {
-                    this.energy.completerealm = UnityEngine.Random.Range(1, 6) * 0.1f;
-                }
-                else if (age < 50)
-                {
-                    this.energy.completerealm = UnityEngine.Random.Range(1, 11) * 0.1f;
+                    initialMax = 3;
                 }
                 else
                 {
-                    this.energy.completerealm = UnityEngine.Random.Range(1, 11) * 0.1f;
+                    initialMax = 5;
                 }
+                randomNum = UnityEngine.Random.Range(initialMin, initialMax);
+                if (randomNum >= 3)
+                {
+                    int loopCount;
+                    if (age < 10)
+                    {
+                        loopCount = 0;
+                    }
+                    else if (age < 20)
+                    {
+                        loopCount = 1;
+                    }
+                    else if (age < 30)
+                    {
+                        loopCount = 2;
+                    }
+                    else
+                    {
+                        loopCount = 3;
+                    }
+
+                    for (int i = 0; i < loopCount; i++)
+                    {
+                        int min = 3 + i * 2;
+                        int max = 7 + i * 2;
+                        cacheNum = UnityEngine.Random.Range(min, max);
+                        if (cacheNum > randomNum)
+                        {
+                            randomNum = cacheNum;
+                        }
+                    }
+                }
+                this.energy.completerealm = randomNum * 0.1f;
                 this.energy.trainDesireFactor = UnityEngine.Random.Range(1, 51);
             }
             else
@@ -692,26 +721,55 @@ namespace Electromagnetic.Core
                 //殖民者生成
                 this.energy.level = this.InitialLevel();
                 this.energy.powerflow = UnityEngine.Random.Range(2, 11) * 50000;
-                this.energy.MaxEnergy = this.energy.powerflow / 100;
                 float prenum = this.pawn.ageTracker.AgeBiologicalTicks / 3600000f;
                 //年龄限制完全境界
                 int age = (int)Math.Floor(prenum);
-                if (age < 30)
+                int randomNum;
+                int cacheNum;
+                // 根据年龄确定初始随机数范围
+                int initialMin = 1;
+                int initialMax;
+                if (age < 10)
                 {
-                    this.energy.completerealm = UnityEngine.Random.Range(1, 4) * 0.1f;
-                }
-                else if (age < 40)
-                {
-                    this.energy.completerealm = UnityEngine.Random.Range(1, 6) * 0.1f;
-                }
-                else if (age < 50)
-                {
-                    this.energy.completerealm = UnityEngine.Random.Range(1, 11) * 0.1f;
+                    initialMax = 3;
                 }
                 else
                 {
-                    this.energy.completerealm = UnityEngine.Random.Range(1, 11) * 0.1f;
+                    initialMax = 5;
                 }
+                randomNum = UnityEngine.Random.Range(initialMin, initialMax);
+                if (randomNum >= 3)
+                {
+                    int loopCount;
+                    if (age < 10)
+                    {
+                        loopCount = 0;
+                    }
+                    else if (age < 20)
+                    {
+                        loopCount = 1;
+                    }
+                    else if (age < 30)
+                    {
+                        loopCount = 2;
+                    }
+                    else
+                    {
+                        loopCount = 3;
+                    }
+
+                    for (int i = 0; i < loopCount; i++)
+                    {
+                        int min = 3 + i * 2;
+                        int max = 7 + i * 2;
+                        cacheNum = UnityEngine.Random.Range(min, max);
+                        if (cacheNum > randomNum)
+                        {
+                            randomNum = cacheNum;
+                        }
+                    }
+                }
+                this.energy.completerealm = randomNum * 0.1f;
                 this.energy.trainDesireFactor = UnityEngine.Random.Range(1, 51);
             }
             this.pawn.CheckRouteUnlock(this);
@@ -747,7 +805,6 @@ namespace Electromagnetic.Core
         {
             base.Tick();
             //最大能量赋值
-            this.energy.MaxEnergy = this.energy.PowerFlow / 100;
             if (Find.TickManager.TicksGame % 360000 == 0)
             {
                 //随时间增加力量流量

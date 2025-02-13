@@ -30,7 +30,7 @@ namespace Electromagnetic.Core
             if (pawn.IsHavePowerRoot())
             {
                 Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
-                int level = root.energy.level;
+                int level = root.energy.availableLevel;
                 if (level >= requiredLevel)
                 {
                     result = true;

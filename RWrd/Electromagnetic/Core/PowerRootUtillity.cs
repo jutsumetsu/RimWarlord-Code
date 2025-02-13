@@ -37,6 +37,58 @@ namespace Electromagnetic.Core
             return pawn.IsHavePowerRoot() ? ((Hediff_RWrd_PowerRoot)pawn.health.hediffSet.GetFirstHediffOfDef(RWrd_DefOf.Hediff_RWrd_PowerRoot, false)) : null;
         }
         /// <summary>
+        /// 判断是否被锁
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <returns></returns>
+        public static bool IsLockedByEMPower(this Pawn pawn)
+        {
+            if (pawn == null)
+            {
+                return false;
+            }
+            else
+            {
+                return pawn.health.hediffSet.HasHediff(RWrd_DefOf.RWrd_HeavenLock, false);
+            }
+        }
+        public static Hediff_HeavenLock GetHeavenLock(this Pawn pawn)
+        {
+            return pawn.IsLockedByEMPower() ? ((Hediff_HeavenLock)pawn.health.hediffSet.GetFirstHediffOfDef(RWrd_DefOf.RWrd_HeavenLock)) : null;
+        }
+        /// <summary>
+        /// 获取心脏血量百分比
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <returns></returns>
+        public static float GetHeartHealthPercent(this Pawn pawn)
+        {
+            if (pawn?.health?.hediffSet == null)
+            {
+                return 0;
+            }
+
+            BodyPartRecord heart = pawn.health.hediffSet.GetNotMissingParts().FirstOrDefault(part => part.def.defName == "Heart");
+
+            if (heart == null)
+            {
+                return 0;
+            }
+
+            float maxHP = heart.def.GetMaxHealth(pawn);
+
+            float currentHP = maxHP;
+            foreach (var injury in pawn.health.hediffSet.hediffs.OfType<Hediff_Injury>())
+            {
+                if (injury.Part == heart)
+                {
+                    currentHP -= injury.Severity;
+                }
+            }
+
+            return (currentHP / maxHP);
+        }
+        /// <summary>
         /// 检查技能树解锁
         /// </summary>
         /// <param name="pawn"></param>
@@ -75,7 +127,7 @@ namespace Electromagnetic.Core
                 {
                     root = pawn.GetPowerRoot();
                 }
-                int level = root.energy.level;
+                int level = root.energy.availableLevel;
                 List<Ability> list = new List<Ability>();
                 List<Ability> list2 = new List<Ability>();
                 bool flag2 = root.routes.Count != 0;

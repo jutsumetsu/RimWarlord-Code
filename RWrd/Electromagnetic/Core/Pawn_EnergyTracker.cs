@@ -22,6 +22,9 @@ namespace Electromagnetic.Core
                 return this.level == this.LevelMax;
             }
         }
+        /// <summary>
+        /// 是否是终极强者
+        /// </summary>
         public bool IsUltimate
         {
             get
@@ -29,6 +32,9 @@ namespace Electromagnetic.Core
                 return this.PowerEnergy >= 1;
             }
         }
+        /// <summary>
+        /// 兆级修为
+        /// </summary>
         public float PowerEnergy
         {
             get
@@ -56,7 +62,7 @@ namespace Electromagnetic.Core
             get
             {
                 int acr = this.AvailableCompleteRealm();
-                int pff = this.PowerFlowFactor();
+                int pff = this.PowerFlowFactor(true);
                 if (!this.IsUltimate)
                 {
                     return (int)Math.Floor((acr + pff) / 2f);
@@ -77,6 +83,20 @@ namespace Electromagnetic.Core
             this.completerealm = 0f;
             this.powerflow = 0;
             this.OnPostSetLevel();
+        }
+        public int availableLevel
+        {
+            get
+            {
+                if (this.pawn.IsLockedByEMPower() && !this.IsUltimate)
+                {
+                    return Math.Min(this.powerLimit, this.level);
+                }
+                else
+                {
+                    return this.level;
+                }
+            }
         }
         /// <summary>
         /// 能量
@@ -184,15 +204,18 @@ namespace Electromagnetic.Core
         {
             get
             {
-                return this.powerflow;
+                return (int)(this.powerflow * this.pawn.GetHeartHealthPercent());
             }
         }
+        /// <summary>
+        /// 伤害免疫阈值
+        /// </summary>
         public float DamageImmunityThreshold
         {
             get
             {
                 float num = 12;
-                int lf = this.level + 1;
+                int lf = this.availableLevel + 1;
                 float uf = 0;
                 if (this.IsUltimate)
                 {
@@ -244,7 +267,7 @@ namespace Electromagnetic.Core
             bool flag = num2 >= 0f;
             if (flag)
             {
-                this.energy = ((num2 < this.MaxEnergy) ? num2 : this.MaxEnergy);
+                this.energy = ((num2 < this.MaxAvailableEnergy) ? num2 : this.MaxAvailableEnergy);
             }
             else
             {
@@ -301,6 +324,27 @@ namespace Electromagnetic.Core
         /// </summary>
         /// <param name="num">数值</param>
         public void SetExp(float num)
+        {
+            bool flag = num <= 0f;
+            if (!flag && !this.pawn.IsLockedByEMPower())
+            {
+                float num2 = this.exp + num * RWrdSettings.XpFactor;
+                this.exp = (num2 > this.MaxExp) ? this.MaxExp : num2;
+                if (this.IsUpdateLevelTiming() && this.level != RWrdSettings.GlobalLevelLimit)
+                {
+                    this.SetLevel();
+                }
+                if (this.level == LevelMax)
+                {
+                    this.pawn.UpdatePowerRootStageInfo();
+                }
+            }
+        }
+        /// <summary>
+        /// 强制设置经验
+        /// </summary>
+        /// <param name="num">数值</param>
+        public void ForceSetExp(float num)
         {
             bool flag = num <= 0f;
             if (!flag)
@@ -402,9 +446,13 @@ namespace Electromagnetic.Core
         /// 力量流量乘数
         /// </summary>
         /// <returns></returns>
-        public int PowerFlowFactor()
+        public int PowerFlowFactor(bool restricted = false)
         {
             float num = this.powerflow / 100000;
+            if (restricted)
+            {
+                num = this.PowerFlow / 100000;
+            }
             int pff = (int)Math.Ceiling(num);
             return pff;
         }
@@ -433,7 +481,6 @@ namespace Electromagnetic.Core
         public void ExposeData()
         {
             Scribe_Values.Look<float>(ref this.energy, "energy", 0f, false);
-            Scribe_Values.Look<float>(ref this.MaxEnergy, "maxenergy", 0f, false);
             Scribe_Values.Look<float>(ref this.exp, "exp", 0f, false);
             Scribe_Values.Look<float>(ref this.completerealm, "completerealm", 0f, false);
             Scribe_Values.Look<float>(ref this.outputPower, "outputpower", 1f, false);
@@ -441,6 +488,7 @@ namespace Electromagnetic.Core
             Scribe_Values.Look<float>(ref this.waveRange, "waveRange", 1f, false);
             Scribe_Values.Look<int>(ref this.powerflow, "powerflow", 0, false);
             Scribe_Values.Look<int>(ref this.level, "level", 0, false);
+            Scribe_Values.Look<int>(ref this.powerLimit, "powerLimit", 999, false);
             Scribe_Values.Look<bool>(ref this.personalEnergyWave, "personalEnergyWave", true, false);
             bool flag = Scribe.mode == LoadSaveMode.PostLoadInit;
         }
@@ -465,7 +513,23 @@ namespace Electromagnetic.Core
         /// <summary>
         /// 最大能量
         /// </summary>
-        public float MaxEnergy = 0f;
+        public float MaxEnergy
+        {
+            get
+            {
+                return this.powerflow / 100;
+            }
+        }
+        /// <summary>
+        /// 最大可用能量
+        /// </summary>
+        public float MaxAvailableEnergy
+        {
+            get
+            {
+                return this.PowerFlow / 100;
+            }
+        }
         /// <summary>
         /// 能量值
         /// </summary>
@@ -508,7 +572,13 @@ namespace Electromagnetic.Core
         /// 余波范围
         /// </summary>
         public float waveRange = 1;
-
+        /// <summary>
+        /// 启用个人余波
+        /// </summary>
         public bool personalEnergyWave = true;
+        /// <summary>
+        /// 力量上限
+        /// </summary>
+        public int powerLimit = 999;
     }
 }

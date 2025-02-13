@@ -155,6 +155,7 @@
     <Compile Include="Electromagnetic\UI\Command_Electromagnetic.cs" />
     <Compile Include="Electromagnetic\UI\Dialog_AbilitySet.cs" />
     <Compile Include="Electromagnetic\UI\Dialog_EditAbilitySets.cs" />
+    <Compile Include="Electromagnetic\UI\Dialog_HeavenLock.cs" />
     <Compile Include="Electromagnetic\UI\Dialog_OutputPower.cs" />
     <Compile Include="Electromagnetic\UI\Dialog_PowerIntroduce.cs" />
     <Compile Include="Electromagnetic\UI\Dialog_RenameAbilitySet.cs" />

@@ -51,7 +51,7 @@ namespace Electromagnetic.HarmonyPatchs
                         if (root != null)
                         {
                             int acr = root.energy.AvailableCompleteRealm();
-                            int pff = root.energy.PowerFlowFactor();
+                            int pff = root.energy.PowerFlowFactor(true);
                             int level = root.energy.level;
                             float cr = root.energy.completerealm;
                             if (acr >= 1 && pff >= 1)
@@ -218,7 +218,7 @@ namespace Electromagnetic.HarmonyPatchs
                         }
                         if (flag18)
                         {
-                            int lf = root.energy.level + 1;
+                            int lf = root.energy.availableLevel + 1;
                             __result += -lf * 0.02f;
                             __result = Math.Max(__result, 0.05f);
                         }

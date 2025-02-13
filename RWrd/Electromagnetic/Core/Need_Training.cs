@@ -44,6 +44,10 @@ namespace Electromagnetic.Core
                 {
                     return 1;
                 }
+                else if (this.pawn.IsLockedByEMPower())
+                {
+                    return 0;
+                }
                 return -1;
             }
         }
@@ -118,7 +122,17 @@ namespace Electromagnetic.Core
                     {
                         Hediff_RWrd_PowerRoot root = this.pawn.GetPowerRoot();
                         float num = 0.00005f * root.energy.trainDesireFactor;
-                        this.CurLevel -= num;
+                        if (this.pawn.IsLockedByEMPower())
+                        {
+                            if (this.CurLevel > 0.8f)
+                            {
+                                this.CurLevel -= num;
+                            }
+                        }
+                        else
+                        {
+                            this.CurLevel -= num;
+                        }
                     }
                 }
             }

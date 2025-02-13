@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Electromagnetic.Abilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,13 +45,29 @@ namespace Electromagnetic.Core
         public static float FinalDamage(Hediff_RWrd_PowerRoot root, float baseDamage, float masteryOffset = 0)
         {
             float damageAmount = 0;
-            damageAmount += baseDamage + root.energy.level + masteryOffset;
+            damageAmount += baseDamage + root.energy.availableLevel + masteryOffset;
             if (root.energy.IsUltimate)
             {
                 damageAmount += (int)Math.Floor(root.energy.PowerEnergy);
             }
             damageAmount *= root.energy.Multiplier;
             return damageAmount;
+        }
+        public static Hediff_TargetBase MakeEMHediff(HediffDef def, Pawn pawn, Hediff_RWrd_PowerRoot root, BodyPartRecord partRecord = null)
+        {
+            if (pawn == null)
+            {
+                Log.Error("Cannot make hediff " + def + " for null pawn.");
+                return null;
+            }
+            Hediff_TargetBase hediff = (Hediff_TargetBase)Activator.CreateInstance(def.hediffClass);
+            hediff.def = def;
+            hediff.pawn = pawn;
+            hediff.Part = partRecord;
+            hediff.root = root;
+            hediff.loadID = Find.UniqueIDsManager.GetNextHediffID();
+            hediff.PostMake();
+            return hediff;
         }
         /// <summary>
         /// 能量条材质

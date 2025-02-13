@@ -91,7 +91,8 @@ namespace Electromagnetic.UI
                     }
                     bool flag = InCWL || thingWhiteList.Contains(x);
                     bool flag2 = InCBL || thingBlackList.Contains(x);
-                    return thingCategories != null && flag && !flag2;
+                    bool flag3 = CalculateValueToShow(x) != 0;
+                    return thingCategories != null && flag && !flag2 && flag3;
                 });
             }
         }
@@ -201,7 +202,7 @@ namespace Electromagnetic.UI
         /// </summary>
         /// <param name="thingDef"></param>
         /// <returns></returns>
-        public float CalculateValueToShow(ThingDef thingDef)
+        public static float CalculateValueToShow(ThingDef thingDef)
         {
             float value = 1f;
             //获取配方
@@ -214,7 +215,14 @@ namespace Electromagnetic.UI
             baseMarketValue = Math.Max(0f, baseMarketValue);
 
             // 返回较大的值
-            value = Math.Max(workAmount, baseMarketValue);
+            if (((workAmount != 0f) || (baseMarketValue != 0f && !float.IsNaN(baseMarketValue))) && !float.IsNaN(workAmount))
+            {
+                value = Math.Max(workAmount, baseMarketValue);
+            }
+            else
+            {
+                value = 0f;
+            }
             return value;
         }
 

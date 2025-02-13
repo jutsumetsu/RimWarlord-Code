@@ -1,4 +1,5 @@
 ﻿using Electromagnetic.Core;
+using Electromagnetic.UI;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -19,115 +20,58 @@ namespace Electromagnetic.Abilities
                 return (CompProperties_AbilityHeavenLock)this.props;
             }
         }
-        //设置天锁削弱程度
-        private static IEnumerable<PawnCapacityModifier> GetPCMList(float factor)
+        private Pawn Caster
         {
-            yield return new PawnCapacityModifier
+            get
             {
-                capacity = PawnCapacityDefOf.Consciousness,
-                offset = factor,
-            };
-            yield return new PawnCapacityModifier
-            {
-                capacity = PawnCapacityDefOf.Moving,
-                offset = factor,
-            };
-            yield return new PawnCapacityModifier
-            {
-                capacity = PawnCapacityDefOf.Sight,
-                offset = factor - 1,
-            };
-            yield return new PawnCapacityModifier
-            {
-                capacity = PawnCapacityDefOf.Hearing,
-                offset = factor - 1,
-            };
-            yield return new PawnCapacityModifier
-            {
-                capacity = PawnCapacityDefOf.BloodFiltration,
-                offset = factor - 1,
-            };
-            yield return new PawnCapacityModifier
-            {
-                capacity = PawnCapacityDefOf.BloodPumping,
-                offset = factor - 1,
-            };
-            yield return new PawnCapacityModifier
-            {
-                capacity = PawnCapacityDefOf.Breathing,
-                offset = factor - 1,
-            };
+                return this.parent.pawn;
+            }
         }
 
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             base.Apply(target, dest);
             Pawn pawn = (Pawn)((Thing)target);
-            //判断目标是否是磁场强者
-            if (pawn.IsHavePowerRoot())
+            if (!Caster.IsLockedByEMPower())
             {
-                Hediff_RWrd_PowerRoot root1 = this.parent.pawn.GetPowerRoot();
-                Hediff_RWrd_PowerRoot root2 = pawn.GetPowerRoot();
-                //双方磁场力量差距
-                int num = root1.energy.level - root2.energy.level;
-                //判断自己是否强于目标
-                if (num > 0)
+                //判断目标是否是磁场强者
+                if (pawn.IsHavePowerRoot())
                 {
-                    int num1 = root2.energy.level + 1;
-                    //削弱乘数
-                    int ff = Math.Min(num, num1);
-                    Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.RWrd_HeavenLock, pawn, null);
-                    /*hediff.CurStage.capMods = new List<PawnCapacityModifier>();*/
-                    if (hediff.CurStage.capMods.Count == 0)
+                    Hediff_RWrd_PowerRoot root1 = Caster.GetPowerRoot();
+                    Hediff_RWrd_PowerRoot root2 = pawn.GetPowerRoot();
+                    // 判断是否为终极强者
+                    if (!root2.energy.IsUltimate)
                     {
-                        foreach (PawnCapacityModifier pawnCapacityModifier in CompAbilityEffect_HeavenLock.GetPCMList(-ff))
+                        //双方磁场力量差距
+                        int num = root1.energy.level - root2.energy.level;
+                        float num2 = root1.energy.completerealm - root2.energy.completerealm;
+                        //判断自己是否强于目标
+                        if (num > 0 && num2 > 0)
                         {
-                            hediff.CurStage.capMods.Add(pawnCapacityModifier);
+                            Find.WindowStack.Add(new Dialog_HeavenLock(Caster, pawn));
+                        }
+                        else if (pawn.Downed)
+                        {
+                            Find.WindowStack.Add(new Dialog_HeavenLock(Caster, pawn, true));
+                        }
+                        else
+                        {
+                            Messages.Message("RWrd_LockedErrorWeak".Translate(), pawn, MessageTypeDefOf.PositiveEvent, true);
                         }
                     }
                     else
                     {
-                        foreach (PawnCapacityModifier pcm in hediff.CurStage.capMods)
-                        {
-                            foreach (PawnCapacityModifier pawnCapacityModifier in CompAbilityEffect_HeavenLock.GetPCMList(-ff))
-                            {
-                                if (pcm.capacity == pawnCapacityModifier.capacity)
-                                {
-                                    pcm.offset = pawnCapacityModifier.offset;
-                                }
-                            }
-                        }
+                        Messages.Message("RWrd_LockedErrorUltimate".Translate(), pawn, MessageTypeDefOf.PositiveEvent, true);
                     }
-                    try
-                    {
-                        //给予天锁or移除天锁
-                        Hediff firstHediffOfDef = pawn.health.hediffSet.GetFirstHediffOfDef(RWrd_DefOf.RWrd_HeavenLock, false);
-                        if (firstHediffOfDef != null)
-                        {
-                            pawn.health.RemoveHediff(firstHediffOfDef);
-                        }
-                        else
-                        {
-                            pawn.health.AddHediff(hediff);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error("Mistake in heaven lock ability: " + ex);
-                    }
-                }
-                else if (num == 0)
-                {
-                    Messages.Message("你不能同级的磁场强者使用磁场天锁！", pawn, MessageTypeDefOf.PositiveEvent, true);
                 }
                 else
                 {
-                    Messages.Message("你不能对比自己强的磁场强者使用磁场天锁！", pawn, MessageTypeDefOf.PositiveEvent, true);
+                    Messages.Message("RWrd_LockedErrorNon".Translate(), pawn, MessageTypeDefOf.PositiveEvent, true);
                 }
             }
             else
             {
-                Messages.Message("你不能对非磁场强者使用磁场天锁！", pawn, MessageTypeDefOf.PositiveEvent, true);
+                Messages.Message("RWrd_LockedErrorRestricted".Translate(), pawn, MessageTypeDefOf.PositiveEvent, true);
             }
         }
     }
