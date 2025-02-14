@@ -56,11 +56,34 @@ namespace Electromagnetic.HarmonyPatchs
                             float cr = root.energy.completerealm;
                             if (acr >= 1 && pff >= 1)
                             {
-                                float num = __instance.verbProps.AdjustedMeleeDamageAmount(__instance, __instance.CasterPawn);
+                                float num = __instance.verbProps.meleeDamageBaseAmount;
+                                bool useNormalTool = false;
+                                Tool tool = null;
+                                if (casterPawn.Tools.Contains(__instance.tool))
+                                {
+                                    num = __instance.verbProps.AdjustedMeleeDamageAmount(__instance, __instance.CasterPawn);
+                                }
+                                else
+                                {
+                                    useNormalTool = true;
+                                    int randomNum = UnityEngine.Random.Range(0, 2);
+                                    tool = casterPawn.Tools[randomNum];
+                                    /*Log.Message($"Random tool: {tool}");*/
+                                    num = __instance.verbProps.AdjustedMeleeDamageAmount(tool, casterPawn, __instance.EquipmentSource, __instance.HediffCompSource);
+                                }
+                                /*string toolTxt = __instance.tool != null ? __instance.tool.label : "null";
+                                string equipmentTxt = __instance.EquipmentSource != null ? __instance.EquipmentSource.def.defName : "null";
+                                string hediffCompSourceTxt = __instance.HediffCompSource != null ? __instance.HediffCompSource.Def.defName : "null";
+                                Log.Message($"Default melee damage: {num}, Tool: {toolTxt}, Equipment: {equipmentTxt}, HediffCompSource: {hediffCompSourceTxt}");*/
                                 float armorPenetration = __instance.verbProps.AdjustedArmorPenetration(__instance, __instance.CasterPawn);
                                 armorPenetration += cr * 4;
                                 num = Rand.Range(num * 0.8f, num * 1.2f);
                                 num = Tools.FinalDamage(root, num);
+                                if (useNormalTool)
+                                {
+                                    num += tool.AdjustedBaseMeleeDamageAmount(__instance.EquipmentSource, __instance.verbProps.meleeDamageDef);
+                                }
+                                /*Log.Message($"EM melee damage: {num}");*/
                                 num *= root.energy.outputPower;
                                 bool ReachLimit = root.energy.level == root.energy.LevelMax && root.energy.exp == root.energy.MaxExp;
                                 if (target.Thing.GetType() == typeof(Pawn) && !ReachLimit)

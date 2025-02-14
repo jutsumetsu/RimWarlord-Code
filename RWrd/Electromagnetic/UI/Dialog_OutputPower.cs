@@ -75,7 +75,7 @@ namespace Electromagnetic.UI
             string text = textFieldNumber.ToString("000.00");
             Widgets.TextFieldNumeric<float>(textFieldNumeric, ref textFieldNumber, ref text, 0f, 100f);
             pawn.GetPowerRoot().energy.outputPower = textFieldNumber / 100;
-            pawn.GetPowerRoot().energy.outputPower = Widgets.HorizontalSlider(sliderRect, pawn.GetPowerRoot().energy.outputPower, 0f, 1f, false, null, null, null, 0.001f);
+            pawn.GetPowerRoot().energy.outputPower = Widgets.HorizontalSlider(sliderRect, pawn.GetPowerRoot().energy.outputPower, 0f, 1f);
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(textFieldNumeric.xMax, textFieldNumeric.y, 20f, 32f), "%");
             num += 35f;
@@ -103,7 +103,7 @@ namespace Electromagnetic.UI
                     text = textFieldNumber.ToString("000.00");
                     Widgets.TextFieldNumeric<float>(textFieldNumeric, ref textFieldNumber, ref text, 0f, 100f);
                     pawn.GetPowerRoot().energy.wavePower = textFieldNumber / 100;
-                    pawn.GetPowerRoot().energy.wavePower = Widgets.HorizontalSlider(sliderRect, pawn.GetPowerRoot().energy.wavePower, 0f, 1f, false, null, null, null, 0.001f);
+                    pawn.GetPowerRoot().energy.wavePower = Widgets.HorizontalSlider(sliderRect, pawn.GetPowerRoot().energy.wavePower, 0f, 1f);
                     Text.Font = GameFont.Medium;
                     Widgets.Label(new Rect(textFieldNumeric.xMax, textFieldNumeric.y, 20f, 32f), "%");
                     num += 35f;
@@ -127,7 +127,7 @@ namespace Electromagnetic.UI
                     text = textFieldNumber.ToString("000.00");
                     Widgets.TextFieldNumeric<float>(textFieldNumeric, ref textFieldNumber, ref text, 0f, 200f);
                     pawn.GetPowerRoot().energy.waveRange = textFieldNumber / 100;
-                    pawn.GetPowerRoot().energy.waveRange = Widgets.HorizontalSlider(sliderRect, pawn.GetPowerRoot().energy.waveRange, 0f, 2f, false, null, null, null, 0.001f);
+                    pawn.GetPowerRoot().energy.waveRange = Widgets.HorizontalSlider(sliderRect, pawn.GetPowerRoot().energy.waveRange, 0f, 2f);
                     Text.Font = GameFont.Medium;
                     Widgets.Label(new Rect(textFieldNumeric.xMax, textFieldNumeric.y, 20f, 32f), "%");
                     num += 35f;
@@ -159,7 +159,7 @@ namespace Electromagnetic.UI
                 text = textFieldNumber.ToString("000.00");
                 Widgets.TextFieldNumeric<float>(textFieldNumeric, ref textFieldNumber, ref text, 0f, 200f);
                 ability1.outputPower = textFieldNumber / 100;
-                ability1.outputPower = Widgets.HorizontalSlider(sliderRect, ability1.outputPower, 0f, 2f, false, null, null, null, 0.001f);
+                ability1.outputPower = Widgets.HorizontalSlider(sliderRect, ability1.outputPower, 0f, 2f);
                 Text.Font = GameFont.Medium;
                 Widgets.Label(new Rect(textFieldNumeric.xMax, textFieldNumeric.y, 20f, 32f), "%");
                 num += 35f;
