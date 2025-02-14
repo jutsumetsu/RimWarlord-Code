@@ -173,8 +173,13 @@ namespace Electromagnetic.Core
                     Widgets.Label(rect4, label2);
                 }
                 float num = a;
-                bool flag = num >= b;
-                if (flag)
+                bool flag = b == 9999;
+                bool flag2 = num >= b;
+                if (flag && flag2)
+                {
+                    num = b;
+                }
+                else if (flag2)
                 {
                     num = b - 1;
                 }

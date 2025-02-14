@@ -13,7 +13,7 @@ namespace Electromagnetic.Abilities
         public override void PostMake()
         {
             base.PostMake();
-            this.casterLevel = root.energy.level;
+            this.casterLevel = root.energy.level + root.energy.FinalLevel;
             this.casterCompleteRealm = root.energy.completerealm;
         }
         public override void PostRemoved()
@@ -39,7 +39,6 @@ namespace Electromagnetic.Abilities
             {
                 bool dead = pawn.Dead;
                 Pawn_EnergyTracker energy1 = pawn.GetPowerRoot().energy;
-                Pawn_EnergyTracker energy2 = this.root.energy;
 
                 if (dead)
                 {
@@ -48,7 +47,7 @@ namespace Electromagnetic.Abilities
                 if (Find.TickManager.TicksGame % 180 == 0)
                 {
                     bool ultimate = energy1.IsUltimate;
-                    bool breakthrough = energy1.level >= energy2.level && energy1.completerealm >= energy2.completerealm && !this.surpriseAttack;
+                    bool breakthrough = (energy1.level + energy1.FinalLevel) >= this.casterLevel && energy1.completerealm >= this.casterCompleteRealm && !this.surpriseAttack;
                     if (ultimate || breakthrough)
                     {
                         this.RemoveThis();

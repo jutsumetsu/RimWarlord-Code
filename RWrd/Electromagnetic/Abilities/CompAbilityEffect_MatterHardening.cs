@@ -56,7 +56,7 @@ namespace Electromagnetic.Abilities
                 {
                     Hediff_RWrd_PowerRoot root = Caster.GetPowerRoot();
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
-                    int level = root.energy.availableLevel + 1 + masteryOffset;
+                    int level = root.energy.availableLevel + root.energy.FinalLevelOffset + 1 + masteryOffset;
                     int num = (int)Math.Floor(level / 5f);
                     if (root.energy.IsUltimate)
                     {
@@ -95,7 +95,7 @@ namespace Electromagnetic.Abilities
                 {
                     Hediff_RWrd_PowerRoot root = caster.GetPowerRoot();
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
-                    int level = root.energy.availableLevel + 1 + masteryOffset;
+                    int level = root.energy.availableLevel + root.energy.FinalLevelOffset + 1 + masteryOffset;
                     int num = (int)Math.Floor(level / 5f);
                     item.HitPoints = Mathf.RoundToInt(item.MaxHitPoints * Props.HardeningFactor * (num));
                 }

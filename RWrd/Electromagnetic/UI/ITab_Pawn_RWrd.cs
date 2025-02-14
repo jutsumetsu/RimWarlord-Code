@@ -156,7 +156,25 @@ namespace Electromagnetic.UI
                 {
                     if (Tools.IsChineseLanguage)
                     {
+                        string realmTitle = " - ";
+                        if (this.root.energy.OnMaxLevel)
+                        {
+                            realmTitle += "RWrd_FinalLevel".Translate();
+                        }
+                        else if (this.root.energy.level >= 75)
+                        {
+                            realmTitle += "RWrd_AtomSplitLevel".Translate();
+                        }
+                        else if (this.root.energy.level >= 50)
+                        {
+                            realmTitle += "RWrd_AntigravityLevel".Translate();
+                        }
                         listing_Standard.Label("RWrd_BM".Translate(this.root.energy.level.ToString()) + "匹", -1f, null);
+                        if (realmTitle != " - ")
+                        {
+                            realmTitle += " - ";
+                            listing_Standard.Label(realmTitle, -1f, null);
+                        }
                     }
                     else
                     {

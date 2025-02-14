@@ -19,7 +19,7 @@ namespace Electromagnetic.Abilities
             float multiper = 1;
             if (this.root != null)
             {
-                level = this.root.energy.availableLevel;
+                level = this.root.energy.availableLevel + this.root.energy.FinalLevelOffset;
                 multiper = 1.25f - level * 0.01f;
             }
             int timeInterval = (int)Math.Ceiling(125 * multiper);
@@ -44,22 +44,19 @@ namespace Electromagnetic.Abilities
                         }
                         int lf2 = lf1 * 2;
                         int healPoint = (int)Math.Ceiling(UnityEngine.Random.Range(40f + lf1, 41f + lf2));
+                        int healCount = 1;
                         if (level < 25)
                         {
-                            list.RandomElement<Hediff_Injury>().Heal((int)Math.Ceiling(UnityEngine.Random.Range(40f + lf2, 41f + lf1)));
-                        }
-                        if (level >= 25)
-                        {
-                            list.RandomElement<Hediff_Injury>().Heal(healPoint);
+                            healPoint = (int)Math.Ceiling(UnityEngine.Random.Range(40f + lf2, 41f + lf1));
                             list.RandomElement<Hediff_Injury>().Heal(healPoint);
                         }
-                        if (level >= 50)
+                        else
                         {
-                            list.RandomElement<Hediff_Injury>().Heal(healPoint);
-                        }
-                        if (level >= 75)
-                        {
-                            list.RandomElement<Hediff_Injury>().Heal(healPoint);
+                            healCount += Mathf.FloorToInt(level / 25);
+                            for (int i = 0; i < healCount; i++)
+                            {
+                                list.RandomElement<Hediff_Injury>().Heal(healPoint);
+                            }
                         }
                     }
                     else
@@ -103,6 +100,7 @@ namespace Electromagnetic.Abilities
                         if (reduceEnergy <= root.energy.energy)
                         {
                             root.energy.SetEnergy(-reduceEnergy);
+                            root.energy.SetExp(0.1f * (-reduceEnergy));
                             foreach (Hediff_MissingPart hediff_MissingPart in enumerable)
                             {
                                 //赋予再生Hediff

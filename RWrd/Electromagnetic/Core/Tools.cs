@@ -45,7 +45,7 @@ namespace Electromagnetic.Core
         public static float FinalDamage(Hediff_RWrd_PowerRoot root, float baseDamage, float masteryOffset = 0)
         {
             float damageAmount = 0;
-            damageAmount += baseDamage + root.energy.availableLevel + masteryOffset;
+            damageAmount += baseDamage + root.energy.availableLevel + root.energy.FinalLevelOffset + masteryOffset;
             if (root.energy.IsUltimate)
             {
                 damageAmount += (int)Math.Floor(root.energy.PowerEnergy);
@@ -81,6 +81,21 @@ namespace Electromagnetic.Core
         /// 能量条空材质
         /// </summary>
         public static readonly Texture2D EmptyBarTex = SolidColorMaterials.NewSolidColorTexture(Color.clear);
+        /// <summary>
+        /// 技能组切换图标
+        /// </summary>
         public static readonly Texture2D AbilitySetNext = ContentFinder<Texture2D>.Get("UI/Gizmos/AbilitySet_Next", true);
+        /// <summary>
+        /// 提升箭头图标
+        /// </summary>
+        public static readonly Texture2D LiftingArrow2D = ContentFinder<Texture2D>.Get("UI/Gizmos/LiftingArrow", true);
+        /// <summary>
+        /// 终极雷奥/释天风
+        /// </summary>
+        public static readonly Texture2D UltimateLeuiOu = ContentFinder<Texture2D>.Get("UI/Gizmos/UltimateLeuiOu", true);
+        // 重载技能树
+        public static readonly Texture2D RefreshSkillTree2D = ContentFinder<Texture2D>.Get("UI/Gizmos/RefreshSkillTree", true);
+        public static readonly Texture2D ReloadDefault2D = ContentFinder<Texture2D>.Get("UI/Gizmos/ReloadDefault", true);
+        public static readonly Texture2D ReloadBaak2D = ContentFinder<Texture2D>.Get("UI/Gizmos/ReloadBaak", true);
     }
 }

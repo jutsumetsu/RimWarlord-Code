@@ -63,11 +63,12 @@ namespace Electromagnetic.UI
             num += 35;
             // 设置勾选框
             Rect checkboxRect = new Rect(0, num, outRect.width * 0.25f, 32f);
+            int casterLevel = rootCaster.energy.level + rootCaster.energy.FinalLevel;
             if (existHeavenLock)
             {
                 lockedLevel = heavenLock.casterLevel;
                 lockedRealm = heavenLock.casterCompleteRealm;
-                if (rootCaster.energy.level >= lockedLevel || rootCaster.energy.completerealm >= lockedRealm)
+                if (casterLevel >= lockedLevel || rootCaster.energy.completerealm >= lockedRealm)
                 {
                     Widgets.CheckboxLabeled(checkboxRect, "Unlocks".Translate(), ref this.removeHeavenLock);
                 }
@@ -84,7 +85,7 @@ namespace Electromagnetic.UI
                         bool flag2 = false;
                         lockedLevel = heavenLock.casterLevel;
                         lockedRealm = heavenLock.casterCompleteRealm;
-                        if (rootCaster.energy.level >= lockedLevel)
+                        if (casterLevel >= lockedLevel)
                         {
                             flag1 = true;
                         }
@@ -95,7 +96,7 @@ namespace Electromagnetic.UI
                         if (flag1 && flag2)
                         {
                             heavenLock.root = rootCaster;
-                            heavenLock.casterLevel = rootCaster.energy.level;
+                            heavenLock.casterLevel = casterLevel;
                             heavenLock.casterCompleteRealm = rootCaster.energy.completerealm;
                         }
                     }

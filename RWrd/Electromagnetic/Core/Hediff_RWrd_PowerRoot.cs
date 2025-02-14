@@ -79,7 +79,8 @@ namespace Electromagnetic.Core
                         this.energy.ForceSetExp(this.energy.MaxExp);
                         this.energy.SetLevel();
                         this.pawn.CheckEMAbilityLimiting();
-                    }
+                    },
+                    icon = Tools.LiftingArrow2D
                 };
                 yield return new Command_Action
                 {
@@ -94,7 +95,8 @@ namespace Electromagnetic.Core
                         {
                             this.energy.ForceSetExp(10000f);
                         }
-                    }
+                    },
+                    icon = Tools.LiftingArrow2D
                 };
                 yield return new Command_Action
                 {
@@ -110,7 +112,8 @@ namespace Electromagnetic.Core
                             float num = this.energy.MaxEnergy * 0.2f;
                             this.energy.SetEnergy(num);
                         }
-                    }
+                    },
+                    icon = Tools.LiftingArrow2D
                 };
                 yield return new Command_Action
                 {
@@ -137,7 +140,8 @@ namespace Electromagnetic.Core
                         {
                             this.energy.SetCompleteRealm(0.1f);
                         }
-                    }
+                    },
+                    icon = Tools.LiftingArrow2D
                 };
                 yield return new Command_Action
                 {
@@ -156,7 +160,8 @@ namespace Electromagnetic.Core
                         {
                             this.energy.SetPowerFlow(10000);
                         }
-                    }
+                    },
+                    icon = Tools.LiftingArrow2D
                 };
                 yield return new Command_Action
                 {
@@ -166,7 +171,8 @@ namespace Electromagnetic.Core
                         this.RemoveRWrdAbilities();
                         this.UnlockRoute(RWrd_DefOf.Base);
                         this.pawn.CheckEMAbilityLimiting();
-                    }
+                    },
+                    icon = Tools.ReloadDefault2D
                 };
                 yield return new Command_Action
                 {
@@ -176,7 +182,8 @@ namespace Electromagnetic.Core
                         this.RemoveRWrdAbilities();
                         this.UnlockRoute(RWrd_DefOf.SixSecret);
                         this.pawn.CheckEMAbilityLimiting();
-                    }
+                    },
+                    icon = Tools.ReloadBaak2D
                 };
                 yield return new Command_Action
                 {
@@ -185,7 +192,8 @@ namespace Electromagnetic.Core
                     {
                         this.pawn.CheckRouteUnlock();
                         this.pawn.CheckEMAbilityLimiting();
-                    }
+                    },
+                    icon = Tools.RefreshSkillTree2D
                 };
                 if (Tools.IsChineseLanguage)
                 {
@@ -203,7 +211,8 @@ namespace Electromagnetic.Core
                             this.energy.ForceSetCompleteRealm(9700);
                             this.pawn.UpdatePowerRootStageInfo();
                             this.pawn.UpdatePowerRootStageInfo(true);
-                        }
+                        },
+                        icon = Tools.UltimateLeuiOu
                     };
                 }
                 /*yield return new Command_Action
@@ -299,7 +308,7 @@ namespace Electromagnetic.Core
         {
             get
             {
-                int lf = this.energy.availableLevel + 1;
+                int lf = this.energy.availableLevel + this.energy.FinalLevelOffset + 1;
                 int lf2 = lf + 1;
                 int oft = (int)Math.Floor((lf - 50) / 5f) * 4;
                 int oft2 = (int)Math.Floor((lf2 - 51) / 5f) * 4;
@@ -398,7 +407,7 @@ namespace Electromagnetic.Core
             {
                 float cr = this.energy.completerealm;
                 int acr = this.energy.AvailableCompleteRealm();
-                int level = this.energy.availableLevel;
+                int level = this.energy.availableLevel + this.energy.FinalLevelOffset;
                 int lf = level + 1;
                 if (this.energy.IsUltimate)
                 {
@@ -492,12 +501,12 @@ namespace Electromagnetic.Core
                     yield return new StatModifier
                     {
                         stat = RWrd_DefOf.HypoxiaResistance,
-                        value = Math.Min(this.energy.level * 0.05f, 1f),
+                        value = Math.Min(level * 0.05f, 1f),
                     };
                     yield return new StatModifier
                     {
                         stat = RWrd_DefOf.DecompressionResistance,
-                        value = Math.Min(this.energy.level * 0.05f, 1f),
+                        value = Math.Min(level * 0.05f, 1f),
                     };
                 }
             }
@@ -509,7 +518,7 @@ namespace Electromagnetic.Core
         {
             get
             {
-                int level = this.energy.availableLevel;
+                int level = this.energy.availableLevel + this.energy.FinalLevelOffset;
                 int lf = level + 1;
                 float lifeFactor;
                 if (this.energy.IsUltimate)
@@ -569,12 +578,12 @@ namespace Electromagnetic.Core
                     yield return new StatModifier
                     {
                         stat = RWrd_DefOf.ThirstRateMultiplier,
-                        value = Math.Max(1 - this.energy.level * 0.05f, 0f),
+                        value = Math.Max(1 - level * 0.05f, 0f),
                     };
                     yield return new StatModifier
                     {
                         stat = RWrd_DefOf.BladderRateMultiplier,
-                        value = Math.Max(1 - this.energy.level * 0.05f, 0f),
+                        value = Math.Max(1 - level * 0.05f, 0f),
                     };
                 }
             }
@@ -605,7 +614,8 @@ namespace Electromagnetic.Core
             {
                 float num1;
                 float num2;
-                if (this.energy.level == 0)
+                int level = this.energy.availableLevel + this.energy.FinalLevelOffset;
+                if (this.energy.availableLevel == 0)
                 {
                     num1 = 0.1f;
                 }
@@ -615,7 +625,7 @@ namespace Electromagnetic.Core
                 }
                 if (RWrdSettings.NoFoodDrinkRequired)
                 {
-                    num2 = Math.Max(1 - this.energy.level * 0.05f, 0f);
+                    num2 = Math.Max(1 - level * 0.05f, 0f);
                 }
                 else
                 {

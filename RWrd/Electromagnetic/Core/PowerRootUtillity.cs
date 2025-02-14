@@ -297,7 +297,8 @@ namespace Electromagnetic.Core
         {
             Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
             float num1;
-            if (root.energy.level == 0)
+            int level = root.energy.availableLevel + root.energy.FinalLevelOffset;
+            if (root.energy.availableLevel == 0)
             {
                 num1 = 0.1f;
             }
@@ -308,7 +309,7 @@ namespace Electromagnetic.Core
             float num2;
             if (RWrdSettings.NoFoodDrinkRequired)
             {
-                num2 = Math.Max(1 - root.energy.level * 0.05f, 0f);
+                num2 = Math.Max(1 - level * 0.05f, 0f);
             }
             else
             {

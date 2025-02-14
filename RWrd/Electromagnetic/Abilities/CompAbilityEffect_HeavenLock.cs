@@ -43,7 +43,9 @@ namespace Electromagnetic.Abilities
                     if (!root2.energy.IsUltimate)
                     {
                         //双方磁场力量差距
-                        int num = root1.energy.level - root2.energy.level;
+                        int level1 = root1.energy.level + root1.energy.FinalLevel;
+                        int level2 = root2.energy.level + root2.energy.FinalLevel;
+                        int num = level1 - level2;
                         float num2 = root1.energy.completerealm - root2.energy.completerealm;
                         //判断自己是否强于目标
                         if (num > 0 && num2 > 0)

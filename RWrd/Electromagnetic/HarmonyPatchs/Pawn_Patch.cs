@@ -200,7 +200,7 @@ namespace Electromagnetic.HarmonyPatchs
                 {
                     Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                     int pff = root.energy.PowerFlowFactor();
-                    int level = root.energy.level + 1;
+                    int level = root.energy.level + root.energy.FinalLevelOffset + 1;
                     int multiplier = pff + level;
                     if (root.energy.IsUltimate)
                     {
@@ -241,7 +241,7 @@ namespace Electromagnetic.HarmonyPatchs
                         }
                         if (flag18)
                         {
-                            int lf = root.energy.availableLevel + 1;
+                            int lf = root.energy.availableLevel + root.energy.FinalLevelOffset + 1;
                             __result += -lf * 0.02f;
                             __result = Math.Max(__result, 0.05f);
                         }

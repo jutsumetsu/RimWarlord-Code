@@ -32,6 +32,47 @@ namespace Electromagnetic.Core
                 return this.PowerEnergy >= 1;
             }
         }
+        public int FinalLevel
+        {
+            get
+            {
+                if (this.availableLevel != this.LevelMax)
+                {
+                    return 0;
+                }
+
+                if (this.exp >= 9999)
+                {
+                    return 4;
+                }
+                if (this.exp >= 9990)
+                {
+                    return 3;
+                }
+                if (this.exp >= 9900)
+                {
+                    return 2;
+                }
+                if (this.exp >= 9000)
+                {
+                    return 1;
+                }
+                return 0;
+            }
+        }
+        public int FinalLevelOffset
+        {
+            get
+            {
+                int num = 0;
+                if (this.FinalLevel > 0)
+                {
+                    int level = this.FinalLevel;
+                    num = (1 + level) * level * level / 2;
+                }
+                return num;
+            }
+        }
         /// <summary>
         /// 兆级修为
         /// </summary>
@@ -40,7 +81,7 @@ namespace Electromagnetic.Core
             get
             {
                 float EMPower;
-                if (this.level == LevelMax && this.exp >= 9000)
+                if (this.level == LevelMax && FinalLevel > 0)
                 {
                     EMPower = 1000000;
                 }
@@ -125,6 +166,10 @@ namespace Electromagnetic.Core
         {
             get
             {
+                if (OnMaxLevel)
+                {
+                    return 9999;
+                }
                 if (this.level == 0)
                 {
                     return 100000;
@@ -215,7 +260,7 @@ namespace Electromagnetic.Core
             get
             {
                 float num = 12;
-                int lf = this.availableLevel + 1;
+                int lf = this.availableLevel + this.FinalLevelOffset + 1;
                 float uf = 0;
                 if (this.IsUltimate)
                 {
@@ -328,15 +373,20 @@ namespace Electromagnetic.Core
             bool flag = num <= 0f;
             if (!flag && !this.pawn.IsLockedByEMPower())
             {
+                if (this.FinalLevel > 0)
+                {
+                    num *= (float)Math.Pow(0.1f, this.FinalLevel);
+                    num /= this.FinalLevel + 1;
+                }
                 float num2 = this.exp + num * RWrdSettings.XpFactor;
                 this.exp = (num2 > this.MaxExp) ? this.MaxExp : num2;
+                if (this.OnMaxLevel)
+                {
+                    this.pawn.UpdatePowerRootStageInfo();
+                }
                 if (this.IsUpdateLevelTiming() && this.level != RWrdSettings.GlobalLevelLimit)
                 {
                     this.SetLevel();
-                }
-                if (this.level == LevelMax)
-                {
-                    this.pawn.UpdatePowerRootStageInfo();
                 }
             }
         }
@@ -349,15 +399,15 @@ namespace Electromagnetic.Core
             bool flag = num <= 0f;
             if (!flag)
             {
-                float num2 = this.exp + num * RWrdSettings.XpFactor;
+                float num2 = this.exp + num;
                 this.exp = (num2 > this.MaxExp) ? this.MaxExp : num2;
-                if (this.IsUpdateLevelTiming() && this.level != RWrdSettings.GlobalLevelLimit)
-                {
-                    this.SetLevel();
-                }
                 if (this.level == LevelMax)
                 {
                     this.pawn.UpdatePowerRootStageInfo();
+                }
+                if (this.IsUpdateLevelTiming() && this.level != RWrdSettings.GlobalLevelLimit)
+                {
+                    this.SetLevel();
                 }
             }
         }
@@ -491,6 +541,13 @@ namespace Electromagnetic.Core
             Scribe_Values.Look<int>(ref this.powerLimit, "powerLimit", 999, false);
             Scribe_Values.Look<bool>(ref this.personalEnergyWave, "personalEnergyWave", true, false);
             bool flag = Scribe.mode == LoadSaveMode.PostLoadInit;
+            if (flag)
+            {
+                if (this.exp > this.MaxExp)
+                {
+                    exp = this.MaxExp;
+                }
+            }
         }
 
         public Pawn pawn;
