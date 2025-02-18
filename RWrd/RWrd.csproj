@@ -7,7 +7,9 @@
     <ProjectGuid>{01F4170E-B8DE-401D-ABF5-11693E25A300}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>E</RootNamespace>
+    <RootNamespace>Electromagnetic</RootNamespace>
+    <NamespaceProvider>false</NamespaceProvider>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <AssemblyName>RWrd</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -71,6 +73,11 @@
       <HintPath>..\..\..\..\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Electromagnetic\**\*.cs">
+      <Namespace>Electromagnetic.$(RelativeDir.Replace('Electromagnetic\', '').Replace('\', '.').TrimEnd('.'))</Namespace>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Electromagnetic\Abilities\AbilitySet.cs" />
@@ -142,6 +149,7 @@
     <Compile Include="Electromagnetic\Core\WorkGiver_Training.cs" />
     <Compile Include="Electromagnetic\Effect\FragmentsWorker.cs" />
     <Compile Include="Electromagnetic\Effect\GameComponent_FragmentsManager.cs" />
+    <Compile Include="Electromagnetic\Effect\GameComponent_MFEnvironment.cs" />
     <Compile Include="Electromagnetic\Effect\PowerfulPersonFragments.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\AntiGravityPatches.cs" />
     <Compile Include="Electromagnetic\HarmonyPatchs\HarmonyInit.cs" />

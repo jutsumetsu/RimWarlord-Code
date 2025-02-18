@@ -93,7 +93,10 @@ namespace Electromagnetic.Core
         /// 终极雷奥/释天风
         /// </summary>
         public static readonly Texture2D UltimateLeuiOu = ContentFinder<Texture2D>.Get("UI/Gizmos/UltimateLeuiOu", true);
-        // 重载技能树
+        /// <summary>
+        /// 重载图标
+        /// </summary>
+        public static readonly Texture2D ReloadIcon = ContentFinder<Texture2D>.Get("UI/Gizmos/ReloadIcon", true);
         public static readonly Texture2D RefreshSkillTree2D = ContentFinder<Texture2D>.Get("UI/Gizmos/RefreshSkillTree", true);
         public static readonly Texture2D ReloadDefault2D = ContentFinder<Texture2D>.Get("UI/Gizmos/ReloadDefault", true);
         public static readonly Texture2D ReloadBaak2D = ContentFinder<Texture2D>.Get("UI/Gizmos/ReloadBaak", true);

@@ -25,6 +25,7 @@ namespace Electromagnetic.Abilities
         private void RemoveThis()
         {
             this.pawn.health.RemoveHediff(this);
+            PowerRootUtillity.lockedCacheMap.Remove(this.pawn);
         }
         public virtual void Notify_PawnDied()
         {
@@ -61,6 +62,18 @@ namespace Electromagnetic.Abilities
             Scribe_Values.Look<bool>(ref this.surpriseAttack, "surpriseAttackLock", false, false);
             Scribe_Values.Look<int>(ref this.casterLevel, "casterLevel", 0, false);
             Scribe_Values.Look<float>(ref this.casterCompleteRealm, "casterCompleteRealm", 0, false);
+            bool flag = Scribe.mode == LoadSaveMode.PostLoadInit;
+            if (flag)
+            {
+                if (PowerRootUtillity.lockedCacheMap == default(Dictionary<Pawn, Hediff_HeavenLock>))
+                {
+                    PowerRootUtillity.lockedCacheMap = new Dictionary<Pawn, Hediff_HeavenLock>();
+                }
+                if (!PowerRootUtillity.lockedCacheMap.ContainsKey(pawn))
+                {
+                    PowerRootUtillity.lockedCacheMap.Add(this.pawn, this);
+                }
+            }
         }
 
         public bool surpriseAttack;

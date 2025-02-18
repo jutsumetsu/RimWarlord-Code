@@ -52,7 +52,6 @@ namespace Electromagnetic.Core
                     gizmo.ExpLabel = "RWrd_HorsePower".Translate();
                 }
                 yield return gizmo;
-                gizmo = null;
             }
             if (abilitySets.Count > 0)
             {
@@ -71,130 +70,44 @@ namespace Electromagnetic.Core
             bool godMode = DebugSettings.godMode;
             if (godMode)
             {
-                yield return new Command_Action
+                if (_cachedGodCommand != null && _cachedGodCommand.action != null)
                 {
-                    defaultLabel = "RWrd_LevelUP".Translate(),
-                    action = delegate ()
-                    {
-                        this.energy.ForceSetExp(this.energy.MaxExp);
-                        this.energy.SetLevel();
-                        this.pawn.CheckEMAbilityLimiting();
-                    },
-                    icon = Tools.LiftingArrow2D
-                };
-                yield return new Command_Action
+                    yield return _cachedGodCommand;
+                }
+                else
                 {
-                    defaultLabel = "RWrd_IncreaseEXP".Translate(),
-                    action = delegate ()
+                    _cachedGodCommand = new Command_ActionWithFloat
                     {
-                        if (this.energy.level != 0)
+                        defaultLabel = "RWrd_SelectAction".Translate(),
+                        defaultDesc = "RWrd_SelectActionDesc".Translate(),
+                        icon = Tools.LiftingArrow2D,
+                        floatMenuGetter = GetGodCommandOptions,
+                        action = delegate ()
                         {
-                            this.energy.ForceSetExp(1000f);
+                            Messages.Message("RWrd_SelectActionFirst".Translate(), this.pawn, MessageTypeDefOf.PositiveEvent, true);
                         }
-                        else
-                        {
-                            this.energy.ForceSetExp(10000f);
-                        }
-                    },
-                    icon = Tools.LiftingArrow2D
-                };
-                yield return new Command_Action
+                    };
+                    yield return _cachedGodCommand;
+                }
+                if (_cachedReloadCommand != null && _cachedReloadCommand.action != null)
                 {
-                    defaultLabel = "RWrd_IncreaseEnergy".Translate(),
-                    action = delegate ()
-                    {
-                        if (this.energy.MaxEnergy <= 5000)
-                        {
-                            this.energy.SetEnergy(1000f);
-                        }
-                        else
-                        {
-                            float num = this.energy.MaxEnergy * 0.2f;
-                            this.energy.SetEnergy(num);
-                        }
-                    },
-                    icon = Tools.LiftingArrow2D
-                };
-                yield return new Command_Action
+                    yield return _cachedReloadCommand;
+                }
+                else
                 {
-                    defaultLabel = "RWrd_IncreaseCompleteRealm".Translate(),
-                    action = delegate ()
+                    _cachedReloadCommand = new Command_ActionWithFloat
                     {
-                        if (this.energy.completerealm >= 1000)
+                        defaultLabel = "RWrd_SelectAction".Translate(),
+                        defaultDesc = "RWrd_SelectActionDesc".Translate(),
+                        icon = Tools.ReloadIcon,
+                        floatMenuGetter = GetReloadSkillOptions,
+                        action = delegate ()
                         {
-                            this.energy.SetCompleteRealm(1000);
+                            Messages.Message("RWrd_SelectActionFirst".Translate(), this.pawn, MessageTypeDefOf.PositiveEvent, true);
                         }
-                        else if (this.energy.completerealm >= 100)
-                        {
-                            this.energy.SetCompleteRealm(100);
-                        }
-                        else if (this.energy.completerealm >= 10)
-                        {
-                            this.energy.SetCompleteRealm(10);
-                        }
-                        else if (this.energy.completerealm >= 1)
-                        {
-                            this.energy.SetCompleteRealm(1);
-                        }
-                        else
-                        {
-                            this.energy.SetCompleteRealm(0.1f);
-                        }
-                    },
-                    icon = Tools.LiftingArrow2D
-                };
-                yield return new Command_Action
-                {
-                    defaultLabel = "RWrd_IncreasePowerFlow".Translate(),
-                    action = delegate ()
-                    {
-                        if (this.energy.powerflow >= 10000000)
-                        {
-                            this.energy.SetPowerFlow(10000000);
-                        }
-                        else if (this.energy.powerflow >= 1000000)
-                        {
-                            this.energy.SetPowerFlow(1000000);
-                        }
-                        else
-                        {
-                            this.energy.SetPowerFlow(10000);
-                        }
-                    },
-                    icon = Tools.LiftingArrow2D
-                };
-                yield return new Command_Action
-                {
-                    defaultLabel = "RWrd_ReloadDefaultSkillTree".Translate(),
-                    action = delegate ()
-                    {
-                        this.RemoveRWrdAbilities();
-                        this.UnlockRoute(RWrd_DefOf.Base);
-                        this.pawn.CheckEMAbilityLimiting();
-                    },
-                    icon = Tools.ReloadDefault2D
-                };
-                yield return new Command_Action
-                {
-                    defaultLabel = "RWrd_ReloadBaakFamilySkillTree".Translate(),
-                    action = delegate ()
-                    {
-                        this.RemoveRWrdAbilities();
-                        this.UnlockRoute(RWrd_DefOf.SixSecret);
-                        this.pawn.CheckEMAbilityLimiting();
-                    },
-                    icon = Tools.ReloadBaak2D
-                };
-                yield return new Command_Action
-                {
-                    defaultLabel = "RWrd_RefreshSkillTree".Translate(),
-                    action = delegate ()
-                    {
-                        this.pawn.CheckRouteUnlock();
-                        this.pawn.CheckEMAbilityLimiting();
-                    },
-                    icon = Tools.RefreshSkillTree2D
-                };
+                    };
+                    yield return _cachedReloadCommand;
+                }
                 if (Tools.IsChineseLanguage)
                 {
                     yield return new Command_Action
@@ -254,6 +167,119 @@ namespace Electromagnetic.Core
             yield break;
         }
         /// <summary>
+        /// 升级
+        /// </summary>
+        private void LevelUp()
+        {
+            this.energy.ForceSetExp(this.energy.MaxExp);
+            this.energy.SetLevel();
+            this.pawn.CheckEMAbilityLimiting();
+        }
+        /// <summary>
+        /// 提升力量
+        /// </summary>
+        private void IncreaseEXP()
+        {
+            if (this.energy.level != 0) this.energy.ForceSetExp(1000f);
+            else this.energy.ForceSetExp(10000f);
+        }
+        /// <summary>
+        /// 增加能量
+        /// </summary>
+        private void IncreaseEnergy()
+        {
+            if (this.energy.MaxEnergy <= 5000) this.energy.SetEnergy(1000f);
+            else this.energy.SetEnergy(this.energy.MaxEnergy * 0.2f);
+        }
+        /// <summary>
+        /// 提升完全境界
+        /// </summary>
+        private void IncreaseCompleteRealm()
+        {
+            if (this.energy.completerealm >= 1000) this.energy.SetCompleteRealm(1000);
+            else if (this.energy.completerealm >= 100) this.energy.SetCompleteRealm(100);
+            else if (this.energy.completerealm >= 10) this.energy.SetCompleteRealm(10);
+            else if (this.energy.completerealm >= 1) this.energy.SetCompleteRealm(1);
+            else this.energy.SetCompleteRealm(0.1f);
+        }
+        /// <summary>
+        /// 提升力量流量
+        /// </summary>
+        private void IncreasePowerFlow()
+        {
+            if (this.energy.powerflow >= 10000000) this.energy.SetPowerFlow(10000000);
+            else if (this.energy.powerflow >= 1000000) this.energy.SetPowerFlow(1000000);
+            else this.energy.SetPowerFlow(10000);
+        }
+        /// <summary>
+        /// 刷新技能树
+        /// </summary>
+        private void RefreshSkillTree()
+        {
+            this.pawn.CheckRouteUnlock();
+            this.pawn.CheckEMAbilityLimiting();
+        }
+        /// <summary>
+        /// 重载指定技能树
+        /// </summary>
+        private void ReloadSkillTree(RWrd_RouteDef routeDef)
+        {
+            this.RemoveRWrdAbilities();
+            this.UnlockRoute(routeDef);
+            this.pawn.CheckEMAbilityLimiting();
+        }
+        private IEnumerable<FloatMenuOption> GetGodCommandOptions()
+        {
+            yield return new FloatMenuOption("RWrd_LevelUP".Translate(), () =>
+            {
+                _cachedGodCommand.action = LevelUp; // 设置主命令的 Action
+                _cachedGodCommand.defaultLabel = "RWrd_LevelUP".Translate(); // 更新标签
+            });
+            yield return new FloatMenuOption("RWrd_IncreaseEXP".Translate(), () =>
+            {
+                _cachedGodCommand.action = IncreaseEXP;
+                _cachedGodCommand.defaultLabel = "RWrd_IncreaseEXP".Translate();
+            });
+            yield return new FloatMenuOption("RWrd_IncreaseEnergy".Translate(), () =>
+            {
+                _cachedGodCommand.action = IncreaseEnergy;
+                _cachedGodCommand.defaultLabel = "RWrd_IncreaseEnergy".Translate();
+            });
+            yield return new FloatMenuOption("RWrd_IncreaseCompleteRealm".Translate(), () =>
+            {
+                _cachedGodCommand.action = IncreaseCompleteRealm;
+                _cachedGodCommand.defaultLabel = "RWrd_IncreaseCompleteRealm".Translate();
+            });
+            yield return new FloatMenuOption("RWrd_IncreasePowerFlow".Translate(), () =>
+            {
+                _cachedGodCommand.action = IncreasePowerFlow;
+                _cachedGodCommand.defaultLabel = "RWrd_IncreasePowerFlow".Translate();
+            });
+            yield break;
+        }
+        private IEnumerable<FloatMenuOption> GetReloadSkillOptions()
+        {
+            yield return new FloatMenuOption("RWrd_RefreshSkillTree".Translate(), () =>
+            {
+                _cachedReloadCommand.action = RefreshSkillTree;
+                _cachedReloadCommand.defaultLabel = "RWrd_RefreshSkillTree".Translate();
+                _cachedReloadCommand.icon = Tools.RefreshSkillTree2D;
+            });
+            yield return new FloatMenuOption("RWrd_ReloadDefaultSkillTree".Translate(), () =>
+            {
+                _cachedReloadCommand.action = () => ReloadSkillTree(RWrd_DefOf.Base);
+                _cachedReloadCommand.defaultLabel = "RWrd_ReloadDefaultSkillTree".Translate();
+                _cachedReloadCommand.icon = Tools.ReloadDefault2D;
+            });
+            yield return new FloatMenuOption("RWrd_ReloadBaakFamilySkillTree".Translate(), () =>
+            {
+                _cachedReloadCommand.action = () => ReloadSkillTree(RWrd_DefOf.SixSecret);
+                _cachedReloadCommand.defaultLabel = "RWrd_ReloadBaakFamilySkillTree".Translate();
+                _cachedReloadCommand.icon = Tools.ReloadBaak2D;
+            });
+            yield break;
+        }
+        /// <summary>
         /// 移除技能组
         /// </summary>
         /// <param name="set"></param>
@@ -264,11 +290,13 @@ namespace Electromagnetic.Core
         }
         public override void PostRemoved()
         {
-            this.pawn.CheckEMAbilityLimiting();
             this.RemoveRWrdAbilities();
+            this.RemovePowerRootCache();
             base.PostRemoved();
         }
-        //移除武神技能
+        /// <summary>
+        /// 移除武神技能
+        /// </summary>
         private void RemoveRWrdAbilities()
         {
             List<Ability> tmp = new List<Ability>();
@@ -284,6 +312,10 @@ namespace Electromagnetic.Core
             {
                 this.pawn.abilities.RemoveAbility(a.def);
             });
+        }
+        private void RemovePowerRootCache()
+        {
+            PowerRootUtillity.powerRootCacheMap.Remove(this.pawn);
         }
         /// <summary>
         /// 解锁技能树
@@ -577,14 +609,17 @@ namespace Electromagnetic.Core
                 {
                     yield return new StatModifier
                     {
-                        stat = RWrd_DefOf.ThirstRateMultiplier,
-                        value = Math.Max(1 - level * 0.05f, 0f),
-                    };
-                    yield return new StatModifier
-                    {
                         stat = RWrd_DefOf.BladderRateMultiplier,
                         value = Math.Max(1 - level * 0.05f, 0f),
                     };
+                    if (ModDetector.DBHThirstExist)
+                    {
+                        yield return new StatModifier
+                        {
+                            stat = RWrd_DefOf.ThirstRateMultiplier,
+                            value = Math.Max(1 - level * 0.05f, 0f),
+                        };
+                    }
                 }
             }
         }
@@ -784,6 +819,11 @@ namespace Electromagnetic.Core
             }
             this.pawn.CheckRouteUnlock(this);
             this.pawn.CheckEMAbilityLimiting(this);
+            if (PowerRootUtillity.powerRootCacheMap == default(Dictionary<Pawn, Hediff_RWrd_PowerRoot>))
+            {
+                PowerRootUtillity.powerRootCacheMap = new Dictionary<Pawn, Hediff_RWrd_PowerRoot>();
+            }
+            PowerRootUtillity.powerRootCacheMap.Add(this.pawn, this);
             Log.Message("Root post make is called");
         }
         //保存数据
@@ -807,6 +847,14 @@ namespace Electromagnetic.Core
                 {
                     this.abilitySets = new List<AbilitySet>();
                 }
+                if (PowerRootUtillity.powerRootCacheMap == default(Dictionary<Pawn, Hediff_RWrd_PowerRoot>))
+                {
+                    PowerRootUtillity.powerRootCacheMap = new Dictionary<Pawn, Hediff_RWrd_PowerRoot>();
+                }
+                if (!PowerRootUtillity.powerRootCacheMap.ContainsKey(pawn))
+                {
+                    PowerRootUtillity.powerRootCacheMap.Add(this.pawn, this);
+                }
                 this.energy.pawn = this.pawn;
                 this.pawn.CheckRouteUnlock();
             }
@@ -825,6 +873,9 @@ namespace Electromagnetic.Core
                 this.energy.EnergyRecharge();
             }
         }
+        private Command_ActionWithFloat _cachedGodCommand;
+        private Command_ActionWithFloat _cachedReloadCommand;
+
         public int meleeAttackCounter = 0;
 
         public Pawn_EnergyTracker energy;

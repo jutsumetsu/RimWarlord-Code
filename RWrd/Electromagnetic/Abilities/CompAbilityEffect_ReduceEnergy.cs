@@ -88,7 +88,7 @@ namespace Electromagnetic.Abilities
             //在失去力量后移除技能
             if (flag2)
             {
-                bool flag3 = this.parent.pawn.GetPowerRoot() == null;
+                bool flag3 = !this.parent.pawn.IsHavePowerRoot();
                 if (flag3)
                 {
                     this.parent.pawn.abilities.RemoveAbility(this.parent.def);

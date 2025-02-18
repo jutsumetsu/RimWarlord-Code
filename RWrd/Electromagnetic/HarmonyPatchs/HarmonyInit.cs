@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Electromagnetic.Core;
 using HarmonyLib;
 using Verse;
 

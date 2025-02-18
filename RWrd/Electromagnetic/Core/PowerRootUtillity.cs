@@ -11,6 +11,8 @@ namespace Electromagnetic.Core
 {
     public static class PowerRootUtillity
     {
+        public static Dictionary<Pawn, Hediff_RWrd_PowerRoot> powerRootCacheMap = new Dictionary<Pawn, Hediff_RWrd_PowerRoot>();
+        public static Dictionary<Pawn, Hediff_HeavenLock> lockedCacheMap = new Dictionary<Pawn, Hediff_HeavenLock>();
         /// <summary>
         /// 是否拥有力量之源
         /// </summary>
@@ -24,7 +26,18 @@ namespace Electromagnetic.Core
             }
             else
             {
-                return pawn.health.hediffSet.HasHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, false);
+                if (powerRootCacheMap.ContainsKey(pawn))
+                {
+                    return true;
+                }
+                var targetDef = RWrd_DefOf.Hediff_RWrd_PowerRoot;
+                bool flag = pawn.health.hediffSet.hediffs
+                    .Exists(h => h.def == targetDef);
+                if (flag && !powerRootCacheMap.ContainsKey(pawn))
+                {
+                    powerRootCacheMap.Add(pawn, pawn.GetPowerRoot());
+                }
+                return flag;
             }
         }
         /// <summary>
@@ -34,7 +47,16 @@ namespace Electromagnetic.Core
         /// <returns></returns>
         public static Hediff_RWrd_PowerRoot GetPowerRoot(this Pawn pawn)
         {
-            return pawn.IsHavePowerRoot() ? ((Hediff_RWrd_PowerRoot)pawn.health.hediffSet.GetFirstHediffOfDef(RWrd_DefOf.Hediff_RWrd_PowerRoot, false)) : null;
+            if (powerRootCacheMap.ContainsKey(pawn))
+            {
+                return powerRootCacheMap[pawn];
+            }
+            else
+            {
+                var targetDef = RWrd_DefOf.Hediff_RWrd_PowerRoot;
+                return (Hediff_RWrd_PowerRoot)pawn.health.hediffSet.hediffs
+                    .FirstOrDefault(h => h.def == targetDef);
+            }
         }
         /// <summary>
         /// 判断是否被锁
@@ -49,12 +71,32 @@ namespace Electromagnetic.Core
             }
             else
             {
-                return pawn.health.hediffSet.HasHediff(RWrd_DefOf.RWrd_HeavenLock, false);
+                if (lockedCacheMap.ContainsKey(pawn))
+                {
+                    return true;
+                }
+                var targetDef = RWrd_DefOf.RWrd_HeavenLock;
+                bool flag = pawn.health.hediffSet.hediffs
+                    .Exists(h => h.def == targetDef);
+                if (flag && !lockedCacheMap.ContainsKey(pawn))
+                {
+                    lockedCacheMap.Add(pawn, pawn.GetHeavenLock());
+                }
+                return flag;
             }
         }
         public static Hediff_HeavenLock GetHeavenLock(this Pawn pawn)
         {
-            return pawn.IsLockedByEMPower() ? ((Hediff_HeavenLock)pawn.health.hediffSet.GetFirstHediffOfDef(RWrd_DefOf.RWrd_HeavenLock)) : null;
+            if (lockedCacheMap.ContainsKey(pawn))
+            {
+                return lockedCacheMap[pawn];
+            }
+            else
+            {
+                var targetDef = RWrd_DefOf.Hediff_RWrd_PowerRoot;
+                return (Hediff_HeavenLock)pawn.health.hediffSet.hediffs
+                    .FirstOrDefault(h => h.def == targetDef);
+            }
         }
         /// <summary>
         /// 获取心脏血量百分比

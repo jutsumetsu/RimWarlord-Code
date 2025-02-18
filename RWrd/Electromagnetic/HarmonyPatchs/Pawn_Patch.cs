@@ -15,6 +15,17 @@ namespace Electromagnetic.HarmonyPatchs
 {
     public class Pawn_Patch
     {
+        public static void AddTrait_Postfix(Pawn A_0, TraitDef A_1)
+        {
+            if (A_1 == RWrd_DefOf.RWrd_Gifted && A_0.RaceProps.Humanlike)
+            {
+                if (!A_0.IsHavePowerRoot())
+                {
+                    Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, A_0);
+                    A_0.health.AddHediff(hediff);
+                }
+            }
+        }
         [HarmonyPatch(typeof(TraitSet))]
         [HarmonyPatch(nameof(TraitSet.GainTrait))]
         class GainTraitPatch

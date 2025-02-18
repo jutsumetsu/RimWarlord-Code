@@ -15,7 +15,7 @@ namespace Electromagnetic.Core
         {
             get
             {
-                return ModDetector.RunningActiveMods.Any((ModContentPack pack) => pack.Name.Contains("Elite Bionics Framework"));
+                return ModDetect("Elite Bionics Framework", "v1024.ebframework");
             }
         }
         /// <summary>
@@ -25,7 +25,14 @@ namespace Electromagnetic.Core
         {
             get
             {
-                return ModDetector.RunningActiveMods.Any((ModContentPack pack) => pack.Name.Contains("Save Our Ship"));
+                return ModDetect("Save Our Ship", "kentington.saveourship2");
+            }
+        }
+        public static bool CEIsLoaded
+        {
+            get
+            {
+                return ModDetect("Character Editor", "void.charactereditor");
             }
         }
         /// <summary>
@@ -35,8 +42,33 @@ namespace Electromagnetic.Core
         {
             get
             {
-                return ModDetector.RunningActiveMods.Any((ModContentPack pack) => pack.Name.Contains("Dubs Bad Hygiene"));
+                return ModDetect("Dubs Bad Hygiene", "dubwise.dubsbadhygiene", "dubwise.dubsbadhygiene.lite");
             }
+        }
+        /// <summary>
+        /// 卫生模组口渴启用
+        /// </summary>
+        public static bool DBHThirstExist
+        {
+            get
+            {
+                return ModDetect(null, "dubwise.dubsbadhygiene", "dubwise.dubsbadhygiene.thirst");
+            }
+        }
+        public static bool ModDetect(string packName = null, params string[] packIDs)
+        {
+            bool nameFlag = false;
+            bool idFlag = false;
+            if (packName != null)
+            {
+                nameFlag = ModDetector.RunningActiveMods.Any((ModContentPack pack) => pack.Name.Contains(packName));
+            }
+            if (packIDs != null && packIDs.Length > 0)
+            {
+                idFlag = ModDetector.RunningActiveMods.Any(pack => packIDs.Contains(pack.PackageId));
+            }
+            bool result = nameFlag || idFlag;
+            return result;
         }
         internal static IEnumerable<ModContentPack> RunningActiveMods = from pack in LoadedModManager.RunningMods
                                                                         where pack != null && pack.ModMetaData.Active
