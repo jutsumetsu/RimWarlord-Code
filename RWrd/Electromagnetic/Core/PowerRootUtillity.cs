@@ -13,6 +13,7 @@ namespace Electromagnetic.Core
     {
         public static Dictionary<Pawn, Hediff_RWrd_PowerRoot> powerRootCacheMap = new Dictionary<Pawn, Hediff_RWrd_PowerRoot>();
         public static Dictionary<Pawn, Hediff_HeavenLock> lockedCacheMap = new Dictionary<Pawn, Hediff_HeavenLock>();
+        public static List<ThingDef> spawnableThings;
         /// <summary>
         /// 是否拥有力量之源
         /// </summary>
@@ -169,7 +170,7 @@ namespace Electromagnetic.Core
                 {
                     root = pawn.GetPowerRoot();
                 }
-                int level = root.energy.availableLevel;
+                int level = root.energy.AvailableLevel;
                 List<Ability> list = new List<Ability>();
                 List<Ability> list2 = new List<Ability>();
                 bool flag2 = root.routes.Count != 0;
@@ -339,8 +340,8 @@ namespace Electromagnetic.Core
         {
             Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
             float num1;
-            int level = root.energy.availableLevel + root.energy.FinalLevelOffset;
-            if (root.energy.availableLevel == 0)
+            int level = root.energy.AvailableLevel + root.energy.FinalLevelOffset;
+            if (root.energy.AvailableLevel == 0)
             {
                 num1 = 0.1f;
             }

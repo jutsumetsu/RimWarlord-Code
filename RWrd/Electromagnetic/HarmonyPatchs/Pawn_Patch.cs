@@ -15,17 +15,6 @@ namespace Electromagnetic.HarmonyPatchs
 {
     public class Pawn_Patch
     {
-        public static void AddTrait_Postfix(Pawn A_0, TraitDef A_1)
-        {
-            if (A_1 == RWrd_DefOf.RWrd_Gifted && A_0.RaceProps.Humanlike)
-            {
-                if (!A_0.IsHavePowerRoot())
-                {
-                    Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, A_0);
-                    A_0.health.AddHediff(hediff);
-                }
-            }
-        }
         [HarmonyPatch(typeof(TraitSet))]
         [HarmonyPatch(nameof(TraitSet.GainTrait))]
         class GainTraitPatch
@@ -93,6 +82,7 @@ namespace Electromagnetic.HarmonyPatchs
                                 if (useNormalTool)
                                 {
                                     num += tool.AdjustedBaseMeleeDamageAmount(__instance.EquipmentSource, __instance.verbProps.meleeDamageDef);
+                                    __instance.EquipmentSource.HitPoints -= Mathf.CeilToInt(root.energy.Multiplier);
                                 }
                                 /*Log.Message($"EM melee damage: {num}");*/
                                 num *= root.energy.outputPower;
@@ -125,9 +115,18 @@ namespace Electromagnetic.HarmonyPatchs
                                 List<DamageInfo> damageInfos = new List<DamageInfo>();
                                 DamageDef def = __instance.verbProps.meleeDamageDef;
                                 ThingDef source = __instance.EquipmentSource != null ? __instance.EquipmentSource.def : casterPawn.def;
+                                QualityCategory weaponQuality = QualityCategory.Normal;
+                                if (__instance.EquipmentSource != null) __instance.EquipmentSource.TryGetQuality(out weaponQuality);
+                                BodyPartGroupDef bodyPartGroupDef = __instance.verbProps.AdjustedLinkedBodyPartsGroup(__instance.tool);
+                                HediffDef hediffDef = __instance.HediffCompSource != null ? __instance.HediffCompSource.Def : null;
                                 Vector3 direction = (target.Thing.Position - casterPawn.Position).ToVector3();
                                 DamageInfo damageInfo = new DamageInfo(def, num, armorPenetration, -1f, casterPawn, null, source, DamageInfo.SourceCategory.ThingOrUnknown, null, false, true, QualityCategory.Normal, true);
                                 damageInfo.SetBodyRegion(BodyPartHeight.Undefined, BodyPartDepth.Outside);
+                                damageInfo.SetWeaponBodyPartGroup(bodyPartGroupDef);
+                                damageInfo.SetWeaponHediff(hediffDef);
+                                damageInfo.SetAngle(direction);
+                                damageInfo.SetTool(__instance.tool);
+                                damageInfo.SetWeaponQuality(weaponQuality);
                                 damageInfos.Add(damageInfo);
 
                                 float radius = 0.7f + (float)Math.Ceiling(level / 20f) * 0.5f;
@@ -164,6 +163,9 @@ namespace Electromagnetic.HarmonyPatchs
                                             float extraDamageAmount = Rand.Range(extraDamage.amount * 0.8f, extraDamage.amount * 1.2f);
                                             DamageInfo extraDamageInfo = new DamageInfo(extraDamage.def, extraDamageAmount, extraDamage.AdjustedArmorPenetration(__instance, __instance.CasterPawn), -1f, casterPawn, null, source, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true);
                                             extraDamageInfo.SetBodyRegion(BodyPartHeight.Undefined, BodyPartDepth.Outside);
+                                            damageInfo.SetWeaponBodyPartGroup(bodyPartGroupDef);
+                                            damageInfo.SetWeaponHediff(hediffDef);
+                                            damageInfo.SetAngle(direction);
                                             damageInfos.Add(extraDamageInfo);
                                         }
                                     }
@@ -179,6 +181,9 @@ namespace Electromagnetic.HarmonyPatchs
                                         int surpriseDamageAmount = GenMath.RoundRandom(extraDamage.AdjustedDamageAmount(__instance, __instance.CasterPawn));
                                         DamageInfo surpriseDamageInfo = new DamageInfo(extraDamage.def, surpriseDamageAmount, extraDamage.AdjustedArmorPenetration(__instance, __instance.CasterPawn), -1f, casterPawn, null, source, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true);
                                         surpriseDamageInfo.SetBodyRegion(BodyPartHeight.Undefined, BodyPartDepth.Outside);
+                                        surpriseDamageInfo.SetWeaponBodyPartGroup(bodyPartGroupDef);
+                                        surpriseDamageInfo.SetWeaponHediff(hediffDef);
+                                        surpriseDamageInfo.SetAngle(direction);
                                         damageInfos.Add(surpriseDamageInfo);
                                     }
                                 }
@@ -252,7 +257,7 @@ namespace Electromagnetic.HarmonyPatchs
                         }
                         if (flag18)
                         {
-                            int lf = root.energy.availableLevel + root.energy.FinalLevelOffset + 1;
+                            int lf = root.energy.AvailableLevel + root.energy.FinalLevelOffset + 1;
                             __result += -lf * 0.02f;
                             __result = Math.Max(__result, 0.05f);
                         }

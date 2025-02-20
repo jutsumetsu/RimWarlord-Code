@@ -93,7 +93,7 @@ namespace Electromagnetic.Core
             rect4.yMin = rect2.y + 30;
             if (!this.root.energy.IsUltimate)
             {
-                this.DrawLevelUI(rect4, this.root.energy.Exp, this.root.energy.MaxExp, this.root.energy.availableLevel, this.PowerLabel.Translate(), this.ExpLabel.Translate());
+                this.DrawLevelUI(rect4, this.root.energy.Exp, this.root.energy.MaxExp, this.root.energy.AvailableLevel, this.PowerLabel.Translate(), this.ExpLabel.Translate());
             }
             else
             {

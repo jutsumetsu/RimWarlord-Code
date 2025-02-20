@@ -77,7 +77,7 @@ namespace Electromagnetic.UI
                 Pawn pawn = Find.Selector.SingleSelectedThing as Pawn;
                 bool result;
                 //判断有无力量之源
-                if (pawn != null && pawn.health.hediffSet.HasHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, false))
+                if (pawn != null && pawn.IsHavePowerRoot())
                 {
                     Faction faction = pawn.Faction;
                     result = (faction != null && faction.IsPlayer);
@@ -211,49 +211,20 @@ namespace Electromagnetic.UI
                 {
                     Find.WindowStack.Add(new Dialog_PowerIntroduce());
                 }
-                //原子分裂按钮&&出力设置按钮&&技能组按钮
-                if (this.root.energy.availableLevel < 75)
+                //出力设置按钮&&技能组按钮
+                if (Mouse.IsOver(buttonLeft))
                 {
-                    if (Mouse.IsOver(buttonLeft))
-                    {
-                        TooltipHandler.TipRegion(buttonLeft, "RWrd_OPIntroduce".Translate());
-                    }
-                    if (Widgets.ButtonText(buttonLeft, "RWrd_OutputPower".Translate()))
-                    {
-                        var powerOption = new Dialog_OutputPower(this);
-                        Find.WindowStack.Add(powerOption);
-                    }
-                    if (Widgets.ButtonText(buttonRight, "RWrd_AbilitySets".Translate()))
-                    {
-                        var editSets = new Dialog_EditAbilitySets(this);
-                        Find.WindowStack.Add(editSets);
-                    }
+                    TooltipHandler.TipRegion(buttonLeft, "RWrd_OPIntroduce".Translate());
                 }
-                else
+                if (Widgets.ButtonText(buttonLeft, "RWrd_OutputPower".Translate()))
                 {
-                    if (Mouse.IsOver(buttonLeft))
-                    {
-                        TooltipHandler.TipRegion(buttonLeft, "RWrd_OPIntroduce".Translate());
-                    }
-                    if (Widgets.ButtonText(buttonLeft, "RWrd_OutputPower".Translate()))
-                    {
-                        var powerOption = new Dialog_OutputPower(this);
-                        Find.WindowStack.Add(powerOption);
-                    }
-                    if (Mouse.IsOver(buttonRight))
-                    {
-                        TooltipHandler.TipRegion(buttonRight, "RWrd_ASIntroduce".Translate());
-                    }
-                    if (Widgets.ButtonText(buttonRight, "RWrd_AtomSplit".Translate()))
-                    {
-                        var selectArtifact = new Dialog_SelectThings(this);
-                        Find.WindowStack.Add(selectArtifact);
-                    }
-                    if (Widgets.ButtonText(buttonRect2, "RWrd_AbilitySets".Translate()))
-                    {
-                        var editSets = new Dialog_EditAbilitySets(this);
-                        Find.WindowStack.Add(editSets);
-                    }
+                    var powerOption = new Dialog_OutputPower(this);
+                    Find.WindowStack.Add(powerOption);
+                }
+                if (Widgets.ButtonText(buttonRight, "RWrd_AbilitySets".Translate()))
+                {
+                    var editSets = new Dialog_EditAbilitySets(this);
+                    Find.WindowStack.Add(editSets);
                 }
                 listing_Standard.End();
                 //绘制技能树显示区域
@@ -435,10 +406,6 @@ namespace Electromagnetic.UI
             GUI.color = Color.white;
             GUI.DrawTexture(inRect, ContentFinder<Texture2D>.Get(ability.iconPath, true));
         }
-        public void AssignArtifact(Thing things)
-        {
-            this.curThings = things;
-        }
         public void DoAbilitySets(Rect inRect)
         {
             var dialogTitleLabel = new Rect(inRect.x, inRect.y, 300, 24);
@@ -488,7 +455,6 @@ namespace Electromagnetic.UI
         private readonly Dictionary<AbilityDef, Vector2> abilityPos = new Dictionary<AbilityDef, Vector2>();
         //private readonly Dictionary<string, List<RWrd_RouteDef>> pathsByTab = new Dictionary<string, List<RWrd_RouteDef>>();
         private readonly List<TabRecord> tabs;
-        public Thing curThings;
         private string curTab;
         private bool devMode;
         public Hediff_RWrd_PowerRoot root;

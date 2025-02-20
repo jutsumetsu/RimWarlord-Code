@@ -11,7 +11,7 @@ using Verse.Sound;
 
 namespace Electromagnetic.Abilities
 {
-    public class CompAbilityEffect_TigerSharkExplosionPunch : CompAbilityEffect
+    public class CompAbilityEffect_TigerSharkExplosionPunch : CompAbilityEffect_Electromagnetic
     {
         //绑定Properties
         public new CompProperties_AbilityTigerSharkExplosionPunch Props
@@ -19,21 +19,6 @@ namespace Electromagnetic.Abilities
             get
             {
                 return (CompProperties_AbilityTigerSharkExplosionPunch)this.props;
-            }
-        }
-        private Pawn Pawn
-        {
-            get
-            {
-                return this.parent.pawn;
-            }
-        }
-        //技能接口
-        private RWrd_PsyCastBase Ability
-        {
-            get
-            {
-                return (RWrd_PsyCastBase)this.parent;
             }
         }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
@@ -45,10 +30,10 @@ namespace Electromagnetic.Abilities
             SoundDefOf.Pawn_Melee_Punch_HitPawn.PlayOneShot(info);
             int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
             float num = 20;
-            if (Pawn.IsHavePowerRoot())
+            if (Caster.IsHavePowerRoot())
             {
                 //伤害计算
-                Hediff_RWrd_PowerRoot root = Pawn.GetPowerRoot();
+                Hediff_RWrd_PowerRoot root = Caster.GetPowerRoot();
                 num = Tools.FinalDamage(root, num, masteryOffset);
                 num *= Ability.outputPower;
             }

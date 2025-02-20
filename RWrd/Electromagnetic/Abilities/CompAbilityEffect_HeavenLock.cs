@@ -10,7 +10,7 @@ using Verse;
 
 namespace Electromagnetic.Abilities
 {
-    public class CompAbilityEffect_HeavenLock : CompAbilityEffect
+    public class CompAbilityEffect_HeavenLock : CompAbilityEffect_Electromagnetic
     {
         //绑定Properties
         public new CompProperties_AbilityHeavenLock Props
@@ -18,13 +18,6 @@ namespace Electromagnetic.Abilities
             get
             {
                 return (CompProperties_AbilityHeavenLock)this.props;
-            }
-        }
-        private Pawn Caster
-        {
-            get
-            {
-                return this.parent.pawn;
             }
         }
 

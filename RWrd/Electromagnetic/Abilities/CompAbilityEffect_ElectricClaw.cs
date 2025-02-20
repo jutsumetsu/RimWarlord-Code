@@ -9,7 +9,7 @@ using Verse.AI;
 
 namespace Electromagnetic.Abilities
 {
-    public class CompAbilityEffect_ElectricClaw : CompAbilityEffect
+    public class CompAbilityEffect_ElectricClaw : CompAbilityEffect_Electromagnetic
     {
         //绑定Properties
         public new CompProperties_AbilityElectricClaw Props
@@ -28,14 +28,6 @@ namespace Electromagnetic.Abilities
                 {
                     RWrd_DefOf.RWrd_ElectricClawAttractFleck
                 };
-            }
-        }
-        //技能接口
-        private RWrd_PsyCastBase Ability
-        {
-            get
-            {
-                return (RWrd_PsyCastBase)this.parent;
             }
         }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)

@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Electromagnetic.Setting;
 using HarmonyLib;
 using RimWorld;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -36,7 +37,7 @@ namespace Electromagnetic.Core
         {
             get
             {
-                if (this.availableLevel != this.LevelMax)
+                if (this.AvailableLevel != this.LevelMax)
                 {
                     return 0;
                 }
@@ -125,7 +126,23 @@ namespace Electromagnetic.Core
             this.powerflow = 0;
             this.OnPostSetLevel();
         }
-        public int availableLevel
+        /// <summary>
+        /// 每秒飞行耗能
+        /// </summary>
+        public int FlightConsumptionPerSecond
+        {
+            get
+            {
+                int result = 90;
+                if (this.AvailableLevel < 50) result -= Mathf.FloorToInt(this.AvailableLevel / 10) * 7;
+                else result = 0;
+                return result;
+            }
+        }
+        /// <summary>
+        /// 可用等级
+        /// </summary>
+        public int AvailableLevel
         {
             get
             {
@@ -260,7 +277,7 @@ namespace Electromagnetic.Core
             get
             {
                 float num = 12;
-                int lf = this.availableLevel + this.FinalLevelOffset + 1;
+                int lf = this.AvailableLevel + this.FinalLevelOffset + 1;
                 float uf = 0;
                 if (this.IsUltimate)
                 {
@@ -518,6 +535,16 @@ namespace Electromagnetic.Core
                 this.OnPostSetLevel();
                 this.exp = 0f;
                 this.pawn.UpdatePowerRootStageInfo();
+                if (this.level == 50)
+                {
+                    Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(RWrd_DefOf.RWrd_Flight);
+                    if (hediff != null)
+                    {
+                        pawn.health.RemoveHediff(hediff);
+                        Hediff newHediff = HediffMaker.MakeHediff(RWrd_DefOf.RWrd_Antigravity, this.pawn);
+                        pawn.health.AddHediff(newHediff);
+                    }
+                }
             }
         }
         /// <summary>

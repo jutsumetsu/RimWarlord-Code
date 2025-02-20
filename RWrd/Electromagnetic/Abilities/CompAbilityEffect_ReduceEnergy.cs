@@ -6,21 +6,13 @@ using Verse;
 
 namespace Electromagnetic.Abilities
 {
-    public class CompAbilityEffect_ReduceEnergy : CompAbilityEffect
+    public class CompAbilityEffect_ReduceEnergy : CompAbilityEffect_Electromagnetic
     {
         public new CompProperties_ReduceEnergy Props
         {
             get
             {
                 return (CompProperties_ReduceEnergy)this.props;
-            }
-        }
-        //技能接口
-        private RWrd_PsyCastBase Ability
-        {
-            get
-            {
-                return (RWrd_PsyCastBase)this.parent;
             }
         }
         //能量消耗

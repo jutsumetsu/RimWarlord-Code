@@ -1,5 +1,6 @@
 ﻿using Electromagnetic.Core;
 using Electromagnetic.HarmonyPatchs;
+using Electromagnetic.UI;
 using HarmonyLib;
 using RimWorld;
 using System;
@@ -21,24 +22,11 @@ namespace Electromagnetic.Effect
         public override void FinalizeInit()
         {
             base.FinalizeInit();
-            if (ModDetector.CEIsLoaded)
-            {
-                DoCEPatch();
-            }
+            AtomSplitInitialize();
         }
-        private void DoCEPatch()
+        private void AtomSplitInitialize()
         {
-            PatchMain.instance.Patch(
-                AccessTools.Method("ay:a", new[]
-                {
-                    typeof(Pawn),
-                    typeof(TraitDef),
-                    typeof(TraitDegreeData),
-                    typeof(bool),
-                    typeof(bool),
-                    typeof(Trait)
-                }),
-                postfix: new HarmonyMethod(typeof(Pawn_Patch), "AddTrait_Postfix"));
+            PowerRootUtillity.spawnableThings = Dialog_SelectThings.AllThingsDefs.ToList();
         }
     }
 }

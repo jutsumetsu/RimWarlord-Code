@@ -11,7 +11,7 @@ using Verse.Sound;
 
 namespace Electromagnetic.Abilities
 {
-    public class CompAbilityEffect_CellRecombination : CompAbilityEffect
+    public class CompAbilityEffect_CellRecombination : CompAbilityEffect_Electromagnetic
     {
         public new CompProperties_AbilityCellRecombination Props
         {
@@ -20,30 +20,15 @@ namespace Electromagnetic.Abilities
                 return (CompProperties_AbilityCellRecombination)this.props;
             }
         }
-        private Pawn Pawn
-        {
-            get
-            {
-                return this.parent.pawn;
-            }
-        }
-        //技能接口
-        private RWrd_PsyCastBase Ability
-        {
-            get
-            {
-                return (RWrd_PsyCastBase)this.parent;
-            }
-        }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             base.Apply(target, dest);
             Pawn pawn = target.Pawn;
             float maxQuality = 1.3f;
             float quality;
-            if (Pawn != null)
+            if (Caster != null)
             {
-                quality = Pawn.GetStatValue(StatDefOf.MedicalTendQuality, true, -1);
+                quality = Caster.GetStatValue(StatDefOf.MedicalTendQuality, true, -1);
             }
             else
             {
@@ -55,7 +40,7 @@ namespace Electromagnetic.Abilities
             {
                 quality += building_Bed.GetStatValue(StatDefOf.MedicalTendQualityOffset, true, -1);
             }
-            if (Pawn != pawn && Pawn != null)
+            if (Caster != pawn && Caster != null)
             {
                 quality *= 0.7f;
             }

@@ -13,7 +13,7 @@ using Verse;
 
 namespace Electromagnetic.Abilities
 {
-    public class CompAbilityEffect_MatterHardening : CompAbilityEffect
+    public class CompAbilityEffect_MatterHardening : CompAbilityEffect_Electromagnetic
     {
         //绑定Properties
         public new CompProperties_AbilityMatterHardening Props
@@ -21,14 +21,6 @@ namespace Electromagnetic.Abilities
             get
             {
                 return (CompProperties_AbilityMatterHardening)this.props;
-            }
-        }
-        //技能接口
-        private RWrd_PsyCastBase Ability
-        {
-            get
-            {
-                return (RWrd_PsyCastBase)this.parent;
             }
         }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
@@ -56,7 +48,7 @@ namespace Electromagnetic.Abilities
                 {
                     Hediff_RWrd_PowerRoot root = Caster.GetPowerRoot();
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
-                    int level = root.energy.availableLevel + root.energy.FinalLevelOffset + 1 + masteryOffset;
+                    int level = root.energy.AvailableLevel + root.energy.FinalLevelOffset + 1 + masteryOffset;
                     int num = (int)Math.Floor(level / 5f);
                     if (root.energy.IsUltimate)
                     {
@@ -95,7 +87,7 @@ namespace Electromagnetic.Abilities
                 {
                     Hediff_RWrd_PowerRoot root = caster.GetPowerRoot();
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
-                    int level = root.energy.availableLevel + root.energy.FinalLevelOffset + 1 + masteryOffset;
+                    int level = root.energy.AvailableLevel + root.energy.FinalLevelOffset + 1 + masteryOffset;
                     int num = (int)Math.Floor(level / 5f);
                     item.HitPoints = Mathf.RoundToInt(item.MaxHitPoints * Props.HardeningFactor * (num));
                 }

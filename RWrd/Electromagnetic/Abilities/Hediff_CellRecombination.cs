@@ -19,7 +19,7 @@ namespace Electromagnetic.Abilities
             float multiper = 1;
             if (this.root != null)
             {
-                level = this.root.energy.availableLevel + this.root.energy.FinalLevelOffset;
+                level = this.root.energy.AvailableLevel + this.root.energy.FinalLevelOffset;
                 multiper = 1.25f - level * 0.01f;
             }
             int timeInterval = (int)Math.Ceiling(125 * multiper);
@@ -90,7 +90,7 @@ namespace Electromagnetic.Abilities
                         BodyPartRecord part = list2.RandomElement<BodyPartRecord>();
                         // 能量消耗
                         float discount = 0.01f * (110 - level);
-                        int reduceEnergy = Mathf.CeilToInt(part.coverageAbsWithChildren * 1000 * discount);
+                        int reduceEnergy = Mathf.CeilToInt(part.coverageAbsWithChildren * 2500 * discount);
                         List<Hediff_MissingPart> source = this.pawn.health.hediffSet.hediffs.OfType<Hediff_MissingPart>().ToList<Hediff_MissingPart>();
                         this.pawn.health.RestorePart(part, null, true);
                         List<Hediff_MissingPart> currentMissingHediffs2 = this.pawn.health.hediffSet.hediffs.OfType<Hediff_MissingPart>().ToList<Hediff_MissingPart>();

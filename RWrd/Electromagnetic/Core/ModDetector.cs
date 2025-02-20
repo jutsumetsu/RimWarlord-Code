@@ -28,6 +28,19 @@ namespace Electromagnetic.Core
                 return ModDetect("Save Our Ship", "kentington.saveourship2");
             }
         }
+        /// <summary>
+        /// 寻路框架加载检测
+        /// </summary>
+        public static bool PFIsLoaded
+        {
+            get
+            {
+                return ModDetect("Pathfinding Framework", "pathfinding.framework");
+            }
+        }
+        /// <summary>
+        /// 人物编辑器加载检测
+        /// </summary>
         public static bool CEIsLoaded
         {
             get

@@ -42,6 +42,10 @@ namespace Electromagnetic.Core
         public static HediffDef RWrd_HeavenLock;
         public static HediffDef RWrd_ExplosiveEnergy;
         public static HediffDef RWrd_AsuraFormula;
+        [MayRequire("pathfinding.framework")]
+        public static HediffDef RWrd_Flight;
+        [MayRequire("pathfinding.framework")]
+        public static HediffDef RWrd_Antigravity;
 
         public static HediffDef Asthma;
         public static HediffDef BadBack;
@@ -49,6 +53,7 @@ namespace Electromagnetic.Core
         public static HediffDef Frail;
         //伤害类型
         public static DamageDef RWrd_PowerfulWave;
+        public static DamageDef RWrd_LifeDrain;
         //人物属性
         public static StatDef MeleeArmorPenetration;
 

@@ -1,5 +1,6 @@
 ﻿using Electromagnetic.Abilities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ namespace Electromagnetic.Core
     /// 工具箱
     /// </summary>
     [StaticConstructorOnStartup]
-    public class Tools
+    public static class Tools
     {
         /// <summary>
         /// 检测中文语言
@@ -45,7 +46,7 @@ namespace Electromagnetic.Core
         public static float FinalDamage(Hediff_RWrd_PowerRoot root, float baseDamage, float masteryOffset = 0)
         {
             float damageAmount = 0;
-            damageAmount += baseDamage + root.energy.availableLevel + root.energy.FinalLevelOffset + masteryOffset;
+            damageAmount += baseDamage + root.energy.AvailableLevel + root.energy.FinalLevelOffset + masteryOffset;
             if (root.energy.IsUltimate)
             {
                 damageAmount += (int)Math.Floor(root.energy.PowerEnergy);
@@ -68,6 +69,15 @@ namespace Electromagnetic.Core
             hediff.loadID = Find.UniqueIDsManager.GetNextHediffID();
             hediff.PostMake();
             return hediff;
+        }
+        public static IEnumerable<TResult> SelectNotNull<TSource, TResult>(
+            this IEnumerable<TSource> source,
+            Func<TSource, IEnumerable<TResult>> selector)
+        {
+            return source
+                .Select(selector)
+                .Where(enumerable => enumerable != null)
+                .SelectMany(enumerable => enumerable);
         }
         /// <summary>
         /// 能量条材质
@@ -100,5 +110,13 @@ namespace Electromagnetic.Core
         public static readonly Texture2D RefreshSkillTree2D = ContentFinder<Texture2D>.Get("UI/Gizmos/RefreshSkillTree", true);
         public static readonly Texture2D ReloadDefault2D = ContentFinder<Texture2D>.Get("UI/Gizmos/ReloadDefault", true);
         public static readonly Texture2D ReloadBaak2D = ContentFinder<Texture2D>.Get("UI/Gizmos/ReloadBaak", true);
+        /// <summary>
+        /// 飞行技能
+        /// </summary>
+        public static readonly Texture2D Flight2D = ContentFinder<Texture2D>.Get("Ability/Base/Flight", true);
+        /// <summary>
+        /// 原子分裂
+        /// </summary>
+        public static readonly Texture2D AtomSplit2D = ContentFinder<Texture2D>.Get("Ability/Base/AtomSplit", true);
     }
 }

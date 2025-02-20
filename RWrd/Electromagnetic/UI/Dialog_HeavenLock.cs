@@ -121,9 +121,9 @@ namespace Electromagnetic.UI
             // 获取两者力量之源
             Hediff_RWrd_PowerRoot rootCaster = this.caster.GetPowerRoot();
             Hediff_RWrd_PowerRoot rootVictim = this.victim.GetPowerRoot();
-            if (rootVictim.energy.availableLevel != rootVictim.energy.level)
+            if (rootVictim.energy.AvailableLevel != rootVictim.energy.level)
             {
-                this.limitNum = rootVictim.energy.availableLevel;
+                this.limitNum = rootVictim.energy.AvailableLevel;
             }
             else
             {

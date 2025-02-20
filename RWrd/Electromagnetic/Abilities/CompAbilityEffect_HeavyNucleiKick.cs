@@ -10,7 +10,7 @@ using Verse.AI;
 
 namespace Electromagnetic.Abilities
 {
-    public class CompAbilityEffect_HeavyNucleiKick : CompAbilityEffect
+    public class CompAbilityEffect_HeavyNucleiKick : CompAbilityEffect_Electromagnetic
     {
         //绑定Properties
         public new CompProperties_AbilityHeavyNucleiKick Props
@@ -18,14 +18,6 @@ namespace Electromagnetic.Abilities
             get
             {
                 return (CompProperties_AbilityHeavyNucleiKick)this.props;
-            }
-        }
-        //技能接口
-        private RWrd_PsyCastBase Ability
-        {
-            get
-            {
-                return (RWrd_PsyCastBase)this.parent;
             }
         }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
