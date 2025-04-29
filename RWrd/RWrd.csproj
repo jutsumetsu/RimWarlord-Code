@@ -100,10 +100,12 @@
     <Compile Include="Abilities\CompAbilityEffect_TigerSharkExplosionPunch.cs" />
     <Compile Include="Abilities\CompAbilityEffect_WindBlade.cs" />
     <Compile Include="Abilities\CompAbilityToggle_Electromagnetic.cs" />
+    <Compile Include="Abilities\CompAbilityToggle_ProtectiveForce.cs" />
     <Compile Include="Abilities\CompAbilityToggle_Flight.cs" />
     <Compile Include="Abilities\CompProperties_AbilityAtomSplit.cs" />
     <Compile Include="Abilities\CompProperties_AbilityCellRecombination.cs" />
     <Compile Include="Abilities\CompProperties_AbilityElectricClaw.cs" />
+    <Compile Include="Abilities\CompProperties_AbilityProtectiveForce.cs" />
     <Compile Include="Abilities\CompProperties_AbilityFlight.cs" />
     <Compile Include="Abilities\CompProperties_AbilityGiveTargetHediff.cs" />
     <Compile Include="Abilities\CompProperties_AbilityHeavenLock.cs" />
@@ -128,6 +130,7 @@
     <Compile Include="Abilities\Hediff_ExplosiveEnergy.cs" />
     <Compile Include="Abilities\Hediff_HeavenLock.cs" />
     <Compile Include="Abilities\Hediff_TargetBase.cs" />
+    <Compile Include="Abilities\RWrd_AbilityBase.cs" />
     <Compile Include="Abilities\RWrd_PsyCastToggle.cs" />
     <Compile Include="Abilities\RWrd_PsyCastBase.cs" />
     <Compile Include="Abilities\RWrd_Verb_Cast.cs" />
@@ -148,7 +151,7 @@
     <Compile Include="Core\NeoStudyManager.cs" />
     <Compile Include="Core\Pawn_EnergyTracker.cs" />
     <Compile Include="Core\PowerRootUtillity.cs" />
-    <Compile Include="Core\RWrd_PsycastOrigin.cs" />
+    <Compile Include="Abilities\RWrd_PsycastOrigin.cs" />
     <Compile Include="Core\RWrd_RouteNode.cs" />
     <Compile Include="Core\ThinkNode_ConditionalNeedTraining.cs" />
     <Compile Include="Core\ThoughtWorker_NeedTrain.cs" />

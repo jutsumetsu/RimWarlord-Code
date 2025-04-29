@@ -13,6 +13,7 @@ namespace Electromagnetic.Abilities
 {
     public class HediffComp_Shield_RWrd : HediffComp_Draw_RWrd
     {
+        private CompAbilityToggle_ProtectiveForce cat = null;
         public HediffCompProperties_Shield_RWrd Props
         {
             get
@@ -69,6 +70,14 @@ namespace Electromagnetic.Abilities
         public override void CompPostPostAdd(DamageInfo? dinfo)
         {
             base.CompPostPostAdd(dinfo);
+            foreach (Ability ability in Pawn.abilities.abilities)
+            {
+                CompAbilityToggle_ProtectiveForce compAbilityToggle_ProtectiveForce = ability.CompOfType<CompAbilityToggle_ProtectiveForce>();
+                if (compAbilityToggle_ProtectiveForce != null)
+                {
+                    this.cat = compAbilityToggle_ProtectiveForce;
+                }
+            }
             this.useEnergy = (this.EnergyMax > 0f);
             bool flag = this.useEnergy;
             if (flag)
@@ -235,6 +244,10 @@ namespace Electromagnetic.Abilities
                 this.Reset();
             }
             this.parent.Severity = 0;
+            if (this.cat != null)
+            {
+                this.cat.Ability.isActive = false;
+            }
         }
 
         protected virtual bool AbsorbDamage(ref DamageInfo dinfo)
@@ -243,22 +256,27 @@ namespace Electromagnetic.Abilities
             bool result;
             if (flag)
             {
-                float num = dinfo.Amount * this.Props.energyLossPerDamage;
+                float offset = 0;
+                bool catOwner = this.cat != null;
+                if (catOwner)
+                {
+                    offset = this.cat.Ability.mastery / 100 * 0.75f;
+                }
+                float factor = 1 - offset;
+                float num = dinfo.Amount * this.Props.energyLossPerDamage * factor;
                 bool flag2 = num < this.Energy;
                 Log.Message("Damage:" + num.ToString() + ", Energy:" + this.Energy.ToString());
-                bool ActiveS = this.ShieldActive;
-                
+                Pawn pawn = this.Pawn;
+                bool powerful = pawn.IsHavePowerRoot();
+
                 if (flag2)
                 {
-                    foreach (Hediff hediff in this.parent.pawn.health.hediffSet.hediffs)
+                    if (powerful)
                     {
-                        bool flagH = hediff.GetType() == typeof(Hediff_RWrd_PowerRoot);
-                        if (flagH)
-                        {
-                            ((Hediff_RWrd_PowerRoot)hediff).energy.SetEnergy((float)(-num));
-                            ((Hediff_RWrd_PowerRoot)hediff).energy.SetExp(0.1f * (float)(-(float)num));
-                            break;
-                        }
+                        Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
+                        root.energy.SetEnergy((float)(-num));
+                        root.energy.SetExp(0.1f * (float)(-(float)num));
+                        if (catOwner) this.cat.Ability.SetMastery(0.01f);
                     }
                     //this.energy -= num;
                     dinfo.SetAmount(0f);
@@ -266,14 +284,10 @@ namespace Electromagnetic.Abilities
                 }
                 else
                 {
-                    foreach (Hediff hediff in this.parent.pawn.health.hediffSet.hediffs)
+                    if (powerful)
                     {
-                        bool flagH = hediff.GetType() == typeof(Hediff_RWrd_PowerRoot);
-                        if (flagH)
-                        {
-                            ((Hediff_RWrd_PowerRoot)hediff).energy.SetEnergy((float)(-num));                        
-                            break;
-                        }
+                        Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
+                        root.energy.SetEnergy((float)(-num));
                     }
                     dinfo.SetAmount(dinfo.Amount - this.Energy);
                     this.Break();

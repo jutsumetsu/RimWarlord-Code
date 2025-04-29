@@ -126,18 +126,26 @@ namespace Electromagnetic.Abilities
         {
             get
             {
-                bool flag = false;
-                if (this.root.abilitySets.Count > 0 && root.abilitysetIndex < this.root.abilitySets.Count)
+                try
                 {
-                    flag = !this.root.abilitySets[root.abilitysetIndex].Abilities.Contains(Ability.def);
+                    bool flag = false;
+                    if (this.root.abilitySets.Count > 0 && root.abilitysetIndex < this.root.abilitySets.Count)
+                    {
+                        flag = !this.root.abilitySets[root.abilitysetIndex].Abilities.Contains(this.Ability.def);
+                    }
+                    if (this.Ability.mastery < 0 || flag)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
-                if (this.Ability.mastery < 0 || flag)
+                catch (Exception ex)
                 {
+                    Log.Error($"初始化异常: {ex.Message}\n堆栈跟踪: {ex.StackTrace}");
                     return true;
-                }
-                else
-                {
-                    return false;
                 }
             }
         }

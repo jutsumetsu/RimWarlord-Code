@@ -20,13 +20,13 @@ namespace Electromagnetic.UI
 
         public List<ThingDef> allArtifactDefs;
         private Hediff_RWrd_PowerRoot root;
-        private RWrd_PsyCastBase ability;
+        private RWrd_AbilityBase ability;
         private float mastery = 0;
         private Vector2 scrollPosition;
 
         string searchKey;
 
-        public Dialog_SelectThings(Hediff_RWrd_PowerRoot root, RWrd_PsyCastBase ability = null)
+        public Dialog_SelectThings(Hediff_RWrd_PowerRoot root, RWrd_AbilityBase ability = null)
         {
             doCloseButton = false;
             doCloseX = true;
@@ -132,7 +132,7 @@ namespace Electromagnetic.UI
                     }
 
                     // 在按钮左侧绘制输入框
-                    float offset = this.mastery * 0.5f;
+                    float offset = this.mastery / 100 * 0.5f;
                     Rect textFieldNumeric = new Rect(iconRect.xMax + 345f, num, 50f, 32f);
                     int textFieldNumber = thingValues[thingDef];
                     string text = textFieldNumber.ToString();

@@ -278,13 +278,26 @@ namespace Electromagnetic.Core
                 text += (flag ? "(Enabled)" : "(Disabled)");
                 foreach (AbilityDef abilityDef in rwrd_RouteNode.abilities)
                 {
-                    text = text + abilityDef.defName + "，";
+                    text = text + abilityDef.defName + "(" + abilityDef.abilityClass + ")" + "，";
                     Ability ability = pawn.abilities.GetAbility(abilityDef, false);
                     bool flag2 = ability == null;
                     if (flag)
                     {
                         if (!flag2)
                         {
+                            bool flag3 = ability.GetType() != abilityDef.abilityClass;
+                            if (flag3)
+                            {
+                                RWrd_AbilityBase OAbility = (RWrd_AbilityBase)ability;
+                                float mastery = OAbility.mastery;
+                                float outputPower = OAbility.outputPower;
+                                pawn.abilities.RemoveAbility(abilityDef);
+                                pawn.abilities.GainAbility(abilityDef);
+                                ability = pawn.abilities.GetAbility(abilityDef, false);
+                                RWrd_AbilityBase AAbility = (RWrd_AbilityBase)ability;
+                                AAbility.outputPower = outputPower;
+                                AAbility.mastery = mastery;
+                            }
                             list.Add(ability);
                         }
                         else

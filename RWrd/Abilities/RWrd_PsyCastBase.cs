@@ -1,4 +1,5 @@
 ﻿using Electromagnetic.Core;
+using Electromagnetic.Electromagnetic.UI;
 using Electromagnetic.UI;
 using RimWorld;
 using System;
@@ -14,6 +15,14 @@ namespace Electromagnetic.Abilities
 {
     public class RWrd_PsyCastBase : RWrd_PsycastOrigin
     {
+        public RWrd_PsyCastBase(Pawn pawn) : base(pawn)
+        {
+        }
+
+        public RWrd_PsyCastBase(Pawn pawn, AbilityDef def) : base(pawn, def)
+        {
+        }
+
         public override bool CanCast
         {
             get
@@ -21,12 +30,6 @@ namespace Electromagnetic.Abilities
                 bool flag = !base.CanCast;
                 return !flag;
             }
-        }
-        public RWrd_PsyCastBase(Pawn pawn) : base(pawn)
-        {
-        }
-        public RWrd_PsyCastBase(Pawn pawn, AbilityDef def) : base(pawn, def)
-        {
         }
         /// <summary>
         /// 获取Gizmo
@@ -36,6 +39,10 @@ namespace Electromagnetic.Abilities
         {
             bool flag = this.gizmo == null;
             if (flag)
+            {
+                this.gizmo = new Command_Electromagnetic(this, this.pawn);
+            }
+            else if (!(this.gizmo is Command_Electromagnetic))
             {
                 this.gizmo = new Command_Electromagnetic(this, this.pawn);
             }
@@ -153,26 +160,5 @@ namespace Electromagnetic.Abilities
         {
             this.AbilityTick();
         }
-        public override void ExposeData()
-        {
-            base.ExposeData();
-            Scribe_Values.Look<float>(ref this.mastery, "mastery", 0f, false);
-            Scribe_Values.Look<float>(ref this.outputPower, "outputpowerability", 0f, false);
-        }
-        /// <summary>
-        /// 设置精通值
-        /// </summary>
-        /// <param name="num">数值</param>
-        public void SetMastery(float num)
-        {
-            if (num > 0)
-            {
-                float num2 = this.mastery + num;
-                this.mastery = (num2 > this.MaxMastery ? this.MaxMastery : num2);
-            }
-        }
-        public float mastery = 0;
-        public float outputPower = 1;
-        public float MaxMastery = 100;
     }
 }

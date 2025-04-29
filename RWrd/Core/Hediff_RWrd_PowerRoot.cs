@@ -302,7 +302,7 @@ namespace Electromagnetic.Core
             List<Ability> tmp = new List<Ability>();
             this.pawn.abilities.abilities.ForEach(delegate (Ability a)
             {
-                bool flag = a.def.abilityClass == typeof(RWrd_PsyCastBase);
+                bool flag = a.def.abilityClass == typeof(RWrd_AbilityBase);
                 if (flag)
                 {
                     tmp.Add(a);
@@ -856,7 +856,7 @@ namespace Electromagnetic.Core
                     PowerRootUtillity.powerRootCacheMap.Add(this.pawn, this);
                 }
                 this.energy.pawn = this.pawn;
-                this.pawn.CheckRouteUnlock();
+                this.RefreshSkillTree();
             }
         }
         public override void Tick()

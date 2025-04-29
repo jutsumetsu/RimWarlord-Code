@@ -23,11 +23,11 @@ namespace Electromagnetic.Abilities
         /// <summary>
         /// 技能接口
         /// </summary>
-        public RWrd_PsyCastBase Ability
+        public RWrd_AbilityBase Ability
         {
             get
             {
-                return (RWrd_PsyCastBase)this.parent;
+                return (RWrd_AbilityBase)this.parent;
             }
         }
     }

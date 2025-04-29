@@ -285,7 +285,7 @@ namespace Electromagnetic.UI
         {
             //判断小人是否拥有该技能
             bool flag = this.pawn.abilities.GetAbility(abilityDef) == null;
-            RWrd_PsyCastBase ability;
+            RWrd_AbilityBase ability;
             float mastery = 0;
             DrawAbility(inRect, abilityDef);
             if (flag)
@@ -297,7 +297,7 @@ namespace Electromagnetic.UI
             {
                 //发光
                 Widgets.DrawStrongHighlight(inRect.ExpandedBy(2f));
-                ability = (RWrd_PsyCastBase)this.pawn.abilities.GetAbility(abilityDef);
+                ability = (RWrd_AbilityBase)this.pawn.abilities.GetAbility(abilityDef);
                 mastery = ability.mastery;
             }
             TooltipHandler.TipRegion(inRect, () => string.Format("{0}\n\n{1}\n{2}", abilityDef.label, abilityDef.description, flag ? ("\n" + "RWrd_Locked".Translate().Resolve()) + "\n" + node.unlockRequired : "\n" + "RWrd_Mastery".Translate().Resolve() + mastery.ToString()), abilityDef.GetHashCode());

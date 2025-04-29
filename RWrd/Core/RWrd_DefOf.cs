@@ -42,6 +42,7 @@ namespace Electromagnetic.Core
         public static HediffDef RWrd_HeavenLock;
         public static HediffDef RWrd_ExplosiveEnergy;
         public static HediffDef RWrd_AsuraFormula;
+        public static HediffDef RWrd_ProtectiveForceHediff;
         [MayRequire("pathfinding.framework")]
         public static HediffDef RWrd_Flight;
         [MayRequire("pathfinding.framework")]

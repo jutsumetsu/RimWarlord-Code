@@ -10,10 +10,15 @@ using Verse;
 using Verse.AI.Group;
 using Verse.Sound;
 
-namespace Electromagnetic.Core
+namespace Electromagnetic.Abilities
 {
-    public class RWrd_PsycastOrigin : Ability
+    public class RWrd_PsycastOrigin : RWrd_AbilityBase
     {
+        public RWrd_PsycastOrigin(Pawn pawn) : base(pawn)
+        {
+        }
+        public RWrd_PsycastOrigin(Pawn pawn, AbilityDef def) : base(pawn, def) { }
+
         public override bool CanCast
         {
             get
@@ -21,12 +26,6 @@ namespace Electromagnetic.Core
                 bool flag = !base.CanCast;
                 return !flag;
             }
-        }
-        public RWrd_PsycastOrigin(Pawn pawn) : base(pawn)
-        {
-        }
-        public RWrd_PsycastOrigin(Pawn pawn, AbilityDef def) : base(pawn, def)
-        {
         }
         public override IEnumerable<Command> GetGizmos()
         {
