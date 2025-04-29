@@ -13,7 +13,7 @@ namespace Electromagnetic.Core
     /// <summary>
     /// 磁场力量Gizmo
     /// </summary>
-    public class Gizmo_Psychic : Gizmo
+    public class Gizmo_Electromagnetic : Gizmo
     {
         public override bool Visible
         {
@@ -37,7 +37,7 @@ namespace Electromagnetic.Core
         /// </summary>
         /// <param name="pawn"></param>
         /// <param name="root">力量之源</param>
-        public Gizmo_Psychic(Pawn pawn, Hediff_RWrd_PowerRoot root)
+        public Gizmo_Electromagnetic(Pawn pawn, Hediff_RWrd_PowerRoot root)
         {
             this.Order = -110f;
             this.pawn = pawn;

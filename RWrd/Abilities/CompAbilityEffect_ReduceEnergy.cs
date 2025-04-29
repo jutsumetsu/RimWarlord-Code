@@ -20,6 +20,10 @@ namespace Electromagnetic.Abilities
         {
             get
             {
+                if (Props.reSA)
+                {
+                    return 0;
+                }
                 float rEnergy = (float)this.Props.rEnergy;
                 float mastery = (float)this.Ability.mastery;
                 float offset = (float)this.Props.masteryOffset;
@@ -59,7 +63,10 @@ namespace Electromagnetic.Abilities
                 {
                     ((Hediff_RWrd_PowerRoot)hediff).energy.SetEnergy((int)Math.Floor(this.EnergyReduce * Ability.outputPower));
                     ((Hediff_RWrd_PowerRoot)hediff).energy.SetExp(0.1f * -(float)this.Props.rEnergy);
-                    ((RWrd_PsyCastBase)this.parent).SetMastery(0.2f);
+                    if (!Props.masterySA)
+                    {
+                        ((RWrd_PsyCastBase)this.parent).SetMastery(0.2f);
+                    }
                     ((Hediff_RWrd_PowerRoot)hediff).energy.SetCompleteRealm(0.000001f);
                     break;
                 }

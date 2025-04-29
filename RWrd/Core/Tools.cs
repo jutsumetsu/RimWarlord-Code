@@ -80,6 +80,19 @@ namespace Electromagnetic.Core
                 .SelectMany(enumerable => enumerable);
         }
         /// <summary>
+        /// 移除已存在的健康状态
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <param name="defToRemove"></param>
+        public static void RemoveHediffIfExists(Pawn pawn, HediffDef defToRemove)
+        {
+            Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(defToRemove);
+            if (hediff != null)
+            {
+                pawn.health.RemoveHediff(hediff);
+            }
+        }
+        /// <summary>
         /// 能量条材质
         /// </summary>
         public static readonly Texture2D EnergyBarTex = SolidColorMaterials.NewSolidColorTexture(new Color(1f, 0.84f, 0f));

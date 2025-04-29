@@ -11,12 +11,14 @@ namespace Electromagnetic.Abilities
         {
             this.compClass = typeof(CompAbilityEffect_ReduceEnergy);
         }
-        public int rEnergy;
+        public int rEnergy = 0;
         public int level;
         public float masteryFactor = 0;
         public float masteryOffset = 0;
         public bool isCommon = false;
         public bool isAshura = false;
         public bool isAttack = false;
+        public bool masterySA = false;
+        public bool reSA = false;
     }
 }

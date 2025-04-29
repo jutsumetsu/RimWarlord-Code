@@ -10,6 +10,7 @@ using Verse;
 using Verse.Sound;
 using Electromagnetic.Core;
 using Electromagnetic.Setting;
+using Electromagnetic.Abilities;
 
 namespace Electromagnetic.UI
 {
@@ -18,13 +19,14 @@ namespace Electromagnetic.UI
         public override Vector2 InitialSize => new Vector2(620f, 500f);
 
         public List<ThingDef> allArtifactDefs;
-        private readonly ITab_Pawn_RWrd parent;
         private Hediff_RWrd_PowerRoot root;
+        private RWrd_PsyCastBase ability;
+        private float mastery = 0;
         private Vector2 scrollPosition;
 
         string searchKey;
 
-        public Dialog_SelectThings(Hediff_RWrd_PowerRoot root)
+        public Dialog_SelectThings(Hediff_RWrd_PowerRoot root, RWrd_PsyCastBase ability = null)
         {
             doCloseButton = false;
             doCloseX = true;
@@ -33,6 +35,8 @@ namespace Electromagnetic.UI
             allArtifactDefs = PowerRootUtillity.spawnableThings;
             forcePause = true;
             this.root = root;
+            this.ability = ability;
+            this.mastery = ability.mastery;
         }
         /// <summary>
         /// 获取物品列表
@@ -96,7 +100,7 @@ namespace Electromagnetic.UI
 
             Rect outRect = new Rect(inRect);
             outRect.y = searchRect.yMax + 5;
-            outRect.yMax -= 10f;
+            /*outRect.yMax -= 10f;*/
 
             var thingDefs = searchKey.NullOrEmpty() ? allArtifactDefs : allArtifactDefs.Where(x => x.label.ToLower().Contains(searchKey.ToLower())).ToList();
 
@@ -128,17 +132,18 @@ namespace Electromagnetic.UI
                     }
 
                     // 在按钮左侧绘制输入框
+                    float offset = this.mastery * 0.5f;
                     Rect textFieldNumeric = new Rect(iconRect.xMax + 345f, num, 50f, 32f);
                     int textFieldNumber = thingValues[thingDef];
                     string text = textFieldNumber.ToString();
-                    int maxNumber = (int)Math.Floor(root.energy.energy / CalculateValueToShow(thingDef));
+                    int maxNumber = (int)Math.Floor(root.energy.energy / CalculateValueToShow(thingDef, offset));
                     Widgets.TextFieldNumeric<int>(textFieldNumeric, ref textFieldNumber, ref text, 1f, Math.Min(thingDef.stackLimit, maxNumber));
                     thingValues[thingDef] = textFieldNumber;
 
 
                     //能耗数值
-                    float valueToShow = CalculateValueToShow(thingDef) * thingValues[thingDef];
-                    float valueToReduce = CalculateValueToShow(thingDef);
+                    float valueToShow = CalculateValueToShow(thingDef, offset) * thingValues[thingDef];
+                    float valueToReduce = CalculateValueToShow(thingDef, offset);
                     bool isButtonEnabled = pawn != null && valueToShow <= root.energy.energy;
                     //能耗显示
                     if (Mouse.IsOver(rect))
@@ -156,8 +161,9 @@ namespace Electromagnetic.UI
                                 Thing thing = ThingMaker.MakeThing(thingDef, GenStuff.DefaultStuffFor(thingDef));
                                 SoundDefOf.Click.PlayOneShotOnCamera();
                                 GenPlace.TryPlaceThing(thing, pawn.Position, pawn.Map, ThingPlaceMode.Near);
-                                root.energy.SetEnergy((float)(-valueToReduce));
-                                root.energy.SetExp(0.1f * (float)(-(float)valueToReduce));
+                                root.energy.SetEnergy(-(float)valueToReduce);
+                                root.energy.SetExp(0.1f * -(float)valueToReduce);
+                                ability.SetMastery(0.05f);
                             }
 
                             Close();
@@ -176,7 +182,7 @@ namespace Electromagnetic.UI
         /// </summary>
         /// <param name="thingDef"></param>
         /// <returns></returns>
-        public static float CalculateValueToShow(ThingDef thingDef)
+        public static float CalculateValueToShow(ThingDef thingDef, float offset = 0)
         {
             float value = 1f;
             //获取配方
@@ -197,6 +203,7 @@ namespace Electromagnetic.UI
             {
                 value = 0f;
             }
+            value *= 1 - offset;
             return value;
         }
 

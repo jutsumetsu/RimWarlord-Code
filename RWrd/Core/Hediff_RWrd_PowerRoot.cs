@@ -28,7 +28,7 @@ namespace Electromagnetic.Core
                     this.pawn.CheckEMAbilityLimiting();
                     this.reeStartInit = true;
                 }
-                Gizmo_Psychic gizmo = new Gizmo_Psychic(this.pawn, this)
+                Gizmo_Electromagnetic gizmo = new Gizmo_Electromagnetic(this.pawn, this)
                 {
                     EnergyLabel = "RWrd_EP_Energy".Translate(),
                     CompleteRealmLabel = "Rwrd_CompleteRealm".Translate(),
@@ -65,34 +65,6 @@ namespace Electromagnetic.Core
                     action = () => abilitysetIndex = nextIndex,
                     Order = 0f,
                     floatMenuGetter = GetAbilitySetFloatMenuOptions
-                };
-            }
-            if (ModDetector.PFIsLoaded)
-            {
-                if (this.energy.AvailableLevel >= 10)
-                {
-                    yield return new Command_Toggle
-                    {
-                        defaultLabel = "RWrd_Flight".Translate(),
-                        isActive = () => this.enableFlight,
-                        toggleAction = EMFlight,
-                        icon = Tools.Flight2D
-                    };
-                }
-                
-            }
-            if (this.energy.AvailableLevel >= 75)
-            {
-                yield return new Command_Action
-                {
-                    defaultLabel = "RWrd_AtomSplit".Translate(),
-                    defaultDesc = "RWrd_ASIntroduce".Translate(),
-                    action = delegate ()
-                    {
-                        var selectArtifact = new Dialog_SelectThings(this);
-                        Find.WindowStack.Add(selectArtifact);
-                    },
-                    icon = Tools.AtomSplit2D
                 };
             }
             bool godMode = DebugSettings.godMode;
@@ -193,31 +165,6 @@ namespace Electromagnetic.Core
                 });
             }
             yield break;
-        }
-        /// <summary>
-        /// 飞行按钮Action
-        /// </summary>
-        private void EMFlight()
-        {
-            HediffDef flightDef = RWrd_DefOf.RWrd_Flight;
-            HediffDef antigravityDef = RWrd_DefOf.RWrd_Antigravity;
-            this.enableFlight = !this.enableFlight;
-            HediffDef targetDef = (energy.AvailableLevel >= 50) ? antigravityDef : flightDef;
-            RemoveHediffIfExists(flightDef);
-            RemoveHediffIfExists(antigravityDef);
-            if (enableFlight)
-            {
-                Hediff newHediff = HediffMaker.MakeHediff(targetDef, pawn);
-                pawn.health.AddHediff(newHediff);
-            }
-        }
-        private void RemoveHediffIfExists(HediffDef defToRemove)
-        {
-            Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(defToRemove);
-            if (hediff != null)
-            {
-                pawn.health.RemoveHediff(hediff);
-            }
         }
         /// <summary>
         /// 升级
@@ -886,7 +833,6 @@ namespace Electromagnetic.Core
             Scribe_Deep.Look<Pawn_EnergyTracker>(ref this.energy, "energy", Array.Empty<object>());
             Scribe_Values.Look<bool>(ref this.IsInit, "IsInit", false, false);
             Scribe_Values.Look<bool>(ref this.openingBasicAbility, "openingBasicAbility", false, false);
-            Scribe_Values.Look<bool>(ref this.enableFlight, "enableFlight", false, false);
             Scribe_Values.Look<int>(ref this.abilitysetIndex, "abilitysetIndex", 0, false);
             Scribe_Collections.Look<RWrd_RouteDef>(ref this.routes, "routes", LookMode.Def, Array.Empty<object>());
             Scribe_Collections.Look<AbilitySet>(ref this.abilitySets, "abilitysets", LookMode.Deep, Array.Empty<object>());
@@ -926,21 +872,9 @@ namespace Electromagnetic.Core
             {
                 this.energy.EnergyRecharge();
             }
-            if (Find.TickManager.TicksGame % 60 == 0 && ModDetector.PFIsLoaded && this.enableFlight && this.energy.AvailableLevel < 50)
-            {
-                if (this.energy.energy >= this.energy.FlightConsumptionPerSecond) this.energy.SetEnergy(-this.energy.FlightConsumptionPerSecond);
-                else
-                {
-                    this.enableFlight = false;
-                    HediffDef flightDef = RWrd_DefOf.RWrd_Flight;
-                    RemoveHediffIfExists(flightDef);
-                }
-            }
         }
         private Command_ActionWithFloat _cachedGodCommand;
         private Command_ActionWithFloat _cachedReloadCommand;
-
-        private bool enableFlight = false;
 
         public int meleeAttackCounter = 0;
 

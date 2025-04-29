@@ -40,8 +40,6 @@ namespace Electromagnetic.Abilities
                 RepairPawnEquipment(targetPawn);
                 return;
             }
-
-            Pawn Caster = this.parent.pawn;
             try
             {
                 if (Caster.IsHavePowerRoot())
