@@ -56,20 +56,16 @@ namespace Electromagnetic.Abilities
         //减少能量并增加经验
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
-            foreach (Hediff hediff in this.parent.pawn.health.hediffSet.hediffs)
-            { 
-                bool flag = hediff.GetType() == typeof(Hediff_RWrd_PowerRoot);
-                if (flag)
+            if (Caster.IsHavePowerRoot())
+            {
+                Hediff_RWrd_PowerRoot root = Caster.GetPowerRoot();
+                root.energy.SetEnergy((int)Math.Floor(this.EnergyReduce * Ability.outputPower));
+                root.energy.SetExp(0.1f * -(float)this.Props.rEnergy);
+                if (!Props.masterySA)
                 {
-                    ((Hediff_RWrd_PowerRoot)hediff).energy.SetEnergy((int)Math.Floor(this.EnergyReduce * Ability.outputPower));
-                    ((Hediff_RWrd_PowerRoot)hediff).energy.SetExp(0.1f * -(float)this.Props.rEnergy);
-                    if (!Props.masterySA)
-                    {
-                        ((RWrd_PsyCastBase)this.parent).SetMastery(0.2f);
-                    }
-                    ((Hediff_RWrd_PowerRoot)hediff).energy.SetCompleteRealm(0.000001f);
-                    break;
+                    ((RWrd_PsyCastBase)this.parent).SetMastery(0.2f);
                 }
+                root.energy.SetCompleteRealm(0.000001f);
             }
         }
 
@@ -129,9 +125,16 @@ namespace Electromagnetic.Abilities
                 try
                 {
                     bool flag = false;
-                    if (this.root.abilitySets.Count > 0 && root.abilitysetIndex < this.root.abilitySets.Count)
+                    if (this.root.SelfDestruction)
                     {
-                        flag = !this.root.abilitySets[root.abilitysetIndex].Abilities.Contains(this.Ability.def);
+                        flag = !this.Props.isEx;
+                    }
+                    else
+                    {
+                        if (this.root.abilitySets.Count > 0 && root.abilitysetIndex < this.root.abilitySets.Count)
+                        {
+                            flag = !this.root.abilitySets[root.abilitysetIndex].Abilities.Contains(this.Ability.def);
+                        }
                     }
                     if (this.Ability.mastery < 0 || flag)
                     {

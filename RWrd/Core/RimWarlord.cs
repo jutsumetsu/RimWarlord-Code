@@ -48,6 +48,17 @@ namespace Electromagnetic.Core
             Widgets.DrawHighlightIfMouseover(gllRect);
             TooltipHandler.TipRegion(gllRect, "RWrd_GlobalLevelLimitDesc".Translate());
             Widgets.TextFieldNumeric<int>(gllRect.RightHalf().LeftPartPixels(60).Rounded(), ref RWrdSettings.GlobalLevelLimit, ref globalLevelLimitNumber, 0, 99);
+            //默认一百万匹成功率
+            Rect sddsrRect = listingStandard.GetRect(Text.LineHeight, 1f);
+            string sddsrNumber = RWrdSettings.SDDefaultSuccessRate.ToString();
+            Widgets.Label(sddsrRect.LeftHalf().Rounded(), "RWrd_SDDSR".Translate());
+            Widgets.DrawHighlightIfMouseover(sddsrRect);
+            TooltipHandler.TipRegion(sddsrRect, "RWrd_SDDSRDesc".Translate());
+            Rect sddsrRR = sddsrRect.RightHalf().LeftPartPixels(60).Rounded();
+            sddsrRR.width -= Text.LineHeight / 6;
+            Rect sddsrRRR = new Rect(sddsrRR.xMax, sddsrRR.y, Text.LineHeight, Text.LineHeight);
+            Widgets.TextFieldNumeric<int>(sddsrRR, ref RWrdSettings.SDDefaultSuccessRate, ref sddsrNumber, 0, 100);
+            Widgets.Label(sddsrRRR, "%");
             //经验倍率
             string expMultiplierNumber = RWrdSettings.ExpMultiplier.ToString();
             Rect rect = listingStandard.GetRect(Text.LineHeight, 1f);

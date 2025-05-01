@@ -18,6 +18,7 @@ namespace Electromagnetic.Abilities
         public bool isCommon = false;
         public bool isAshura = false;
         public bool isAttack = false;
+        public bool isEx = false;
         public bool masterySA = false;
         public bool reSA = false;
     }

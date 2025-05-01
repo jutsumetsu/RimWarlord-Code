@@ -1,4 +1,6 @@
 ﻿using Electromagnetic.Abilities;
+using Electromagnetic.Setting;
+using RimWorld;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -91,6 +93,155 @@ namespace Electromagnetic.Core
             {
                 pawn.health.RemoveHediff(hediff);
             }
+        }
+        /// <summary>
+        /// 一百万匹力量
+        /// </summary>
+        /// <param name="caster"></param>
+        /// <param name="victim"></param>
+        public static void MillionHp(Pawn caster, Pawn victim, DamageInfo? dinfo = null)
+        {
+            Hediff_RWrd_PowerRoot Croot = caster.GetPowerRoot();
+            bool VPowerful = victim.IsHavePowerRoot();
+            bool CUltimate = Croot.energy.IsUltimate;
+            if (VPowerful)
+            {
+                Hediff_RWrd_PowerRoot Vroot = victim.GetPowerRoot();
+                bool VUltimate = Vroot.energy.IsUltimate;
+                if (VUltimate)
+                {
+                }
+                else
+                {
+                    if (dinfo != null)
+                    {
+                        victim.TakeDamage((DamageInfo)dinfo);
+                    }
+                    if (!victim.Dead)
+                    {
+                        victim.Kill(dinfo);
+                    }
+                }
+            }
+            else
+            {
+                if (dinfo != null)
+                {
+                    victim.TakeDamage((DamageInfo)dinfo);
+                }
+                if (!victim.Dead)
+                {
+                    victim.Kill(dinfo);
+                }
+            }
+            if (CUltimate)
+            {
+                int reduceEnergy = Croot.energy.MaxEnergy >= 5000 ? Mathf.CeilToInt(Croot.energy.MaxEnergy * 0.25f) : 1000;
+                Croot.energy.SetEnergy(-reduceEnergy);
+                Croot.SDRecharge = true;
+                Croot.SDRechargeTime = 60;
+            }
+            else
+            {
+                int rrMin = 1 + Mathf.FloorToInt(Croot.SDTolerance / 60);
+                int rrMax = 6 - Mathf.CeilToInt(Croot.SDTolerance / 25);
+                int fateDice = UnityEngine.Random.Range(1, 101);
+                int tolerence = RWrdSettings.SDDefaultSuccessRate + Croot.SDTolerance;
+                if (tolerence < 100)
+                {
+                    if (fateDice <= tolerence)
+                    {
+                        Tools.DamageUntilSI(caster);
+                        Croot.SDTolerance += 1;
+                    }
+                    else
+                    {
+                        Tools.DamageUntilSI(caster);
+                        caster.Kill(dinfo);
+                    }
+                }
+                else
+                {
+                    Croot.energy.SetPowerFlow(100000);
+                }
+                Croot.energy.level -= UnityEngine.Random.Range(rrMin, rrMax);
+                Croot.energy.Oexp = Croot.energy.Exp;
+                Croot.SDWeak = true;
+            }
+            Croot.SelfDestruction = false;
+        }
+        public static void DamageUntilSI(Pawn p, bool allowBleedingWounds = true, ThingDef sourceDef = null, BodyPartGroupDef bodyGroupDef = null)
+        {
+            if (p.Downed)
+            {
+                return;
+            }
+            HediffSet hediffSet = p.health.hediffSet;
+            p.health.forceDowned = true;
+            IEnumerable<BodyPartRecord> source = from x in Tools.HittablePartsViolence(hediffSet)
+                                                 where !p.health.hediffSet.hediffs.Any((Hediff y) => y.Part == x && y.CurStage != null && y.CurStage.partEfficiencyOffset < 0f)
+                                                 select x;
+            int num = 0;
+            bool seriousInjury = p.health.summaryHealth.SummaryHealthPercent <= 0.3;
+            while (num < 100 && !seriousInjury && source.Any<BodyPartRecord>())
+            {
+                num++;
+                BodyPartRecord bodyPartRecord = source.RandomElementByWeight((BodyPartRecord x) => x.coverageAbs);
+                int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(p.GetPowerRoot().energy.DamageImmunityThreshold, hediffSet.GetPartHealth(bodyPartRecord) / 10));
+                float statValue = p.GetStatValue(StatDefOf.IncomingDamageFactor, true, -1);
+                if (statValue > 0f)
+                {
+                    num2 = (int)((float)num2 / statValue);
+                }
+                num2 -= 3;
+                if (num2 > 0 && (num2 >= 8 || num >= 250))
+                {
+                    if (num > 275)
+                    {
+                        num2 = Rand.Range(1, 8);
+                    }
+                    DamageDef damageDef = DamageDefOf.Bomb;
+                    int num3 = Rand.RangeInclusive(Mathf.RoundToInt((float)num2 * 0.65f), num2);
+                    HediffDef hediffDefFromDamage = HealthUtility.GetHediffDefFromDamage(damageDef, p, bodyPartRecord);
+                    if (!p.health.WouldDieAfterAddingHediff(hediffDefFromDamage, bodyPartRecord, (float)num3 * p.GetStatValue(StatDefOf.IncomingDamageFactor, true, -1)))
+                    {
+                        DamageInfo dinfo = new DamageInfo(damageDef, (float)num3, 999f, -1f, null, bodyPartRecord, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, false);
+                        dinfo.SetAllowDamagePropagation(false);
+                        DamageWorker.DamageResult damageResult = p.TakeDamage(dinfo);
+                        if (damageResult.hediffs != null)
+                        {
+                            foreach (Hediff hediff in damageResult.hediffs)
+                            {
+                                if (sourceDef != null)
+                                {
+                                    hediff.sourceDef = sourceDef;
+                                }
+                                if (bodyGroupDef != null)
+                                {
+                                    hediff.sourceBodyPartGroup = bodyGroupDef;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (p.Dead && !p.kindDef.forceDeathOnDowned)
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.AppendLine(p + " died during GiveInjuriesToForceDowned");
+                for (int i = 0; i < p.health.hediffSet.hediffs.Count; i++)
+                {
+                    stringBuilder.AppendLine("   -" + p.health.hediffSet.hediffs[i]);
+                }
+                Log.Error(stringBuilder.ToString());
+            }
+            p.health.forceDowned = false;
+        }
+        private static IEnumerable<BodyPartRecord> HittablePartsViolence(HediffSet bodyModel)
+        {
+            return from x in bodyModel.GetNotMissingParts(BodyPartHeight.Undefined, BodyPartDepth.Undefined, null, null)
+                   where x.depth == BodyPartDepth.Outside || (x.depth == BodyPartDepth.Inside && x.def.IsSolid(x, bodyModel.hediffs))
+                   select x;
         }
         /// <summary>
         /// 能量条材质

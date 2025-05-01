@@ -30,24 +30,31 @@ namespace Electromagnetic.Abilities
             SoundDefOf.Pawn_Melee_Punch_HitPawn.PlayOneShot(info);
             int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
             float num = 20;
-            if (Caster.IsHavePowerRoot())
+            //伤害计算
+            Hediff_RWrd_PowerRoot root = Caster.GetPowerRoot();
+            num = Tools.FinalDamage(root, num, masteryOffset);
+            num *= Ability.outputPower;
+            if (root.SelfDestruction)
             {
-                //伤害计算
-                Hediff_RWrd_PowerRoot root = Caster.GetPowerRoot();
-                num = Tools.FinalDamage(root, num, masteryOffset);
-                num *= Ability.outputPower;
+                DamageInfo dinfo = new DamageInfo(DamageDefOf.Bomb, (float)num * 10, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true);
+                Tools.MillionHp(Caster, pawn, dinfo);
             }
-            pawn.TakeDamage(new DamageInfo(DamageDefOf.Blunt, (float)num, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true));
-            //赋予目标爆破劲力Hediff
-            Hediff_ExplosiveEnergy hediff = (Hediff_ExplosiveEnergy)Tools.MakeEMHediff(RWrd_DefOf.RWrd_ExplosiveEnergy, pawn, this.parent.pawn.GetPowerRoot(), null);
-            HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();
-            hediffComp_Disappears.ticksToDisappear = 60;
-            hediff.root = this.parent.pawn.GetPowerRoot();
-            hediff.outputPower = Ability.outputPower;
-            int num2 = (int)Math.Ceiling(this.Ability.mastery / 40f);
-            hediff.Severity = 0.1f * num2;
-            hediff.damage *= num2;
-            pawn.health.AddHediff(hediff, null, null, null);
+            else
+            {
+
+                DamageInfo dinfo = new DamageInfo(DamageDefOf.Blunt, (float)num, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true);
+                pawn.TakeDamage(dinfo);
+                //赋予目标爆破劲力Hediff
+                Hediff_ExplosiveEnergy hediff = (Hediff_ExplosiveEnergy)Tools.MakeEMHediff(RWrd_DefOf.RWrd_ExplosiveEnergy, pawn, this.parent.pawn.GetPowerRoot(), null);
+                HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();
+                hediffComp_Disappears.ticksToDisappear = 60;
+                hediff.root = this.parent.pawn.GetPowerRoot();
+                hediff.outputPower = Ability.outputPower;
+                int num2 = (int)Math.Ceiling(this.Ability.mastery / 40f);
+                hediff.Severity = 0.1f * num2;
+                hediff.damage *= num2;
+                pawn.health.AddHediff(hediff, null, null, null);
+            }
         }
     }
 }

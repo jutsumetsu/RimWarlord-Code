@@ -833,6 +833,10 @@ namespace Electromagnetic.Core
             Scribe_Deep.Look<Pawn_EnergyTracker>(ref this.energy, "energy", Array.Empty<object>());
             Scribe_Values.Look<bool>(ref this.IsInit, "IsInit", false, false);
             Scribe_Values.Look<bool>(ref this.openingBasicAbility, "openingBasicAbility", false, false);
+            Scribe_Values.Look<bool>(ref this.SelfDestruction, "selfdestruction", false, false);
+            Scribe_Values.Look<bool>(ref this.SDWeak, "sdweak", false, false);
+            Scribe_Values.Look<bool>(ref this.SDRecharge, "sdrecharge", false, false);
+            Scribe_Values.Look<int>(ref this.SDTolerance, "sdtolerance", 0, false);
             Scribe_Values.Look<int>(ref this.abilitysetIndex, "abilitysetIndex", 0, false);
             Scribe_Collections.Look<RWrd_RouteDef>(ref this.routes, "routes", LookMode.Def, Array.Empty<object>());
             Scribe_Collections.Look<AbilitySet>(ref this.abilitySets, "abilitysets", LookMode.Deep, Array.Empty<object>());
@@ -870,7 +874,42 @@ namespace Electromagnetic.Core
             }
             if (Find.TickManager.TicksGame % 180 == 0)
             {
-                this.energy.EnergyRecharge();
+                if (!SDRecharge)
+                {
+                    this.energy.EnergyRecharge();
+                }
+                else
+                {
+                    if (this.SDRechargeTime > 0)
+                    {
+                        this.SDRechargeTime -= 1;
+                    }
+                    else
+                    {
+                        this.SDRecharge = false;
+                    }
+                }
+                if (this.SDWeak)
+                {
+                    if (this.energy.level < this.energy.LevelMax)
+                    {
+                        this.energy.SetExp(400);
+                    }
+                    else
+                    {
+                        float deltaExp = this.energy.Oexp - this.energy.Exp;
+                        if (deltaExp >= 400)
+                        {
+                            this.energy.SetExp(400);
+                        }
+                        else
+                        {
+                            this.energy.ForceSetExp(deltaExp);
+                            this.energy.Oexp = 0;
+                            this.SDWeak = false;
+                        }
+                    }
+                }
             }
         }
         private Command_ActionWithFloat _cachedGodCommand;
@@ -888,6 +927,12 @@ namespace Electromagnetic.Core
         public bool openingBasicAbility = false;
 
         public bool reeStartInit = false;
+
+        public bool SelfDestruction = false;
+        public bool SDWeak = false;
+        public bool SDRecharge = false;
+        public int SDRechargeTime = 0;
+        public int SDTolerance = 0;
 
         public HediffStage stage;
 

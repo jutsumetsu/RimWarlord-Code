@@ -82,7 +82,15 @@ namespace Electromagnetic.HarmonyPatchs
                                 if (useNormalTool)
                                 {
                                     num += tool.AdjustedBaseMeleeDamageAmount(__instance.EquipmentSource, __instance.verbProps.meleeDamageDef);
-                                    __instance.EquipmentSource.HitPoints -= Mathf.CeilToInt(root.energy.Multiplier);
+                                    int hpDown = Mathf.CeilToInt(root.energy.Multiplier);
+                                    if (__instance.EquipmentSource.HitPoints >= hpDown)
+                                    {
+                                        __instance.EquipmentSource.HitPoints -= hpDown;
+                                    }
+                                    else
+                                    {
+                                        __instance.EquipmentSource.HitPoints = 0;
+                                    }
                                 }
                                 /*Log.Message($"EM melee damage: {num}");*/
                                 num *= root.energy.outputPower;

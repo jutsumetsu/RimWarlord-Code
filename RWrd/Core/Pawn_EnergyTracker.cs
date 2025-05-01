@@ -266,6 +266,10 @@ namespace Electromagnetic.Core
         {
             get
             {
+                if (IsUltimate)
+                {
+                    return (int)this.powerflow;
+                }
                 return (int)(this.powerflow * this.pawn.GetHeartHealthPercent());
             }
         }
@@ -559,6 +563,7 @@ namespace Electromagnetic.Core
         {
             Scribe_Values.Look<float>(ref this.energy, "energy", 0f, false);
             Scribe_Values.Look<float>(ref this.exp, "exp", 0f, false);
+            Scribe_Values.Look<float>(ref this.Oexp, "oexp", 0f, false);
             Scribe_Values.Look<float>(ref this.completerealm, "completerealm", 0f, false);
             Scribe_Values.Look<float>(ref this.outputPower, "outputpower", 1f, false);
             Scribe_Values.Look<float>(ref this.wavePower, "wavePower", 1f, false);
@@ -623,7 +628,11 @@ namespace Electromagnetic.Core
         /// </summary>
         public float exp = 0f;
         /// <summary>
-        /// 经验值
+        /// 原经验值
+        /// </summary>
+        public float Oexp = 0f;
+        /// <summary>
+        /// 伤害
         /// </summary>
         public float damage = 0f;
         /// <summary>

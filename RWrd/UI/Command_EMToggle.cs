@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
-namespace Electromagnetic.Electromagnetic.UI
+namespace Electromagnetic.UI
 {
     [StaticConstructorOnStartup]
     public class Command_EMToggle : Command
@@ -80,7 +80,7 @@ namespace Electromagnetic.Electromagnetic.UI
         public Command_EMToggle(RWrd_PsyCastToggle ability, Pawn pawn)
         {
             this.ability = ability;
-            float num = 5f;
+            float num = 2f;
             AbilityCategoryDef category = ability.def.category;
             int? num2 = (category != null) ? new int?(category.displayOrder) : null;
             this.Order = num + ((num2 != null) ? ((float)num2.GetValueOrDefault()) : 0f) / 100f + (float)ability.def.displayOrder / 1000f + (float)ability.def.level / 10000f;
@@ -191,8 +191,8 @@ namespace Electromagnetic.Electromagnetic.UI
         }
         protected RWrd_PsyCastToggle ability;
         private List<Command_EMToggle> groupedCasts;
-        private string pawnLabel;
-        private string originalLabel;
+        public string pawnLabel;
+        public string originalLabel;
         private string pawnTooltip;
         public bool devGizmo;
         public new static readonly Texture2D BGTex = ContentFinder<Texture2D>.Get("UI/Widgets/AbilityButBG", true);

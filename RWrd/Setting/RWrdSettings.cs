@@ -24,6 +24,7 @@ namespace Electromagnetic.Setting
         public static bool PowerfulEnergyWave = true;
         public static bool DoVisualWaveEffect = true;
         public static int ExpMultiplier = 100;
+        public static int SDDefaultSuccessRate = 10;
         public static int GlobalLevelLimit = 99;
         public static float WaveRangeFactor = 1;
         public override void ExposeData()
@@ -37,6 +38,7 @@ namespace Electromagnetic.Setting
 
             Scribe_Values.Look(ref ExpMultiplier, "expmultiplier", 100);
             Scribe_Values.Look(ref GlobalLevelLimit, "globallevellimit", 99);
+            Scribe_Values.Look(ref SDDefaultSuccessRate, "sddefaultsuccessrate", 10);
             Scribe_Values.Look(ref WaveRangeFactor, "waverangefactor", 1);
             base.ExposeData();
         }

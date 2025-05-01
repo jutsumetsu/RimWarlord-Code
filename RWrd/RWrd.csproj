@@ -133,6 +133,7 @@
     <Compile Include="Abilities\RWrd_AbilityBase.cs" />
     <Compile Include="Abilities\RWrd_PsyCastToggle.cs" />
     <Compile Include="Abilities\RWrd_PsyCastBase.cs" />
+    <Compile Include="Abilities\RWrd_SDPower.cs" />
     <Compile Include="Abilities\RWrd_Verb_Cast.cs" />
     <Compile Include="Abilities\ShieldsSystem_RWrd.cs" />
     <Compile Include="Abilities\TeslaChainingProps.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="UI\Command_ActionWithFloat.cs" />
     <Compile Include="UI\Command_Electromagnetic.cs" />
     <Compile Include="UI\Command_EMToggle.cs" />
+    <Compile Include="UI\Command_SDToggle.cs" />
     <Compile Include="UI\Dialog_AbilitySet.cs" />
     <Compile Include="UI\Dialog_EditAbilitySets.cs" />
     <Compile Include="UI\Dialog_HeavenLock.cs" />

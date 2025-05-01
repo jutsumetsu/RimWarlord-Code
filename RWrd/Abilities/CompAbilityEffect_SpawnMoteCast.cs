@@ -20,6 +20,7 @@ namespace Electromagnetic.Abilities
         {
             //生成技能触发特效
             Pawn pawn = this.parent.pawn;
+            if (pawn.Dead) { return; }
             ThingDef moteCastDef = this.Props.moteCastDef;
             MoteMaker.MakeAttachedOverlay(pawn, moteCastDef, CompAbilityEffect_SpawnMoteCast.MoteCastOffset, CompAbilityEffect_SpawnMoteCast.MoteCastScale, this.parent.verb.verbProps.warmupTime - CompAbilityEffect_SpawnMoteCast.MoteCastFadeTime);
         }

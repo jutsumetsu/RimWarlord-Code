@@ -1,5 +1,4 @@
 ﻿using Electromagnetic.Core;
-using Electromagnetic.Electromagnetic.UI;
 using Electromagnetic.UI;
 using RimWorld;
 using System;
