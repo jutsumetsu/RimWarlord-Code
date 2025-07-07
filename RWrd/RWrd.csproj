@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\Steam\steamapps\common\RimWorld\Mods\RimWarlord\1.5\Assemblies\</OutputPath>
+    <OutputPath>..\..\..\..\Steam\steamapps\common\RimWorld\Mods\RimWarlord\1.6\Assemblies\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>none</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -81,7 +81,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abilities\AbilitySet.cs" />
-    <Compile Include="Abilities\AntiGravityUtil.cs" />
     <Compile Include="Abilities\AttackType.cs" />
     <Compile Include="Abilities\CompAbilityEffect_AtomSplit.cs" />
     <Compile Include="Abilities\CompAbilityEffect_CellRecombination.cs" />
@@ -121,7 +120,6 @@
     <Compile Include="Abilities\CompProperties_SpawnMoteSinging.cs" />
     <Compile Include="Abilities\HediffCompProperties_Draw_RWrd.cs" />
     <Compile Include="Abilities\HediffCompProperties_Shield_RWrd.cs" />
-    <Compile Include="Abilities\HediffComp_AntiGravity.cs" />
     <Compile Include="Abilities\HediffComp_Draw_RWrd.cs" />
     <Compile Include="Abilities\HediffComp_Shield_RWrd.cs" />
     <Compile Include="Abilities\Hediff_CellRecombination.cs" />
@@ -164,7 +162,6 @@
     <Compile Include="Effect\GameComponent_FragmentsManager.cs" />
     <Compile Include="Effect\GameComponent_MFEnvironment.cs" />
     <Compile Include="Effect\PowerfulPersonFragments.cs" />
-    <Compile Include="HarmonyPatchs\AntiGravityPatches.cs" />
     <Compile Include="HarmonyPatchs\CharacterEditorPatches.cs" />
     <Compile Include="HarmonyPatchs\HarmonyInit.cs" />
     <Compile Include="HarmonyPatchs\HealthPatch.cs" />

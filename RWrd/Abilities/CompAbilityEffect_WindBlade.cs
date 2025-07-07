@@ -62,7 +62,7 @@ namespace Electromagnetic.Abilities
                     list.Add(pawn2);
                 }
             }
-            GenExplosion.DoExplosion(position, this.parent.pawn.MapHeld, this.Props.range, named, this.Caster, num2, -1f, null, null, null, null, null, 1f, 1, null, false, null, 0f, 1, 0f, false, null, list, null, false, 1.6f, 0f, false, null, 1f, null, this.AffectedCells(target));
+            GenExplosion.DoExplosion(position, this.parent.pawn.MapHeld, this.Props.range, named, this.Caster, num2, -1f, null, null, null, null, null, 1f, 1, null, null, 0, false, null, 0, 1, 0, false, null, list, null, false, 1.6f, 0f, false, null, 1f, null, this.AffectedCells(target));
             base.Apply(target, dest);
         }
         //影响的格子

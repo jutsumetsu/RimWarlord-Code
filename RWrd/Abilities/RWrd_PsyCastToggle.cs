@@ -22,7 +22,7 @@ namespace Electromagnetic.Abilities
         public RWrd_PsyCastToggle(Pawn pawn, AbilityDef def) : base(pawn, def)
         {
         }
-        public override bool CanCast
+        public override AcceptanceReport CanCast
         {
             get
             {

@@ -163,7 +163,7 @@ namespace Electromagnetic.Abilities
             {
                 TaggedString taggedString = "Illegal".ToUpper().Translate() + "\n" + this.Psycast.def.DetectionChance.ToStringPercent() + " " + "DetectionChance".Translate();
                 Text.Font = GameFont.Small;
-                GenUI.DrawMouseAttachment(texture2D, taggedString, 0f, default(Vector2), null, true, new Color(0.25f, 0f, 0f), null, null);
+                GenUI.DrawMouseAttachment(texture2D, taggedString, 0f, default(Vector2), null, new Color(0.25f, 0f, 0f));
             }
             else
             {

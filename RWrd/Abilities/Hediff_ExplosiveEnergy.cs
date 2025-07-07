@@ -40,7 +40,7 @@ namespace Electromagnetic.Abilities
                 }
             }
             //产生爆炸
-            GenExplosion.DoExplosion(pawn.PositionHeld, pawn.MapHeld, 2f, DamageDefOf.Bomb, this.root.pawn, num, 0, null, null, null, null, null, 0, 1, null, false, null, 0, 1, 0, false, null, list);
+            GenExplosion.DoExplosion(pawn.PositionHeld, pawn.MapHeld, 2f, DamageDefOf.Bomb, this.root.pawn, num, 0, null, null, null, null, null, 0, 1, null, null, 0, false, null, 0, 1, 0, false, null, list);
             tickCounter = 0;
             this.Severity -= 0.1f;
         }

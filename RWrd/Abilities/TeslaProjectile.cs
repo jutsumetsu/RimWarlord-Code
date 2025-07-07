@@ -131,9 +131,7 @@ namespace Electromagnetic.Abilities
                         {
                             GenExplosion.DoExplosion(
                                 hitThing.Position, base.Map, this.Props.impactRadius, this.Props.explosionDamageDef,
-                                base.Launcher, this.def.projectile.GetDamageAmount(1f, null), -1f, null, null, null, null,
-                                null, 0f, 1, null, false, null, 0f, 1, 0f, false, null, null, null, true, 1f, 0f, true,
-                                null, 1f, null, null
+                                base.Launcher, this.def.projectile.GetDamageAmount(1f, null)
                             );
                         }
 
@@ -337,7 +335,7 @@ namespace Electromagnetic.Abilities
                 return result;
             }
         }
-        public override void Tick()
+        protected override void Tick()
         {
             base.Tick();
             bool flag = this.shotAnything;

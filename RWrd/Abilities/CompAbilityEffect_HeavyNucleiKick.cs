@@ -63,7 +63,7 @@ namespace Electromagnetic.Abilities
                         }
                     }
                     //造成爆炸效果
-                    GenExplosion.DoExplosion(pawn.PositionHeld, pawn.MapHeld, 1f, DamageDefOf.Bomb, caster, num, 0, null, null, null, null, null, 0, 1, null, false, null, 0, 1, 0, false, null, list);
+                    GenExplosion.DoExplosion(pawn.PositionHeld, pawn.MapHeld, 1f, DamageDefOf.Bomb, caster, num, 0, null, null, null, null, null, 0, 1, null, null, 0, false, null, 0, 1, 0, false, null, list);
                     //重新选中小人
                     CameraJumper.TrySelect(caster);
                     caster = null;

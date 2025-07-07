@@ -35,7 +35,7 @@ namespace Electromagnetic.Core
                 bool canFunction = this.CanFunction;
                 if (this.pawn.needs.joy != null)
                 {
-                    JoyUtility.JoyTickCheckEnd(this.pawn, JoyTickFullJoyAction.None, 1f, null);
+                    JoyUtility.JoyTickCheckEnd(this.pawn, 1, JoyTickFullJoyAction.None, 1f, null);
                 }
                 if (canFunction)
                 {

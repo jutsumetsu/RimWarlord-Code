@@ -49,8 +49,6 @@ namespace Electromagnetic.Core
             Rect rect = new Rect(topLeft.x - 4, topLeft.y, this.GetWidth(maxWidth), 89f);
             Rect rect2 = rect.ContractedBy(2f);
             Widgets.DrawWindowBackground(rect);
-            MainTabWindow_Inspect mainTabWindow_Inspect = (MainTabWindow_Inspect)MainButtonDefOf.Inspect.TabWindow;
-            Command_Electromagnetic command_Electromagnetic = ((mainTabWindow_Inspect != null) ? mainTabWindow_Inspect.LastMouseoverGizmo : null) as Command_Electromagnetic;
             //闪烁效果
             float num = Mathf.Repeat(Time.time, 0.85f);
             float num2 = 1f;
@@ -68,7 +66,7 @@ namespace Electromagnetic.Core
             rect3.height = rect.height / 2f;
             this.DrawEnergyUI(rect3, this.root.energy.energy, this.root.energy.MaxEnergy, this.EnergyLabel);
             //能量消耗预览
-            if (command_Electromagnetic != null)
+            if (MapGizmoUtility.LastMouseOverGizmo is Command_Electromagnetic command_Electromagnetic)
             {
                 //获取ReduceEnergy
                 CompAbilityEffect_ReduceEnergy compAbilityEffect_ReduceEnergy = command_Electromagnetic.Ability.CompOfType<CompAbilityEffect_ReduceEnergy>();

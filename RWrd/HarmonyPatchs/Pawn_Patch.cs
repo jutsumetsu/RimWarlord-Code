@@ -159,7 +159,7 @@ namespace Electromagnetic.HarmonyPatchs
                                 int waveDamage = (int)Math.Floor((root.energy.DamageImmunityThreshold - 5) * root.energy.wavePower);
                                 if (radius > 1f && RWrdSettings.PowerfulEnergyWave && root.energy.personalEnergyWave)
                                 {
-                                    GenExplosion.DoExplosion(target.Thing.PositionHeld, target.Thing.MapHeld, radius, RWrd_DefOf.RWrd_PowerfulWave, casterPawn, waveDamage, 0, null, null, null, null, null, 0, 1, null, false, null, 0, 1, 0, false, null, list, null, RWrdSettings.DoVisualWaveEffect, 1, 0, false, null, 0);
+                                    GenExplosion.DoExplosion(target.Thing.PositionHeld, target.Thing.MapHeld, radius, RWrd_DefOf.RWrd_PowerfulWave, casterPawn, waveDamage, 0, null, null, null, null, null, 0, 1, null, null, 0, false, null, 0, 1, 0, false, null, list, null, RWrdSettings.DoVisualWaveEffect, 1, 0, false, null, 0);
                                 }
 
                                 if (__instance.tool != null && __instance.tool.extraMeleeDamages != null)
@@ -352,24 +352,22 @@ namespace Electromagnetic.HarmonyPatchs
         }
         //强者免疫地块污染
         [HarmonyPatch(typeof(PollutionUtility))]
-        [HarmonyPatch("PawnPollutionTick")]
+        [HarmonyPatch(nameof(PollutionUtility.PawnPollutionTickInterval))]
         public static class Patch_PollutionUtility_PawnPollutionTick
         {
             [HarmonyPrefix]
-            public static bool Prefix(Pawn pawn)
+            public static bool Prefix(Pawn pawn, int delta)
             {
                 if (pawn.IsHavePowerRoot())
                 {
-
                     return false;
                 }
-
                 return true;
             }
         }
         //强者免疫毒气
         [HarmonyPatch(typeof(GasUtility))]
-        [HarmonyPatch("PawnGasEffectsTick")]
+        [HarmonyPatch(nameof(GasUtility.PawnGasEffectsTickInterval))]
         public static class Patch_GasUtility_PawnGasEffectsTick
         {
             [HarmonyPrefix]
@@ -377,10 +375,8 @@ namespace Electromagnetic.HarmonyPatchs
             {
                 if (pawn.IsHavePowerRoot())
                 {
-
                     return false;
                 }
-
                 return true;
             }
         }

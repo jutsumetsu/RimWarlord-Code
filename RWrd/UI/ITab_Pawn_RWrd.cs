@@ -146,7 +146,7 @@ namespace Electromagnetic.UI
                 listing_Standard.Begin(rect2);
                 Text.Font = GameFont.Medium;
                 //显示人物名称
-                listing_Standard.Label(this.pawn.Name.ToStringShort, -1f, null);
+                listing_Standard.Label(this.pawn.Name.ToStringShort, -1f);
                 //显示当前等级
                 if (this.root.energy.level == 0)
                 {
@@ -173,7 +173,7 @@ namespace Electromagnetic.UI
                         if (realmTitle != " - ")
                         {
                             realmTitle += " - ";
-                            listing_Standard.Label(realmTitle, -1f, null);
+                            listing_Standard.Label(realmTitle, -1f);
                         }
                     }
                     else
