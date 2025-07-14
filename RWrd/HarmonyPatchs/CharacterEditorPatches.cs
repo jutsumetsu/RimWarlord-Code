@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace Electromagnetic.Electromagnetic.HarmonyPatchs
+namespace Electromagnetic.HarmonyPatchs
 {
     public class CharacterEditorPatches
     {
@@ -22,25 +22,17 @@ namespace Electromagnetic.Electromagnetic.HarmonyPatchs
             }
             public static MethodBase TargetMethod()
             {
-                return AccessTools.Method("ay:a", new[]
-                {
-                    typeof(Pawn),
-                    typeof(TraitDef),
-                    typeof(TraitDegreeData),
-                    typeof(bool),
-                    typeof(bool),
-                    typeof(Trait)
-                });
+                return AccessTools.Method("CharacterEditor.TraitTool:AddTrait");
             }
             [HarmonyPostfix]
-            public static void Postfix(Pawn A_0, TraitDef A_1)
+            public static void Postfix(Pawn pawn, TraitDef traitDef)
             {
-                if (A_1 == RWrd_DefOf.RWrd_Gifted && A_0.RaceProps.Humanlike)
+                if (traitDef == RWrd_DefOf.RWrd_Gifted && pawn.RaceProps.Humanlike)
                 {
-                    if (!A_0.IsHavePowerRoot())
+                    if (!pawn.IsHavePowerRoot())
                     {
-                        Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, A_0);
-                        A_0.health.AddHediff(hediff);
+                        Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, pawn);
+                        pawn.health.AddHediff(hediff);
                     }
                 }
             }
@@ -54,15 +46,15 @@ namespace Electromagnetic.Electromagnetic.HarmonyPatchs
             }
             public static MethodBase TargetMethod()
             {
-                return AccessTools.Method("a2:a", new[] { typeof(Pawn), typeof(Hediff) });
+                return AccessTools.Method("CharacterEditor.HealthTool:RemoveHediff");
             }
             [HarmonyPostfix]
-            public static void Postfix(Pawn A_0, Hediff A_1)
+            public static void Postfix(Pawn pawn, Hediff hediff)
             {
-                bool flag = A_0 == null || A_1 == null;
+                bool flag = pawn == null || hediff == null;
                 if (!flag)
                 {
-                    if (A_1 is Hediff_RWrd_PowerRoot) A_1.PostRemoved();
+                    if (hediff is Hediff_RWrd_PowerRoot) hediff.PostRemoved();
                 }
             }
         }
