@@ -823,6 +823,7 @@ namespace Electromagnetic.Core
             {
                 PowerRootUtillity.powerRootCacheMap = new Dictionary<Pawn, Hediff_RWrd_PowerRoot>();
             }
+            if (PowerRootUtillity.powerRootCacheMap.ContainsKey(this.pawn)) PowerRootUtillity.powerRootCacheMap.Remove(this.pawn);
             PowerRootUtillity.powerRootCacheMap.Add(this.pawn, this);
             Log.Message("Root post make is called");
         }

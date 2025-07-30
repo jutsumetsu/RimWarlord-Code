@@ -52,11 +52,11 @@ namespace Electromagnetic.Abilities
                     {
                         num += (int)Math.Floor(root.energy.PowerEnergy);
                     }
-                    targetThing.HitPoints = Mathf.RoundToInt(targetThing.MaxHitPoints * Props.HardeningFactor * (num));
+                    targetThing.HitPoints = Tools.IntRestrict(Mathf.RoundToInt(targetThing.MaxHitPoints * Props.HardeningFactor * num));
                 }
                 else
                 {
-                    targetThing.HitPoints = Mathf.RoundToInt(targetThing.MaxHitPoints * Props.HardeningFactor * 1);
+                    targetThing.HitPoints = Tools.IntRestrict(Mathf.RoundToInt(targetThing.MaxHitPoints * Props.HardeningFactor * 1));
                 }
                 
 
@@ -87,11 +87,11 @@ namespace Electromagnetic.Abilities
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
                     int level = root.energy.AvailableLevel + root.energy.FinalLevelOffset + 1 + masteryOffset;
                     int num = (int)Math.Floor(level / 5f);
-                    item.HitPoints = Mathf.RoundToInt(item.MaxHitPoints * Props.HardeningFactor * (num));
+                    item.HitPoints = Tools.IntRestrict(Mathf.RoundToInt(item.MaxHitPoints * Props.HardeningFactor * num));
                 }
                 else
                 {
-                    item.HitPoints = Mathf.RoundToInt(item.MaxHitPoints * Props.HardeningFactor * 1);
+                    item.HitPoints = Tools.IntRestrict(Mathf.RoundToInt(item.MaxHitPoints * Props.HardeningFactor * 1));
                 }
             }
         }

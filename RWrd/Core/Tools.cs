@@ -243,6 +243,10 @@ namespace Electromagnetic.Core
                    where x.depth == BodyPartDepth.Outside || (x.depth == BodyPartDepth.Inside && x.def.IsSolid(x, bodyModel.hediffs))
                    select x;
         }
+        public static int IntRestrict(float preNum)
+        {
+            return (int)Math.Min(preNum, int.MaxValue);
+        }
         /// <summary>
         /// 能量条材质
         /// </summary>

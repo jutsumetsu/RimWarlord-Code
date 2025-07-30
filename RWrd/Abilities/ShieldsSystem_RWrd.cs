@@ -37,7 +37,7 @@ namespace Electromagnetic.Abilities
         }
         public static void OnPawnSpawn(Pawn __instance)
         {
-            ShieldsSystem_RWrd.HediffDrawsByPawn.Add(__instance, __instance.health.hediffSet.hediffs.OfType<HediffWithComps>().SelectMany((HediffWithComps hediff) => hediff.comps).OfType<HediffComp_Draw_RWrd>().ToList<HediffComp_Draw_RWrd>());
+            if (!ShieldsSystem_RWrd.HediffDrawsByPawn.ContainsKey(__instance)) ShieldsSystem_RWrd.HediffDrawsByPawn.Add(__instance, __instance.health.hediffSet.hediffs.OfType<HediffWithComps>().SelectMany((HediffWithComps hediff) => hediff.comps).OfType<HediffComp_Draw_RWrd>().ToList<HediffComp_Draw_RWrd>());
         }
         public static void OnPawnDespawn(Pawn __instance)
         {

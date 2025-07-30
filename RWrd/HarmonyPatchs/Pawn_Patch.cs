@@ -231,6 +231,7 @@ namespace Electromagnetic.HarmonyPatchs
                         multiplier += (int)Math.Floor(root.energy.PowerEnergy);
                     }
                     __result *= multiplier;
+                    __result = Tools.IntRestrict(__result);
                 }
             }
         }
