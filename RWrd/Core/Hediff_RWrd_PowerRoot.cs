@@ -860,6 +860,10 @@ namespace Electromagnetic.Core
                 {
                     PowerRootUtillity.powerRootCacheMap.Add(this.pawn, this);
                 }
+                else
+                {
+                    PowerRootUtillity.powerRootCacheMap[this.pawn] = this;
+                }
                 this.energy.pawn = this.pawn;
                 this.RefreshSkillTree();
             }
