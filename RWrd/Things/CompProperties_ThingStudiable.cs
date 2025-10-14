@@ -20,5 +20,6 @@ namespace Electromagnetic.Things
         public RWrd_RouteDef route;
         public int cost = 10;
         public string studyType;
+        public bool Qigong = false;
     }
 }

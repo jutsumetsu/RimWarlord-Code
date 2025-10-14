@@ -115,7 +115,7 @@ namespace Electromagnetic.Things
                 yield break;
             }
             //无力量之源
-            bool flag2 = !pawn.IsHavePowerRoot();
+            bool flag2 = !pawn.IsHavePowerRoot() && !this.Props.Qigong;
             if (flag2)
             {
                 yield return new FloatMenuOption("RWrd_CannotStudy".Translate() + " (" + "RWrd_NoRoot".Translate() + ")", null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
@@ -155,16 +155,19 @@ namespace Electromagnetic.Things
                 yield break;
             }
             Thing researchBench = GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForDef(RWrd_DefOf.HiTechResearchBench), PathEndMode.InteractionCell, TraverseParms.For(pawn, Danger.Some, TraverseMode.ByPawn, false, false, false), 9999f, (Thing t) => pawn.CanReserve(t, 1, -1, null, false), null, 0, -1, false, RegionType.Set_Passable, false);
-            bool flag7 = researchBench == null;
-            if (flag7)
+            if (this.Props.studyType == "research")
             {
-                researchBench = GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForDef(ThingDefOf.SimpleResearchBench), PathEndMode.InteractionCell, TraverseParms.For(pawn, Danger.Some, TraverseMode.ByPawn, false, false, false), 9999f, (Thing t) => pawn.CanReserve(t, 1, -1, null, false), null, 0, -1, false, RegionType.Set_Passable, false);
-            }
-            bool flag8 = researchBench == null;
-            if (flag8)
-            {
-                yield return new FloatMenuOption("RWrd_CannotStudy".Translate() + " (" + "RWrd_NoResearchBench".Translate() + ")", null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
-                yield break;
+                bool flag7 = researchBench == null;
+                if (flag7)
+                {
+                    researchBench = GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForDef(ThingDefOf.SimpleResearchBench), PathEndMode.InteractionCell, TraverseParms.For(pawn, Danger.Some, TraverseMode.ByPawn, false, false, false), 9999f, (Thing t) => pawn.CanReserve(t, 1, -1, null, false), null, 0, -1, false, RegionType.Set_Passable, false);
+                }
+                bool flag8 = researchBench == null;
+                if (flag8)
+                {
+                    yield return new FloatMenuOption("RWrd_CannotStudy".Translate() + " (" + "RWrd_NoResearchBench".Translate() + ")", null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
+                    yield break;
+                }
             }
             TaggedString taggedString = "RWrd_Study".Translate(this.parent.Label);
             yield return new FloatMenuOption(taggedString, delegate ()
@@ -172,10 +175,15 @@ namespace Electromagnetic.Things
                 bool flag9 = pawn.CanReserveAndReach(this.parent, PathEndMode.Touch, Danger.Deadly, 1, -1, null, false);
                 if (flag9)
                 {
+                    student = pawn;
                     if (this.Props.studyType == "research")
                     {
-                        student = pawn;
                         Job job = JobMaker.MakeJob(RWrd_DefOf.RWrd_ResearchDisc, this.parent, researchBench, researchBench.Position);
+                        pawn.jobs.TryTakeOrderedJob(job, new JobTag?(JobTag.Misc), false);
+                    }
+                    if (this.Props.studyType == "study")
+                    {
+                        Job job = JobMaker.MakeJob(RWrd_DefOf.RWrd_StudyBook, this.parent);
                         pawn.jobs.TryTakeOrderedJob(job, new JobTag?(JobTag.Misc), false);
                     }
                 }

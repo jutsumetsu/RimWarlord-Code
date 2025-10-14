@@ -144,6 +144,7 @@
     <Compile Include="Core\JobDriver_RWrd_General_Training.cs" />
     <Compile Include="Core\JobDriver_RWrd_ResearchDisc.cs" />
     <Compile Include="Core\JobDriver_RWrd_Specialized_Training.cs" />
+    <Compile Include="Core\JobDriver_RWrd_StudyBook.cs" />
     <Compile Include="Core\JobGiver_EMTraining.cs" />
     <Compile Include="Core\ModDetector.cs" />
     <Compile Include="Core\Need_Training.cs" />
@@ -188,6 +189,10 @@
     <Compile Include="Core\RimWarlord.cs" />
     <Compile Include="Core\RWrd_DefOf.cs" />
     <Compile Include="Core\RWrd_RouteDef.cs" />
+    <Compile Include="GameComponent\Alert_ExpPoolInfo.cs" />
+    <Compile Include="GameComponent\DebugActions_ExpPool.cs" />
+    <Compile Include="GameComponent\GameComponent_ExpPoolManager.cs" />
+    <Compile Include="GameComponent\MapComponent_ExpPool.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

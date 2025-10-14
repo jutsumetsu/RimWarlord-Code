@@ -36,6 +36,7 @@ namespace Electromagnetic.Core
         //Job
         public static JobDef RWrd_General_Training;
         public static JobDef RWrd_ResearchDisc;
+        public static JobDef RWrd_StudyBook;
         //Hediff
         public static HediffDef RWrd_Regenerating;
         public static HediffDef RWrd_ElectricInternalEnergy;
