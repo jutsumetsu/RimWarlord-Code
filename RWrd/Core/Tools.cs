@@ -72,6 +72,23 @@ namespace Electromagnetic.Core
             hediff.PostMake();
             return hediff;
         }
+        public static Hediff_RWrd_PowerRoot MakePowerRoot(HediffDef def, Pawn pawn, bool Qigong = false, bool newBorn = false, bool starter = false)
+        {
+            if (pawn == null)
+            {
+                Log.Error("Cannot make hediff " + ((def != null) ? def.ToString() : null) + " for null pawn.");
+                return null;
+            }
+            Hediff_RWrd_PowerRoot hediff = (Hediff_RWrd_PowerRoot)Activator.CreateInstance(def.hediffClass);
+            hediff.def = def;
+            hediff.pawn = pawn;
+            hediff.Part = null;
+            hediff.Qigong = Qigong;
+            hediff.newBorn = newBorn;
+            hediff.loadID = Find.UniqueIDsManager.GetNextHediffID();
+            hediff.PostMake();
+            return hediff;
+        }
         public static IEnumerable<TResult> SelectNotNull<TSource, TResult>(
             this IEnumerable<TSource> source,
             Func<TSource, IEnumerable<TResult>> selector)

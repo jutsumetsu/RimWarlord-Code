@@ -168,6 +168,7 @@
     <Compile Include="HarmonyPatchs\HealthPatch.cs" />
     <Compile Include="HarmonyPatchs\Pawn_Patch.cs" />
     <Compile Include="HarmonyPatchs\PostFix_EBFEndpoints_GetMaxHealthWithEBF.cs" />
+    <Compile Include="HarmonyPatchs\RJWPatches.cs" />
     <Compile Include="Setting\RWrdSettings.cs" />
     <Compile Include="Things\CompProperties_ThingStudiable.cs" />
     <Compile Include="Things\CompThingStudiable.cs" />

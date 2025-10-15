@@ -396,9 +396,9 @@ namespace Electromagnetic.HarmonyPatchs
 
                     if (hasRootParent)
                     {
-                        Hediff root = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, babyPawn);
+                        Hediff root = Tools.MakePowerRoot(RWrd_DefOf.Hediff_RWrd_PowerRoot, babyPawn, false, true);
                         babyPawn.health.AddHediff(root);
-                        babyPawn.story.traits.GainTrait(new Trait(RWrd_DefOf.RWrd_Gifted));
+                        if (!babyPawn.story.traits.HasTrait(RWrd_DefOf.RWrd_Gifted)) babyPawn.story.traits.GainTrait(new Trait(RWrd_DefOf.RWrd_Gifted));
                     }
                 }
             }

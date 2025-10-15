@@ -43,11 +43,25 @@ namespace Electromagnetic.Core
                 {
                     if (Tools.IsChineseLanguage)
                     {
-                        gizmo.PowerLabel = "RWrd_BM".Translate(this.energy.AvailableLevel.ToString("D2"));
+                        if (this.Qigong)
+                        {
+                            gizmo.PowerLabel = "RWrd_QigongLevel".Translate(this.energy.AvailableLevel.ToString("D2"));
+                        }
+                        else
+                        {
+                            gizmo.PowerLabel = "RWrd_BM".Translate(this.energy.AvailableLevel.ToString("D2"));
+                        }
                     }
                     else
                     {
-                        gizmo.PowerLabel = "RWrd_BM".Translate(this.energy.AvailableLevel.ToString());
+                        if (this.Qigong)
+                        {
+                            gizmo.PowerLabel = "RWrd_QigongLevel".Translate(this.energy.AvailableLevel.ToString());
+                        }
+                        else
+                        {
+                            gizmo.PowerLabel = "RWrd_BM".Translate(this.energy.AvailableLevel.ToString());
+                        }
                     }
                     gizmo.ExpLabel = "RWrd_HorsePower".Translate();
                 }
@@ -108,6 +122,16 @@ namespace Electromagnetic.Core
                     };
                     yield return _cachedReloadCommand;
                 }
+                yield return new Command_Toggle
+                {
+                    isActive = () => this.Qigong,
+                    toggleAction = delegate ()
+                    {
+                        this.Qigong = !this.Qigong;
+                    },
+                    icon = ContentFinder<Texture2D>.Get("Things/Items/CMBook/JunggikQigong", true),
+                    defaultLabel = "RWrd_Qigong".Translate(),
+                };
                 if (Tools.IsChineseLanguage)
                 {
                     yield return new Command_Action
@@ -708,113 +732,19 @@ namespace Electromagnetic.Core
             if (flag3)
             {
                 //NPC生成
-                this.energy.level = this.InitialLevel();
+                this.energy.level = this.InitialLevel(this.Qigong || this.newBorn, this.starter);
                 this.energy.powerflow = UnityEngine.Random.Range(3, 51) * 10000;
-                float prenum = this.pawn.ageTracker.AgeBiologicalTicks / 3600000f;
-                //年龄限制完全境界
-                int age = (int)Math.Floor(prenum);
-                int randomNum;
-                int cacheNum;
-                // 根据年龄确定初始随机数范围
-                int initialMin = 1;
-                int initialMax;
-                if (age < 10)
-                {
-                    initialMax = 3;
-                }
-                else
-                {
-                    initialMax = 5;
-                }
-                randomNum = UnityEngine.Random.Range(initialMin, initialMax);
-                if (randomNum >= 3)
-                {
-                    int loopCount;
-                    if (age < 10)
-                    {
-                        loopCount = 0;
-                    }
-                    else if (age < 20)
-                    {
-                        loopCount = 1;
-                    }
-                    else if (age < 30)
-                    {
-                        loopCount = 2;
-                    }
-                    else
-                    {
-                        loopCount = 3;
-                    }
-
-                    for (int i = 0; i < loopCount; i++)
-                    {
-                        int min = 3 + i * 2;
-                        int max = 7 + i * 2;
-                        cacheNum = UnityEngine.Random.Range(min, max);
-                        if (cacheNum > randomNum)
-                        {
-                            randomNum = cacheNum;
-                        }
-                    }
-                }
-                this.energy.completerealm = randomNum * 0.1f;
+                this.MartialTalent = this.InitialMartialTalent();
+                this.energy.completerealm = this.InitialCompleteRealm();
                 this.energy.trainDesireFactor = UnityEngine.Random.Range(1, 51);
             }
             else
             {
                 //殖民者生成
-                this.energy.level = this.InitialLevel();
+                this.energy.level = this.InitialLevel(this.Qigong || this.newBorn, this.starter);
                 this.energy.powerflow = UnityEngine.Random.Range(2, 11) * 50000;
-                float prenum = this.pawn.ageTracker.AgeBiologicalTicks / 3600000f;
-                //年龄限制完全境界
-                int age = (int)Math.Floor(prenum);
-                int randomNum;
-                int cacheNum;
-                // 根据年龄确定初始随机数范围
-                int initialMin = 1;
-                int initialMax;
-                if (age < 10)
-                {
-                    initialMax = 3;
-                }
-                else
-                {
-                    initialMax = 5;
-                }
-                randomNum = UnityEngine.Random.Range(initialMin, initialMax);
-                if (randomNum >= 3)
-                {
-                    int loopCount;
-                    if (age < 10)
-                    {
-                        loopCount = 0;
-                    }
-                    else if (age < 20)
-                    {
-                        loopCount = 1;
-                    }
-                    else if (age < 30)
-                    {
-                        loopCount = 2;
-                    }
-                    else
-                    {
-                        loopCount = 3;
-                    }
-
-                    for (int i = 0; i < loopCount; i++)
-                    {
-                        int min = 3 + i * 2;
-                        int max = 7 + i * 2;
-                        cacheNum = UnityEngine.Random.Range(min, max);
-                        if (cacheNum > randomNum)
-                        {
-                            randomNum = cacheNum;
-                        }
-                    }
-                }
-                this.energy.completerealm = randomNum * 0.1f;
+                this.MartialTalent = this.InitialMartialTalent();
+                this.energy.completerealm = this.InitialCompleteRealm();
                 this.energy.trainDesireFactor = UnityEngine.Random.Range(1, 51);
             }
             this.pawn.CheckRouteUnlock(this);
@@ -833,6 +763,10 @@ namespace Electromagnetic.Core
             base.ExposeData();
             Scribe_Deep.Look<Pawn_EnergyTracker>(ref this.energy, "energy", Array.Empty<object>());
             Scribe_Values.Look<bool>(ref this.IsInit, "IsInit", false, false);
+            Scribe_Values.Look<float>(ref this.MartialTalent, "MartialTalent", 0, false);
+            Scribe_Values.Look<bool>(ref this.Qigong, "Qigong", false, false);
+            Scribe_Values.Look<bool>(ref this.newBorn, "newBorn", false, false);
+            Scribe_Values.Look<bool>(ref this.starter, "starter", false, false);
             Scribe_Values.Look<bool>(ref this.openingBasicAbility, "openingBasicAbility", false, false);
             Scribe_Values.Look<bool>(ref this.SelfDestruction, "selfdestruction", false, false);
             Scribe_Values.Look<bool>(ref this.SDWeak, "sdweak", false, false);
@@ -844,14 +778,9 @@ namespace Electromagnetic.Core
             bool flag = Scribe.mode == LoadSaveMode.PostLoadInit;
             if (flag)
             {
-                if (this.routes == null)
-                {
-                    this.routes = new List<RWrd_RouteDef>();
-                }
-                if (this.abilitySets == null)
-                {
-                    this.abilitySets = new List<AbilitySet>();
-                }
+                if (this.MartialTalent == 0) this.MartialTalent = this.InitialMartialTalent();
+                if (this.routes == null) this.routes = new List<RWrd_RouteDef>();
+                if (this.abilitySets == null) this.abilitySets = new List<AbilitySet>();
                 if (PowerRootUtillity.powerRootCacheMap == default(Dictionary<Pawn, Hediff_RWrd_PowerRoot>))
                 {
                     PowerRootUtillity.powerRootCacheMap = new Dictionary<Pawn, Hediff_RWrd_PowerRoot>();
@@ -926,6 +855,12 @@ namespace Electromagnetic.Core
 
         private bool IsInit = false;
         public bool initActivity = false;
+
+        public float MartialTalent = 0;
+
+        public bool Qigong = false;
+        public bool newBorn = false;
+        public bool starter = false;
 
         public List<RWrd_RouteDef> routes;
 

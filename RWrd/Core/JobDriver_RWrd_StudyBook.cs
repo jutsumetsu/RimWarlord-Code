@@ -161,7 +161,7 @@ namespace Electromagnetic.Core
                     {
                         if (!pawn.IsHavePowerRoot())
                         {
-                            Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, pawn);
+                            Hediff hediff = Tools.MakePowerRoot(RWrd_DefOf.Hediff_RWrd_PowerRoot, pawn, true);
                             pawn.health.AddHediff(hediff);
                         }
                     }

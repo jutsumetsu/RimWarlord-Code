@@ -169,7 +169,14 @@ namespace Electromagnetic.UI
                         {
                             realmTitle += "RWrd_AntigravityLevel".Translate();
                         }
-                        listing_Standard.Label("RWrd_BM".Translate(this.root.energy.level.ToString()) + "匹", -1f, null);
+                        if (this.root.Qigong)
+                        {
+                            listing_Standard.Label("RWrd_QigongLevel".Translate(this.root.energy.level.ToString()) + "匹", -1f, null);
+                        }
+                        else
+                        {
+                            listing_Standard.Label("RWrd_BM".Translate(this.root.energy.level.ToString()) + "匹", -1f, null);
+                        }
                         if (realmTitle != " - ")
                         {
                             realmTitle += " - ";
@@ -178,7 +185,14 @@ namespace Electromagnetic.UI
                     }
                     else
                     {
-                        listing_Standard.Label("RWrd_BM".Translate(this.root.energy.level.ToString()), -1f, null);
+                        if (this.root.Qigong)
+                        {
+                            listing_Standard.Label("RWrd_QigongLevel".Translate(this.root.energy.level.ToString()), -1f, null);
+                        }
+                        else
+                        {
+                            listing_Standard.Label("RWrd_BM".Translate(this.root.energy.level.ToString()), -1f, null);
+                        }
                     }
                 }
                 listing_Standard.Gap(10f);
@@ -202,6 +216,7 @@ namespace Electromagnetic.UI
                 }
                 listing_Standard.Label("Rwrd_CompleteRealm".Translate() + ": " + this.root.energy.completerealm.ToString("0.##") + "/10000", -1f, null);
                 listing_Standard.Label("RWrd_PowerFlow".Translate() + ": " + this.root.energy.powerflow.ToString("0.##") + "/100000000", -1f, null);
+                listing_Standard.Label("RWrd_MartialTalent".Translate() + ": " + this.root.MartialTalent.ToString("0.##"), -1f, null);
                 //力量体系介绍按钮
                 Rect buttonRect = listing_Standard.GetRect(40f, 1f);
                 Rect buttonLeft = listing_Standard.GetRect(40f, 0.5f);

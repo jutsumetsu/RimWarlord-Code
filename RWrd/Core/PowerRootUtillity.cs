@@ -206,12 +206,39 @@ namespace Electromagnetic.Core
             }
         }
         /// <summary>
+        /// 初始武学天赋
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public static float InitialMartialTalent(this Hediff_RWrd_PowerRoot root)
+        {
+            float num = UnityEngine.Random.Range(0.01f, 0.88f);
+            float melee = 0f;
+            float intellectual = 0f;
+            Pawn pawn = root.pawn;
+            foreach (Trait trait in pawn.story.traits.allTraits)
+            {
+                TraitDegreeData currentData = trait.CurrentData;
+
+                if (currentData?.skillGains == null) continue;
+                foreach (SkillGain skillGain in currentData.skillGains)
+                {
+                    if (skillGain.skill == SkillDefOf.Melee) melee += skillGain.amount;
+                    if (skillGain.skill == SkillDefOf.Intellectual) intellectual += skillGain.amount;
+                }
+            }
+            num += melee * 0.03f + intellectual * 0.02f;
+            return Math.Max(num, 0.01f);
+        }
+        /// <summary>
         /// 初始等级
         /// </summary>
         /// <param name="root"></param>
         /// <returns></returns>
-        public static int InitialLevel(this Hediff_RWrd_PowerRoot root)
+        public static int InitialLevel(this Hediff_RWrd_PowerRoot root, bool highStarter = false, bool starter = false)
         {
+            if (highStarter) { return 1; }
+            if (starter) { return 0; }
             int num = 0;
             Pawn pawn = root.pawn;
             if (pawn.story.Childhood is WarlordBackstoryDef warlordChildhood)
@@ -259,6 +286,20 @@ namespace Electromagnetic.Core
                 }
                 num = cP;
             }
+            return num;
+        }
+        /// <summary>
+        /// 初始完全境界
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public static float InitialCompleteRealm(this Hediff_RWrd_PowerRoot root)
+        {
+            Pawn pawn = root.pawn;
+            float melee = pawn.skills.GetSkill(SkillDefOf.Melee).GetLevel() * 0.02f;
+            float intellectual = pawn.skills.GetSkill(SkillDefOf.Intellectual).GetLevel() * 0.015f;
+            float lifeXp = Math.Max(pawn.ageTracker.AgeBiologicalYears - 10, 0) * 0.01f * root.MartialTalent;
+            float num = melee + intellectual + lifeXp;
             return num;
         }
         /// <summary>

@@ -1,0 +1,45 @@
+﻿using Electromagnetic.Core;
+using HarmonyLib;
+using RimWorld;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using Verse;
+
+namespace Electromagnetic.HarmonyPatchs
+{
+    public class RJWPatches
+    {
+        [HarmonyPatch]
+        public class RJWPregnancyPatch
+        {
+            public static bool Prepare()
+            {
+                return ModDetector.RJWIsLoaded;
+            }
+            public static MethodBase TargetMethod()
+            {
+                return AccessTools.Method("rjw.Hediff_BasePregnancy:BabyPostBirth");
+            }
+            [HarmonyPrefix]
+            public static void Prefix(Pawn mother, Pawn father, Pawn baby)
+            {
+                if (baby is Pawn babyPawn)
+                {
+                    bool hasRootParent = (mother != null && mother.IsHavePowerRoot() == true) ||
+                                         (father != null && father.IsHavePowerRoot() == true);
+
+                    if (hasRootParent)
+                    {
+                        Hediff root = Tools.MakePowerRoot(RWrd_DefOf.Hediff_RWrd_PowerRoot, babyPawn, false, true);
+                        babyPawn.health.AddHediff(root);
+                        if (!babyPawn.story.traits.HasTrait(RWrd_DefOf.RWrd_Gifted)) babyPawn.story.traits.GainTrait(new Trait(RWrd_DefOf.RWrd_Gifted));
+                    }
+                }
+            }
+        }
+    }
+}

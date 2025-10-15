@@ -68,6 +68,16 @@ namespace Electromagnetic.Core
                 return ModDetect(null, "dubwise.dubsbadhygiene", "dubwise.dubsbadhygiene.thirst");
             }
         }
+        /// <summary>
+        /// RJW加载检测
+        /// </summary>
+        public static bool RJWIsLoaded
+        {
+            get
+            {
+                return ModDetect(null, "rim.job.world");
+            }
+        }
         public static bool ModDetect(string packName = null, params string[] packIDs)
         {
             bool nameFlag = false;
