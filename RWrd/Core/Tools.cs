@@ -187,6 +187,48 @@ namespace Electromagnetic.Core
             }
             Croot.SelfDestruction = false;
         }
+        /// <summary>
+        /// 生成区间[min, max]内符合正态分布的随机数
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        public static float GaussianRandom(float min, float max)
+        {
+            // 计算区间中心（均值）和标准差（区间宽度/6覆盖99.7%数据）
+            float mean = (min + max) / 2f;
+            float stdDev = (max - min) / 6f;
+
+            // 使用Box-Muller变换生成标准正态分布
+            float u1 = 1.0f - UnityEngine.Random.Range(0f, 1f); // 避免0值
+            float u2 = 1.0f - UnityEngine.Random.Range(0f, 1f);
+            float randStdNormal = Mathf.Sqrt(-2f * Mathf.Log(u1)) * Mathf.Sin(2f * Mathf.PI * u2);
+
+            // 缩放并平移至目标分布
+            float randNormal = mean + stdDev * randStdNormal;
+
+            // 确保结果在指定区间内（3σ原则下概率<0.3%需要重试）
+            return Mathf.Clamp(randNormal, min, max);
+        }
+        /// <summary>
+        /// 带强度参数的重载
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <param name="strength"></param>
+        /// <returns></returns>
+        public static float GaussianRandom(float min, float max, float strength)
+        {
+            strength = Mathf.Clamp(strength, 0.1f, 10f);
+            float mean = (min + max) / 2f;
+            float stdDev = (max - min) / (2f * strength);
+
+            float u1 = 1.0f - UnityEngine.Random.Range(0f, 1f);
+            float u2 = 1.0f - UnityEngine.Random.Range(0f, 1f);
+            float randNormal = mean + stdDev * Mathf.Sqrt(-2f * Mathf.Log(u1)) * Mathf.Sin(2f * Mathf.PI * u2);
+
+            return Mathf.Clamp(randNormal, min, max);
+        }
         public static void DamageUntilSI(Pawn p, bool allowBleedingWounds = true, ThingDef sourceDef = null, BodyPartGroupDef bodyGroupDef = null)
         {
             if (p.Downed)

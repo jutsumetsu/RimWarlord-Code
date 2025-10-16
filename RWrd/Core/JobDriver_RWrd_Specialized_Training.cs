@@ -46,7 +46,7 @@ namespace Electromagnetic.Core
                         if (root != null)
                         {
                             int currentLevel = root.energy.level;
-                            float deltaCR = 0.0003f;
+                            float deltaCR = 0.0003f * (root.MartialTalent * 2.5f);
                             if (currentLevel == 0)
                             {
                                 root.energy.SetExp(200);

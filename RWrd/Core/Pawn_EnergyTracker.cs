@@ -536,9 +536,7 @@ namespace Electromagnetic.Core
             if (flag)
             {
                 this.level += 1;
-                this.OnPostSetLevel();
                 this.exp = 0f;
-                this.pawn.UpdatePowerRootStageInfo();
                 if (this.level == 50)
                 {
                     Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(RWrd_DefOf.RWrd_Flight);
@@ -549,7 +547,29 @@ namespace Electromagnetic.Core
                         pawn.health.AddHediff(newHediff);
                     }
                 }
+                this.pawn.UpdatePowerRootStageInfo();
+                this.OnPostSetLevel();
             }
+        }
+        /// <summary>
+        /// 强制设置等级
+        /// </summary>
+        /// <param name="level"></param>
+        public void ForceSetLevel(int level)
+        {
+            this.level = level;
+            if (this.level >= 50)
+            {
+                Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(RWrd_DefOf.RWrd_Flight);
+                if (hediff != null)
+                {
+                    pawn.health.RemoveHediff(hediff);
+                    Hediff newHediff = HediffMaker.MakeHediff(RWrd_DefOf.RWrd_Antigravity, this.pawn);
+                    pawn.health.AddHediff(newHediff);
+                }
+            }
+            this.pawn.UpdatePowerRootStageInfo();
+            this.OnPostSetLevel();
         }
         /// <summary>
         /// 设置等级后方法

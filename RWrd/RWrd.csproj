@@ -181,6 +181,7 @@
     <Compile Include="UI\Command_EMToggle.cs" />
     <Compile Include="UI\Command_SDToggle.cs" />
     <Compile Include="UI\Dialog_AbilitySet.cs" />
+    <Compile Include="UI\Dialog_ChangeEMStats.cs" />
     <Compile Include="UI\Dialog_EditAbilitySets.cs" />
     <Compile Include="UI\Dialog_HeavenLock.cs" />
     <Compile Include="UI\Dialog_OutputPower.cs" />

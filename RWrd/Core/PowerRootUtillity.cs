@@ -212,10 +212,27 @@ namespace Electromagnetic.Core
         /// <returns></returns>
         public static float InitialMartialTalent(this Hediff_RWrd_PowerRoot root)
         {
-            float num = UnityEngine.Random.Range(0.01f, 0.88f);
+            float num = Tools.GaussianRandom(0.1f, 0.8f);
+            num = (float)Math.Round(num, 2, MidpointRounding.AwayFromZero);
             float melee = 0f;
             float intellectual = 0f;
             Pawn pawn = root.pawn;
+            if (pawn.story.Childhood != null)
+            {
+                foreach (SkillGain skillGain in pawn.story.Childhood.skillGains)
+                {
+                    if (skillGain.skill == SkillDefOf.Melee) melee += skillGain.amount;
+                    if (skillGain.skill == SkillDefOf.Intellectual) intellectual += skillGain.amount;
+                }
+            }
+            if (pawn.story.Adulthood != null)
+            {
+                foreach (SkillGain skillGain in pawn.story.Adulthood.skillGains)
+                {
+                    if (skillGain.skill == SkillDefOf.Melee) melee += skillGain.amount;
+                    if (skillGain.skill == SkillDefOf.Intellectual) intellectual += skillGain.amount;
+                }
+            }
             foreach (Trait trait in pawn.story.traits.allTraits)
             {
                 TraitDegreeData currentData = trait.CurrentData;
@@ -227,7 +244,8 @@ namespace Electromagnetic.Core
                     if (skillGain.skill == SkillDefOf.Intellectual) intellectual += skillGain.amount;
                 }
             }
-            num += melee * 0.03f + intellectual * 0.02f;
+            num += melee * 0.015f + intellectual * 0.01f;
+            num = (float)Math.Round(num, 3, MidpointRounding.AwayFromZero);
             return Math.Max(num, 0.01f);
         }
         /// <summary>

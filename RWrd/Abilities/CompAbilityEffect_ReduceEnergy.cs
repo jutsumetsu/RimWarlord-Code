@@ -63,9 +63,9 @@ namespace Electromagnetic.Abilities
                 root.energy.SetExp(0.1f * -(float)this.Props.rEnergy);
                 if (!Props.masterySA)
                 {
-                    ((RWrd_PsyCastBase)this.parent).SetMastery(0.2f);
+                    ((RWrd_PsyCastBase)this.parent).SetMastery(0.2f * (root.MartialTalent * 2.3f));
                 }
-                root.energy.SetCompleteRealm(0.000001f);
+                root.energy.SetCompleteRealm(0.00001f * (root.MartialTalent * 2.3f));
             }
         }
 

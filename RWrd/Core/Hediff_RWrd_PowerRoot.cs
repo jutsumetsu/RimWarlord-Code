@@ -31,7 +31,7 @@ namespace Electromagnetic.Core
                 Gizmo_Electromagnetic gizmo = new Gizmo_Electromagnetic(this.pawn, this)
                 {
                     EnergyLabel = "RWrd_EP_Energy".Translate(),
-                    CompleteRealmLabel = "Rwrd_CompleteRealm".Translate(),
+                    CompleteRealmLabel = "RWrd_CompleteRealm".Translate(),
                     PowerFlowLabel = "RWrd_PowerFlow".Translate()
                 };
                 if (flag2)
@@ -84,7 +84,7 @@ namespace Electromagnetic.Core
             bool godMode = DebugSettings.godMode;
             if (godMode)
             {
-                if (_cachedGodCommand != null && _cachedGodCommand.action != null)
+                /*if (_cachedGodCommand != null && _cachedGodCommand.action != null)
                 {
                     yield return _cachedGodCommand;
                 }
@@ -102,7 +102,7 @@ namespace Electromagnetic.Core
                         }
                     };
                     yield return _cachedGodCommand;
-                }
+                }*/
                 if (_cachedReloadCommand != null && _cachedReloadCommand.action != null)
                 {
                     yield return _cachedReloadCommand;
@@ -139,10 +139,7 @@ namespace Electromagnetic.Core
                         defaultLabel = "釋天風模擬器",
                         action = delegate ()
                         {
-                            for (; this.energy.level < this.energy.LevelMax; this.energy.SetLevel())
-                            {
-                                this.energy.ForceSetExp(this.energy.MaxExp);
-                            }
+                            this.energy.ForceSetLevel(99);
                             this.energy.ForceSetExp(this.energy.MaxExp);
                             this.energy.ForceSetPowerFlow(95000000);
                             this.energy.ForceSetCompleteRealm(9700);
@@ -562,6 +559,14 @@ namespace Electromagnetic.Core
                     yield return new StatModifier
                     {
                         stat = RWrd_DefOf.DecompressionResistance,
+                        value = Math.Min(level * 0.05f, 1f),
+                    };
+                }
+                if (ModsConfig.OdysseyActive)
+                {
+                    yield return new StatModifier
+                    {
+                        stat = StatDefOf.VacuumResistance,
                         value = Math.Min(level * 0.05f, 1f),
                     };
                 }

@@ -214,9 +214,10 @@ namespace Electromagnetic.UI
                 {
                     listing_Standard.Label("RWrd_Ultimate".Translate() + ": " + this.root.energy.PowerEnergy.ToString() + "RWrd_UltimatePower".Translate(), -1f, null);
                 }
-                listing_Standard.Label("Rwrd_CompleteRealm".Translate() + ": " + this.root.energy.completerealm.ToString("0.##") + "/10000", -1f, null);
+                listing_Standard.Label("RWrd_CompleteRealm".Translate() + ": " + this.root.energy.completerealm.ToString("0.##") + "/10000", -1f, null);
                 listing_Standard.Label("RWrd_PowerFlow".Translate() + ": " + this.root.energy.powerflow.ToString("0.##") + "/100000000", -1f, null);
                 listing_Standard.Label("RWrd_MartialTalent".Translate() + ": " + this.root.MartialTalent.ToString("0.##"), -1f, null);
+                listing_Standard.Label("RWrd_TrainingDesire".Translate() + ": " + this.root.energy.trainDesireFactor.ToString(), -1f, null);
                 //力量体系介绍按钮
                 Rect buttonRect = listing_Standard.GetRect(40f, 1f);
                 Rect buttonLeft = listing_Standard.GetRect(40f, 0.5f);
@@ -240,6 +241,11 @@ namespace Electromagnetic.UI
                 {
                     var editSets = new Dialog_EditAbilitySets(this);
                     Find.WindowStack.Add(editSets);
+                }
+                if (DebugSettings.godMode && Widgets.ButtonText(buttonRect2, "RWrd_ChangeEMStats".Translate()))
+                {
+                    var EMStats = new Dialog_ChangeEMStats(this);
+                    Find.WindowStack.Add(EMStats);
                 }
                 listing_Standard.End();
                 //绘制技能树显示区域
