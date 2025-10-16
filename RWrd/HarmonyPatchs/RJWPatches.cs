@@ -13,19 +13,9 @@ namespace Electromagnetic.HarmonyPatchs
 {
     public class RJWPatches
     {
-        [HarmonyPatch]
         public class RJWPregnancyPatch
         {
-            public static bool Prepare()
-            {
-                return ModDetector.RJWIsLoaded;
-            }
-            public static MethodBase TargetMethod()
-            {
-                return AccessTools.Method("rjw.Hediff_BasePregnancy:BabyPostBirth");
-            }
-            [HarmonyPrefix]
-            public static void Prefix(Pawn mother, Pawn father, Pawn baby)
+            public static void Postfix(Pawn mother, Pawn father, Pawn baby)
             {
                 if (baby is Pawn babyPawn)
                 {

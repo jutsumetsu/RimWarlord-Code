@@ -41,6 +41,10 @@
       <HintPath>..\..\..\..\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="RJW">
+      <HintPath>..\..\..\..\Steam\steamapps\common\RimWorld\Mods\rjw-master\1.6\Assemblies\RJW.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
