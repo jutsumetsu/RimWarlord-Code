@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Electromagnetic.Core;
@@ -19,6 +20,39 @@ namespace Electromagnetic.HarmonyPatchs
                 if (ModDetector.RJWIsLoaded)
                 {
                     LongEventHandler.QueueLongEvent(SafePatchRJW, "RWrd_RJWPatches", false, null);
+                }
+                // 订阅游戏初始化事件
+                LongEventHandler.QueueLongEvent(() =>
+                {
+                    // 确保事件只触发一次
+                    if (RWrd_DefOf.RWrd_Pawn_BaakSide != null)
+                    {
+                        ApplyRelationPatch();
+                    }
+                    else
+                    {
+                        // 若未就绪，延迟到下一帧
+                        LongEventHandler.ExecuteWhenFinished(ApplyRelationPatch);
+                    }
+                }, "DelayedHarmonyInit", false, null);
+            }
+            private static void ApplyRelationPatch()
+            {
+                var targetMethods = Pawn_Patch.RelationPatch.TargetMethods().ToList();
+                Log.Message($"[RimWarlord] Found {targetMethods.Count} methods to patch");
+
+                foreach (var method in targetMethods)
+                {
+                    try
+                    {
+                        instance.Patch(method,
+                             prefix: new HarmonyMethod(typeof(Pawn_Patch.RelationPatch), nameof(Pawn_Patch.RelationPatch.CreateRelation_Prefix)));
+                        Log.Message($"[RimWarlord] Patched: {method.DeclaringType?.Name}.{method.Name}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"[RimWarlord] Failed to patch {method.Name}: {ex}");
+                    }
                 }
             }
             private static bool WaitForRJWInitialization()

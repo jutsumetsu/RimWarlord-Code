@@ -13,6 +13,8 @@ namespace Electromagnetic.Core
         {
             DefOfHelper.EnsureInitializedInCtor(typeof(RWrd_DefOf));
         }
+        // 小人类型
+        public static PawnKindDef RWrd_Pawn_BaakSide;
         //修炼主干
         public static HediffDef Hediff_RWrd_PowerRoot;
         public static TraitDef RWrd_Gifted;

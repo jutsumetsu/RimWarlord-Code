@@ -10,6 +10,7 @@ using System.Net.NetworkInformation;
 using System.Linq;
 using Electromagnetic.Abilities;
 using Electromagnetic.Setting;
+using System.Reflection;
 
 namespace Electromagnetic.HarmonyPatchs
 {
@@ -31,6 +32,120 @@ namespace Electromagnetic.HarmonyPatchs
                         pawn.health.AddHediff(hediff);
                     }
                 }
+            }
+        }
+        // 白家强者没有穷亲戚
+        public class RelationPatch
+        {
+            // 使用 TargetMethods 代替固定类型和方法名
+            public static IEnumerable<MethodBase> TargetMethods()
+            {
+                // 获取基类方法
+                yield return AccessTools.Method(typeof(PawnRelationWorker), nameof(PawnRelationWorker.CreateRelation));
+
+                // 获取所有子类中重写的方法
+                foreach (Type subclass in GetAllSubclasses(typeof(PawnRelationWorker)))
+                {
+                    MethodInfo method = AccessTools.Method(subclass, nameof(PawnRelationWorker.CreateRelation));
+                    if (method != null && method.DeclaringType == subclass)
+                    {
+                        yield return method;
+                    }
+                }
+            }
+
+            // 获取所有子类
+            private static IEnumerable<Type> GetAllSubclasses(Type baseType)
+            {
+                return baseType.Assembly.GetTypes()
+                    .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(baseType));
+            }
+
+            // 使用HashSet提高查找性能
+            private static readonly HashSet<PawnKindDef> BaakFamily = new HashSet<PawnKindDef>
+            {
+                RWrd_DefOf.RWrd_Pawn_BaakSide
+            };
+
+            private static readonly HashSet<PawnRelationDef> ParentChildRelations = new HashSet<PawnRelationDef>
+            {
+                PawnRelationDefOf.Parent,
+                PawnRelationDefOf.Child
+            };
+
+            // 预计算可生成的血缘关系
+            private static readonly HashSet<PawnRelationDef> RelationsGeneratableBlood;
+
+            static RelationPatch()
+            {
+                RelationsGeneratableBlood = DefDatabase<PawnRelationDef>.AllDefs
+                    .Where(rel => rel.familyByBloodRelation && rel.generationChanceFactor > 0f)
+                    .ToHashSet();
+            }
+
+            public static bool CreateRelation_Prefix(PawnRelationWorker __instance, Pawn generated,
+                Pawn other, ref PawnGenerationRequest request)
+            {
+                // 提前返回：如果不是目标关系类型，不干预原逻辑
+                if (!RelationsGeneratableBlood.Contains(__instance.def))
+                    return true;
+
+                bool isBaakGenerated = BaakFamily.Contains(generated.kindDef);
+                bool isBaakOther = BaakFamily.Contains(other.kindDef);
+
+                // 提前返回：双方都不是白家人，不干预
+                if (!isBaakGenerated && !isBaakOther)
+                    return true;
+
+                Log.Message($"Baak Family Relation Check: {generated.Name} & {other.Name}");
+
+                // 处理亲子关系
+                if (ParentChildRelations.Contains(__instance.def))
+                    return HandleParentChildRelation(__instance.def, generated, other, isBaakGenerated, isBaakOther);
+
+                // 非亲子血缘关系
+                return generated.kindDef == other.kindDef;
+            }
+
+            private static bool HandleParentChildRelation(PawnRelationDef relation, Pawn generated,
+                Pawn other, bool isBaakGenerated, bool isBaakOther)
+            {
+                // 双方都是白家人，允许关系
+                if (isBaakGenerated && isBaakOther)
+                    return true;
+
+                // 简化逻辑：提取共同模式
+                if (relation == PawnRelationDefOf.Parent)
+                    return HandleParentRelation(generated, other, isBaakGenerated, isBaakOther);
+                else
+                    return HandleChildRelation(generated, other, isBaakGenerated, isBaakOther);
+            }
+
+            private static bool HandleParentRelation(Pawn generated, Pawn other, bool isBaakGenerated, bool isBaakOther)
+            {
+                // other是parent，generated是child
+                if (isBaakOther)
+                    return generated.ageTracker.AgeBiologicalYears < 1; // 孩子必须是婴儿
+
+                return CheckOtherParentIsBaak(generated, other);
+            }
+
+            private static bool HandleChildRelation(Pawn generated, Pawn other, bool isBaakGenerated, bool isBaakOther)
+            {
+                // generated是parent，other是child  
+                if (isBaakGenerated)
+                    return other.ageTracker.AgeBiologicalYears < 1; // 孩子必须是婴儿
+
+                return CheckOtherParentIsBaak(other, generated);
+            }
+
+            private static bool CheckOtherParentIsBaak(Pawn child, Pawn parent)
+            {
+                // 获取另一性别父母
+                Pawn otherParent = parent.gender == Gender.Male ?
+                    child.GetMother() : child.GetFather();
+
+                return otherParent != null && BaakFamily.Contains(otherParent.kindDef);
             }
         }
         // Pawn伤害patch
