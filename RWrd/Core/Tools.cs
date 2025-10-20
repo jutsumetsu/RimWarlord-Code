@@ -1,10 +1,12 @@
 ﻿using Electromagnetic.Abilities;
 using Electromagnetic.Setting;
+using Electromagnetic.UI;
 using RimWorld;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -296,6 +298,15 @@ namespace Electromagnetic.Core
             }
             p.health.forceDowned = false;
         }
+        public static void SetPawnGender(this Pawn pawn, Gender gender)
+        {
+            if (pawn != null)
+            {
+                pawn.gender = gender;
+                Messages.Message(gender.ToString(), MessageTypeDefOf.SilentInput);
+                pawn.SetDirty();
+            }
+        }
         private static IEnumerable<BodyPartRecord> HittablePartsViolence(HediffSet bodyModel)
         {
             return from x in bodyModel.GetNotMissingParts(BodyPartHeight.Undefined, BodyPartDepth.Undefined, null, null)
@@ -305,6 +316,335 @@ namespace Electromagnetic.Core
         public static int IntRestrict(float preNum)
         {
             return (int)Math.Min(preNum, int.MaxValue);
+        }
+        internal static void SetMemberValue(this object obj, string name, object value)
+        {
+            BindingFlags bindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            FieldInfo fieldInfo = (obj != null) ? obj.GetType().GetField(name, bindingAttr) : null;
+            if (fieldInfo != null)
+            {
+                fieldInfo.SetValue(obj, value);
+            }
+        }
+        public static void SetFMOIcon(this FloatMenuOption fmo, Texture2D t)
+        {
+            bool flag = t != null;
+            if (flag)
+            {
+                fmo.SetMemberValue("iconTex", t);
+            }
+        }
+        internal static Texture2D GetTIcon<T>(this T def, Selected s = null)
+        {
+            Texture2D texture2D = null;
+            bool flag = typeof(T) == typeof(ThingDef);
+            if (flag)
+            {
+                texture2D = (def as ThingDef).uiIcon;
+            }
+            else
+            {
+                bool flag2 = typeof(T) == typeof(Ability);
+                if (flag2)
+                {
+                    texture2D = (def as Ability).def.uiIcon;
+                }
+                else
+                {
+                    bool flag3 = typeof(T) == typeof(AbilityDef);
+                    if (flag3)
+                    {
+                        texture2D = (def as AbilityDef).uiIcon;
+                    }
+                    else
+                    {
+                        bool flag4 = typeof(T) == typeof(HairDef);
+                        if (flag4)
+                        {
+                            texture2D = (def as HairDef).Icon;
+                        }
+                        else
+                        {
+                            bool flag5 = typeof(T) == typeof(BeardDef);
+                            if (flag5)
+                            {
+                                texture2D = (def as BeardDef).Icon;
+                            }
+                            else
+                            {
+                                bool flag6 = typeof(T) == typeof(GeneDef);
+                                if (flag6)
+                                {
+                                    texture2D = (def as GeneDef).Icon;
+                                }
+                                else
+                                {
+                                    bool flag7 = typeof(T) == typeof(XenotypeDef);
+                                    if (flag7)
+                                    {
+                                        texture2D = (def as XenotypeDef).Icon;
+                                    }
+                                    else
+                                    {
+                                        bool flag8 = typeof(T) == typeof(TattooDef);
+                                        if (flag8)
+                                        {
+                                            texture2D = (def as TattooDef).Icon;
+                                    }
+                                        else
+                                        {
+                                            bool flag10 = typeof(T) == typeof(ThingStyleDef);
+                                            if (flag10)
+                                            {
+                                                texture2D = Dialog_​BodyRemold.IconForStyleCustom(s, def as ThingStyleDef);
+                                            }
+                                            else
+                                            {
+                                                bool flag11 = typeof(T) == typeof(ThingCategoryDef);
+                                                if (flag11)
+                                                {
+                                                    texture2D = (def as ThingCategoryDef).icon;
+                                                }
+                                                else
+                                                {
+                                                    bool flag12 = typeof(T) == typeof(CustomXenotype);
+                                                    if (flag12)
+                                                    {
+                                                        XenotypeIconDef iconDef = (def as CustomXenotype).IconDef;
+                                                        texture2D = ((iconDef != null) ? iconDef.Icon : null);
+                                                    }
+                                                    else
+                                                    {
+                                                        bool flag13 = typeof(T) == typeof(Gene);
+                                                        if (flag13)
+                                                        {
+                                                            texture2D = (def as Gene).def.Icon;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return (texture2D == BaseContent.BadTex) ? null : texture2D;
+        }
+        internal static string SubstringBackwardFrom(this string text, string startFrom, bool withoutIt = true)
+        {
+            bool flag = text != null;
+            if (flag)
+            {
+                int num = text.LastIndexOf(startFrom);
+                bool flag2 = num >= 0;
+                if (flag2)
+                {
+                    if (withoutIt)
+                    {
+                        return text.Substring(num + startFrom.Length);
+                    }
+                    return text.Substring(num);
+                }
+            }
+            return text;
+        }
+        internal static string SubstringBackwardTo(this string text, string endOn, bool withoutIt = true)
+        {
+            bool flag = text != null;
+            if (flag)
+            {
+                int num = text.LastIndexOf(endOn);
+                bool flag2 = num >= 0;
+                if (flag2)
+                {
+                    if (withoutIt)
+                    {
+                        return text.Substring(0, num);
+                    }
+                    return text.Substring(num);
+                }
+            }
+            return text;
+        }
+        internal static int NextOrPrevIndex<T>(this HashSet<T> l, int index, bool next, bool random)
+        {
+            bool flag = l.NullOrEmpty<T>();
+            int result;
+            if (flag)
+            {
+                result = 0;
+            }
+            else if (random)
+            {
+                result = l.IndexOf(l.RandomElement<T>());
+            }
+            else
+            {
+                if (next)
+                {
+                    bool flag2 = index + 1 < l.Count;
+                    if (flag2)
+                    {
+                        index++;
+                    }
+                    else
+                    {
+                        index = 0;
+                    }
+                }
+                else
+                {
+                    bool flag3 = index - 1 >= 0;
+                    if (flag3)
+                    {
+                        index--;
+                    }
+                    else
+                    {
+                        index = l.Count - 1;
+                    }
+                }
+                result = index;
+            }
+            return result;
+        }
+        internal static object CallMethod(this object obj, string name, object[] param)
+        {
+            BindingFlags bindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            object result;
+            if (obj == null)
+            {
+                result = null;
+            }
+            else
+            {
+                MethodInfo method = obj.GetType().GetMethod(name, bindingAttr);
+                result = ((method != null) ? method.Invoke(obj, param) : null);
+            }
+            return result;
+        }
+        internal static T At<T>(this HashSet<T> l, int index)
+        {
+            return l.NullOrEmpty<T>() ? default(T) : l.ElementAt(index);
+        }
+        internal static T At<T>(this List<T> l, int index)
+        {
+            return l.NullOrEmpty<T>() ? default(T) : l.ElementAt(index);
+        }
+        internal static int IndexOf<T>(this HashSet<T> l, T val)
+        {
+            return (l.NullOrEmpty<T>() || val == null) ? 0 : l.FirstIndexOf((T y) => val.Equals(y));
+        }
+        internal static int NextOrPrevIndex<T>(this List<T> l, int index, bool next, bool random)
+        {
+            bool flag = l.NullOrEmpty<T>();
+            int result;
+            if (flag)
+            {
+                result = 0;
+            }
+            else if (random)
+            {
+                result = l.IndexOf(l.RandomElement<T>());
+            }
+            else
+            {
+                if (next)
+                {
+                    bool flag2 = index + 1 < l.Count;
+                    if (flag2)
+                    {
+                        index++;
+                    }
+                    else
+                    {
+                        index = 0;
+                    }
+                }
+                else
+                {
+                    bool flag3 = index - 1 >= 0;
+                    if (flag3)
+                    {
+                        index--;
+                    }
+                    else
+                    {
+                        index = l.Count - 1;
+                    }
+                }
+                result = index;
+            }
+            return result;
+        }
+        internal static string SubstringTo(this string text, string endOn, bool withoutIt = true)
+        {
+            bool flag = text != null;
+            if (flag)
+            {
+                int num = text.IndexOf(endOn);
+                bool flag2 = num >= 0;
+                if (flag2)
+                {
+                    if (withoutIt)
+                    {
+                        return text.Substring(0, num);
+                    }
+                    return text.Substring(0, num + endOn.Length);
+                }
+            }
+            return text;
+        }
+        internal static string SubstringTo(this string text, string to, int occuranceCount)
+        {
+            string text2 = text;
+            string text3 = "";
+            for (int i = 0; i < occuranceCount; i++)
+            {
+                text3 += text2.SubstringTo(to, false);
+                text2 = text2.SubstringFrom(to, true);
+            }
+            bool flag = text3.Length > 0;
+            string result;
+            if (flag)
+            {
+                result = text3.Substring(0, text3.Length - 1);
+            }
+            else
+            {
+                result = text3;
+            }
+            return result;
+        }
+        internal static string SubstringFrom(this string text, string from, int occuranceCount)
+        {
+            string text2 = text;
+            for (int i = 0; i < occuranceCount; i++)
+            {
+                text2 = text2.SubstringFrom(from, true);
+            }
+            return text2;
+        }
+        internal static string SubstringFrom(this string text, string startFrom, bool withoutIt = true)
+        {
+            bool flag = text != null;
+            if (flag)
+            {
+                int num = text.IndexOf(startFrom);
+                bool flag2 = num >= 0;
+                if (flag2)
+                {
+                    if (withoutIt)
+                    {
+                        return text.Substring(num + startFrom.Length);
+                    }
+                    return text.Substring(num);
+                }
+            }
+            return text;
         }
         /// <summary>
         /// 能量条材质
@@ -345,5 +685,7 @@ namespace Electromagnetic.Core
         /// 原子分裂
         /// </summary>
         public static readonly Texture2D AtomSplit2D = ContentFinder<Texture2D>.Get("Ability/Base/AtomSplit", true);
+
+        internal static System.Random zufallswert;
     }
 }

@@ -64,6 +64,8 @@ namespace Electromagnetic.UI
             Rect mtRect = listingStandard.GetRect(Text.LineHeight, 1f);
             Widgets.Label(mtRect.LeftHalf().Rounded(), "RWrd_MartialTalent".Translate());
             Widgets.TextFieldNumeric<float>(mtRect.RightHalf().LeftPartPixels(60).Rounded(), ref mt, ref mtNumber, 0.01f, 2);
+            //终极气功
+            listingStandard.CheckboxLabeled("RWrd_Qigong".Translate(), ref this.parent.root.Qigong);
 
             listingStandard.NewColumn();
             //经验

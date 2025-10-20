@@ -82,6 +82,21 @@
     <Compile Update="Electromagnetic\**\*.cs">
       <Namespace>Electromagnetic.$(RelativeDir.Replace('Electromagnetic\', '').Replace('\', '.').TrimEnd('.'))</Namespace>
     </Compile>
+    <Compile Include="UI\BodyTool.cs" />
+    <Compile Include="UI\ColorTool.cs" />
+    <Compile Include="UI\ColorType.cs" />
+    <Compile Include="UI\CompatibilityTool.cs" />
+    <Compile Include="UI\DialogColorPicker.cs" />
+    <Compile Include="UI\DialogXenoType.cs" />
+    <Compile Include="UI\GeneTool.cs" />
+    <Compile Include="UI\HeadTool.cs" />
+    <Compile Include="UI\Listing_X.cs" />
+    <Compile Include="UI\RaceTool.cs" />
+    <Compile Include="UI\RJWReflectionHelper.cs" />
+    <Compile Include="UI\SkinTool.cs" />
+    <Compile Include="UI\StyleTool.cs" />
+    <Compile Include="UI\TextureTool.cs" />
+    <Compile Include="UI\WindowTool.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abilities\AbilitySet.cs" />
@@ -102,21 +117,13 @@
     <Compile Include="Abilities\CompAbilityEffect_ThunderPunch.cs" />
     <Compile Include="Abilities\CompAbilityEffect_TigerSharkExplosionPunch.cs" />
     <Compile Include="Abilities\CompAbilityEffect_WindBlade.cs" />
+    <Compile Include="Abilities\CompAbilityEffect_​BodyRemold.cs" />
     <Compile Include="Abilities\CompAbilityToggle_Electromagnetic.cs" />
     <Compile Include="Abilities\CompAbilityToggle_ProtectiveForce.cs" />
     <Compile Include="Abilities\CompAbilityToggle_Flight.cs" />
-    <Compile Include="Abilities\CompProperties_AbilityAtomSplit.cs" />
-    <Compile Include="Abilities\CompProperties_AbilityCellRecombination.cs" />
     <Compile Include="Abilities\CompProperties_AbilityElectricClaw.cs" />
-    <Compile Include="Abilities\CompProperties_AbilityProtectiveForce.cs" />
-    <Compile Include="Abilities\CompProperties_AbilityFlight.cs" />
     <Compile Include="Abilities\CompProperties_AbilityGiveTargetHediff.cs" />
-    <Compile Include="Abilities\CompProperties_AbilityHeavenLock.cs" />
-    <Compile Include="Abilities\CompProperties_AbilityHeavyNucleiKick.cs" />
-    <Compile Include="Abilities\CompProperties_AbilityLifeDrain.cs" />
     <Compile Include="Abilities\CompProperties_AbilityMatterHardening.cs" />
-    <Compile Include="Abilities\CompProperties_AbilityThunderPunch.cs" />
-    <Compile Include="Abilities\CompProperties_AbilityTigerSharkExplosionPunch.cs" />
     <Compile Include="Abilities\CompProperties_AbilityWindBlade.cs" />
     <Compile Include="Abilities\CompProperties_ReduceEnergy.cs" />
     <Compile Include="Abilities\CompProperties_SpawnMoteCast.cs" />
@@ -180,6 +187,7 @@
     <Compile Include="UI\Command_Electromagnetic.cs" />
     <Compile Include="UI\Command_EMToggle.cs" />
     <Compile Include="UI\Command_SDToggle.cs" />
+    <Compile Include="UI\DefTool.cs" />
     <Compile Include="UI\Dialog_AbilitySet.cs" />
     <Compile Include="UI\Dialog_ChangeEMStats.cs" />
     <Compile Include="UI\Dialog_EditAbilitySets.cs" />
@@ -188,8 +196,12 @@
     <Compile Include="UI\Dialog_PowerIntroduce.cs" />
     <Compile Include="UI\Dialog_RenameAbilitySet.cs" />
     <Compile Include="UI\Dialog_SelectThings.cs" />
+    <Compile Include="UI\Dialog_​BodyRemold.cs" />
+    <Compile Include="UI\HairTool.cs" />
     <Compile Include="UI\ITab_Pawn_RWrd.cs" />
     <Compile Include="UI\RWrd_ItemFilterDef.cs" />
+    <Compile Include="UI\Selected.cs" />
+    <Compile Include="UI\ThingTool.cs" />
     <Compile Include="UI\UIUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\RimWarlord.cs" />

@@ -12,14 +12,6 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityEffect_HeavenLock : CompAbilityEffect_Electromagnetic
     {
-        //绑定Properties
-        public new CompProperties_AbilityHeavenLock Props
-        {
-            get
-            {
-                return (CompProperties_AbilityHeavenLock)this.props;
-            }
-        }
 
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {

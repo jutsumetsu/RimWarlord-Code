@@ -14,13 +14,6 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityEffect_AtomSplit : CompAbilityEffect_Electromagnetic
     {
-        public new CompProperties_AbilityAtomSplit Props
-        {
-            get
-            {
-                return (CompProperties_AbilityAtomSplit)this.props;
-            }
-        }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             base.Apply(target, dest);

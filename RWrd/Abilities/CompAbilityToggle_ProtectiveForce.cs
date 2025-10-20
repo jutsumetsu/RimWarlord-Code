@@ -11,14 +11,6 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityToggle_ProtectiveForce : CompAbilityToggle_Electromagnetic
     {
-        //绑定Properties
-        public CompProperties_AbilityProtectiveForce Props
-        {
-            get
-            {
-                return (CompProperties_AbilityProtectiveForce)this.props;
-            }
-        }
         public override void Apply()
         {
             HediffDef pf = RWrd_DefOf.RWrd_ProtectiveForceHediff;

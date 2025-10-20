@@ -19,6 +19,7 @@ namespace Electromagnetic.HarmonyPatchs
             {
                 if (baby is Pawn babyPawn)
                 {
+                    if (DebugSettings.godMode) Log.Message("RimWarlord RJW Patch Success");
                     bool hasRootParent = (mother != null && mother.IsHavePowerRoot() == true) ||
                                          (father != null && father.IsHavePowerRoot() == true);
 

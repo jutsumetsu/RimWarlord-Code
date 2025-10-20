@@ -65,7 +65,7 @@ namespace Electromagnetic.Core
                                 }
                             }
                             root.energy.SetCompleteRealm(deltaCR);
-                            need.CurLevel += 0.1f;
+                            if (need != null) need.CurLevel += 0.1f;
                         }
                         tick = this.ticktime;
                         if (counter >= 10)

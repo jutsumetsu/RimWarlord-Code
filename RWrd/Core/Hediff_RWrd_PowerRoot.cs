@@ -84,25 +84,6 @@ namespace Electromagnetic.Core
             bool godMode = DebugSettings.godMode;
             if (godMode)
             {
-                /*if (_cachedGodCommand != null && _cachedGodCommand.action != null)
-                {
-                    yield return _cachedGodCommand;
-                }
-                else
-                {
-                    _cachedGodCommand = new Command_ActionWithFloat
-                    {
-                        defaultLabel = "RWrd_SelectAction".Translate(),
-                        defaultDesc = "RWrd_SelectActionDesc".Translate(),
-                        icon = Tools.LiftingArrow2D,
-                        floatMenuGetter = GetGodCommandOptions,
-                        action = delegate ()
-                        {
-                            Messages.Message("RWrd_SelectActionFirst".Translate(), this.pawn, MessageTypeDefOf.PositiveEvent, true);
-                        }
-                    };
-                    yield return _cachedGodCommand;
-                }*/
                 if (_cachedReloadCommand != null && _cachedReloadCommand.action != null)
                 {
                     yield return _cachedReloadCommand;
@@ -122,16 +103,6 @@ namespace Electromagnetic.Core
                     };
                     yield return _cachedReloadCommand;
                 }
-                yield return new Command_Toggle
-                {
-                    isActive = () => this.Qigong,
-                    toggleAction = delegate ()
-                    {
-                        this.Qigong = !this.Qigong;
-                    },
-                    icon = ContentFinder<Texture2D>.Get("Things/Items/CMBook/JunggikQigong", true),
-                    defaultLabel = "RWrd_Qigong".Translate(),
-                };
                 if (Tools.IsChineseLanguage)
                 {
                     yield return new Command_Action
@@ -188,51 +159,6 @@ namespace Electromagnetic.Core
             yield break;
         }
         /// <summary>
-        /// 升级
-        /// </summary>
-        private void LevelUp()
-        {
-            this.energy.ForceSetExp(this.energy.MaxExp);
-            this.energy.SetLevel();
-            this.pawn.CheckEMAbilityLimiting();
-        }
-        /// <summary>
-        /// 提升力量
-        /// </summary>
-        private void IncreaseEXP()
-        {
-            if (this.energy.level != 0) this.energy.ForceSetExp(1000f);
-            else this.energy.ForceSetExp(10000f);
-        }
-        /// <summary>
-        /// 增加能量
-        /// </summary>
-        private void IncreaseEnergy()
-        {
-            if (this.energy.MaxEnergy <= 5000) this.energy.SetEnergy(1000f);
-            else this.energy.SetEnergy(this.energy.MaxEnergy * 0.2f);
-        }
-        /// <summary>
-        /// 提升完全境界
-        /// </summary>
-        private void IncreaseCompleteRealm()
-        {
-            if (this.energy.completerealm >= 1000) this.energy.SetCompleteRealm(1000);
-            else if (this.energy.completerealm >= 100) this.energy.SetCompleteRealm(100);
-            else if (this.energy.completerealm >= 10) this.energy.SetCompleteRealm(10);
-            else if (this.energy.completerealm >= 1) this.energy.SetCompleteRealm(1);
-            else this.energy.SetCompleteRealm(0.1f);
-        }
-        /// <summary>
-        /// 提升力量流量
-        /// </summary>
-        private void IncreasePowerFlow()
-        {
-            if (this.energy.powerflow >= 10000000) this.energy.SetPowerFlow(10000000);
-            else if (this.energy.powerflow >= 1000000) this.energy.SetPowerFlow(1000000);
-            else this.energy.SetPowerFlow(10000);
-        }
-        /// <summary>
         /// 刷新技能树
         /// </summary>
         private void RefreshSkillTree()
@@ -248,35 +174,6 @@ namespace Electromagnetic.Core
             this.RemoveRWrdAbilities();
             this.UnlockRoute(routeDef);
             this.pawn.CheckEMAbilityLimiting();
-        }
-        private IEnumerable<FloatMenuOption> GetGodCommandOptions()
-        {
-            yield return new FloatMenuOption("RWrd_LevelUP".Translate(), () =>
-            {
-                _cachedGodCommand.action = LevelUp; // 设置主命令的 Action
-                _cachedGodCommand.defaultLabel = "RWrd_LevelUP".Translate(); // 更新标签
-            });
-            yield return new FloatMenuOption("RWrd_IncreaseEXP".Translate(), () =>
-            {
-                _cachedGodCommand.action = IncreaseEXP;
-                _cachedGodCommand.defaultLabel = "RWrd_IncreaseEXP".Translate();
-            });
-            yield return new FloatMenuOption("RWrd_IncreaseEnergy".Translate(), () =>
-            {
-                _cachedGodCommand.action = IncreaseEnergy;
-                _cachedGodCommand.defaultLabel = "RWrd_IncreaseEnergy".Translate();
-            });
-            yield return new FloatMenuOption("RWrd_IncreaseCompleteRealm".Translate(), () =>
-            {
-                _cachedGodCommand.action = IncreaseCompleteRealm;
-                _cachedGodCommand.defaultLabel = "RWrd_IncreaseCompleteRealm".Translate();
-            });
-            yield return new FloatMenuOption("RWrd_IncreasePowerFlow".Translate(), () =>
-            {
-                _cachedGodCommand.action = IncreasePowerFlow;
-                _cachedGodCommand.defaultLabel = "RWrd_IncreasePowerFlow".Translate();
-            });
-            yield break;
         }
         private IEnumerable<FloatMenuOption> GetReloadSkillOptions()
         {

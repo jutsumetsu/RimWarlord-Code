@@ -50,11 +50,34 @@ namespace Electromagnetic.Core
         public static HediffDef RWrd_Flight;
         [MayRequire("pathfinding.framework")]
         public static HediffDef RWrd_Antigravity;
+        [MayRequire("rim.job.world")]
+        public static HediffDef Penis;
+        [MayRequire("rim.job.world")]
+        public static HediffDef Vagina;
+        [MayRequire("rim.job.world")]
+        public static HediffDef Anus;
+        [MayRequire("rim.job.world")]
+        public static HediffDef Breasts;
 
+        public static HediffDef HeartAttack;
+        public static HediffDef Alzheimers;
         public static HediffDef Asthma;
         public static HediffDef BadBack;
-        public static HediffDef Flu;
+        public static HediffDef Cataract;
         public static HediffDef Frail;
+        public static HediffDef HearingLoss;
+        public static HediffDef HeartArteryBlockage;
+        public static HediffDef Flu;
+        public static HediffDef Animal_Flu;
+        public static HediffDef Animal_Plague;
+        public static HediffDef GutWorms;
+        public static HediffDef Malaria;
+        public static HediffDef MuscleParasites;
+        public static HediffDef SleepingSickness;
+        public static HediffDef ChemicalDamageModerate;
+        public static HediffDef ChemicalDamageSevere;
+        public static HediffDef Cirrhosis;
+        public static HediffDef TraumaSavant;
         //伤害类型
         public static DamageDef RWrd_PowerfulWave;
         public static DamageDef RWrd_LifeDrain;

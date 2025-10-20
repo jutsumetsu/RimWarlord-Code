@@ -12,14 +12,6 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityEffect_HeavyNucleiKick : CompAbilityEffect_Electromagnetic
     {
-        //绑定Properties
-        public new CompProperties_AbilityHeavyNucleiKick Props
-        {
-            get
-            {
-                return (CompProperties_AbilityHeavyNucleiKick)this.props;
-            }
-        }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             Map map = this.parent.pawn.Map;

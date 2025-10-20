@@ -11,14 +11,6 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityToggle_Flight : CompAbilityToggle_Electromagnetic
     {
-        //绑定Properties
-        public CompProperties_AbilityFlight Props
-        {
-            get
-            {
-                return (CompProperties_AbilityFlight)this.props;
-            }
-        }
         public override void Apply()
         {
             HediffDef flightDef = RWrd_DefOf.RWrd_Flight;

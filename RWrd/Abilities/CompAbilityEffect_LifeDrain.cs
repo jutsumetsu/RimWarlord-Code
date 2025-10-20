@@ -13,13 +13,6 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityEffect_LifeDrain : CompAbilityEffect_Electromagnetic
     {
-        public new CompProperties_AbilityLifeDrain Props
-        {
-            get
-            {
-                return (CompProperties_AbilityLifeDrain)this.props;
-            }
-        }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             List<Hediff_Injury> listOutside = (from x in Caster.health.hediffSet.hediffs.OfType<Hediff_Injury>()

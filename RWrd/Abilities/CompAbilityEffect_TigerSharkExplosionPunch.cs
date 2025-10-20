@@ -13,14 +13,6 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityEffect_TigerSharkExplosionPunch : CompAbilityEffect_Electromagnetic
     {
-        //绑定Properties
-        public new CompProperties_AbilityTigerSharkExplosionPunch Props
-        {
-            get
-            {
-                return (CompProperties_AbilityTigerSharkExplosionPunch)this.props;
-            }
-        }
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             base.Apply(target, dest);

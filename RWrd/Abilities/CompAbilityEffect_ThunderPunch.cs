@@ -14,14 +14,6 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityEffect_ThunderPunch : CompAbilityEffect_Electromagnetic
     {
-        //绑定Properties
-        public new CompProperties_AbilityThunderPunch Props
-        {
-            get
-            {
-                return (CompProperties_AbilityThunderPunch)this.props;
-            }
-        }
         //特效组
         public virtual FleckDef[] EffectSet
         {
