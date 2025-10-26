@@ -9,6 +9,8 @@ using Verse;
 using Verse.Sound;
 using Electromagnetic.Core;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
+using System.Numerics;
 
 namespace Electromagnetic.Abilities
 {
@@ -42,6 +44,28 @@ namespace Electromagnetic.Abilities
             }
         }
 
+        //能量消耗
+        public float EnergyReduce(GlobalTargetInfo target)
+        {
+            if (this.Caster.GetPowerRoot().energy.level >= 50)
+            {
+                return 0;
+            }
+            else
+            {
+                float mastery = (float)this.Ability.mastery;
+
+                int num = Find.WorldGrid.TraversalDistanceBetween(
+                    this.Caster.GetCaravan() != null ? this.Caster.GetCaravan().Tile : this.Caster.Map.Tile,
+                    target.Tile
+                );
+
+                float rEnergy = num * -50;
+                rEnergy *= (float)Math.Floor((100 - mastery / 2) * 0.001f);
+
+                return rEnergy;
+            }
+        }
         private float GetRadius()
         {
             return parent.def.verbProperties.range;
@@ -53,8 +77,8 @@ namespace Electromagnetic.Abilities
                 this.Caster.GetCaravan() != null ? this.Caster.GetCaravan().Tile : this.Caster.Map.Tile,
                 target.Tile
             );
-            //Log.Message($"instance: {num}");
-            if (num < GetRangeForPawn(this.Caster) + 1f && num >= 0)
+
+            if (num < GetRangeForPawn(this.Caster) + 1f && num >= 0 && EnergyReduce(target) <= this.Caster.GetPowerRoot().energy.energy)
             {
                 return true;
             }
@@ -95,6 +119,7 @@ namespace Electromagnetic.Abilities
         public override void Apply(GlobalTargetInfo target)
         {
             Pawn casterPawn = this.Caster;
+            Hediff_RWrd_PowerRoot root = this.Caster.GetPowerRoot();
             Map targetMap = (target.WorldObject as MapParent)?.Map;
             Caravan casterCaravan = casterPawn.GetCaravan();
             List<Pawn> pawns = PawnsToTeleport(casterPawn).ToList();
@@ -160,6 +185,7 @@ namespace Electromagnetic.Abilities
                     casterCaravan.Destroy();
 
                 CameraJumper.TryJump(targetCell, targetMap);
+                root.energy.SetEnergy((int)Math.Floor(this.EnergyReduce(target)));
             }
             else if (target.WorldObject is Caravan caravan && caravan.Faction == casterPawn.Faction)
             {
@@ -176,11 +202,13 @@ namespace Electromagnetic.Abilities
                         p.ExitMap(false, Rot4.Invalid);
                     }
                 }
+                root.energy.SetEnergy((int)Math.Floor(this.EnergyReduce(target)));
             }
             else if (casterPawn.GetCaravan() is Caravan caravan2)
             {
                 caravan2.Tile = target.Tile;
                 caravan2.pather.StopDead();
+                root.energy.SetEnergy((int)Math.Floor(this.EnergyReduce(target)));
             }
             //没有就创建远行队
             else
@@ -188,10 +216,11 @@ namespace Electromagnetic.Abilities
                 CaravanMaker.MakeCaravan(pawns, casterPawn.Faction, target.Tile, false);
                 foreach (Pawn p in pawns)
                     p.ExitMap(false, Rot4.Invalid);
+                root.energy.SetEnergy((int)Math.Floor(this.EnergyReduce(target)));
             }
             if (!Valid(target))
             {
-                Messages.Message("目标太远或无效。1", MessageTypeDefOf.RejectInput);
+                Messages.Message("RWrd_WorldFlyInvalid".Translate(), MessageTypeDefOf.RejectInput);
             }
         }
 

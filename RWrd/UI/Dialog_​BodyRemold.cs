@@ -9,9 +9,7 @@ using UnityEngine;
 using Verse;
 using Electromagnetic.Core;
 using System.ComponentModel.Design;
-using rjw;
 using Verse.AI;
-using rjw.Modules.Interactions;
 using System.Reflection;
 
 namespace Electromagnetic.UI

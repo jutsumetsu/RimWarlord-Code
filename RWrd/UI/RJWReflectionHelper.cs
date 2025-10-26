@@ -9,7 +9,6 @@ using Verse;
 using HarmonyLib;
 using System.Reflection;
 using Electromagnetic.Core;
-using rjw.Modules.Interactions;
 using System.Collections;
 
 namespace Electromagnetic.UI
