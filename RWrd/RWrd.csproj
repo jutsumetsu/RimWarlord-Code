@@ -38,12 +38,10 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="RJW">
-      <HintPath>..\..\..\..\Steam\steamapps\common\RimWorld\Mods\rjw-master\1.6\Assemblies\RJW.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\RJW.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -82,6 +80,7 @@
     <Compile Update="Electromagnetic\**\*.cs">
       <Namespace>Electromagnetic.$(RelativeDir.Replace('Electromagnetic\', '').Replace('\', '.').TrimEnd('.'))</Namespace>
     </Compile>
+    <Compile Include="Abilities\CompAbilityEffect_WorldTeleportAnomaly.cs" />
     <Compile Include="UI\BodyTool.cs" />
     <Compile Include="UI\ColorTool.cs" />
     <Compile Include="UI\ColorType.cs" />

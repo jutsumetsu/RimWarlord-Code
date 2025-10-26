@@ -1,4 +1,6 @@
-﻿using RimWorld;
+﻿using Electromagnetic.Core;
+using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +32,30 @@ namespace Electromagnetic.Abilities
                 this.mastery = (num2 > this.MaxMastery ? this.MaxMastery : num2);
             }
         }
+        //public override bool CanApplyOn(GlobalTargetInfo target)
+        //{
+        //    base.CanApplyOn(target);
+        //    if (WorldRendererUtility.WorldSelected)
+        //    {
+        //        try
+        //        {
+        //            int tile = pawn?.Tile ?? -1;
+        //            if (tile >= 0)
+        //            {
+        //                int range = pawn.GetPowerRoot().energy.level;
+        //                GenDraw.DrawWorldRadiusRing(tile, range);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Log.Error($"[Ability:{def.defName}] Failed to draw world radius ring: {ex}");
+        //        }
+        //    }
+
+        //    return true;
+        //}
+
+
         public float mastery = 0;
         public float outputPower = 1;
         public float MaxMastery = 100;
