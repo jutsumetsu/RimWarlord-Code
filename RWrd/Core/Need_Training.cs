@@ -75,7 +75,12 @@ namespace Electromagnetic.Core
         {
             get
             {
-                return this.pawn.jobs.curDriver.GetType() == typeof(JobDriver_RWrd_General_Training) || this.pawn.jobs.curDriver.GetType() == typeof(JobDriver_RWrd_Specialized_Training);
+                bool training = false;
+                if (this.pawn.jobs.curDriver != null)
+                {
+                    training = this.pawn.jobs.curDriver.GetType() == typeof(JobDriver_RWrd_General_Training) || this.pawn.jobs.curDriver.GetType() == typeof(JobDriver_RWrd_Specialized_Training);
+                }
+                return training;
             }
         }
         /// <summary>
