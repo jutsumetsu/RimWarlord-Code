@@ -51,11 +51,14 @@ namespace Electromagnetic.Core
         {
             float damageAmount = 0;
             damageAmount += baseDamage + root.energy.AvailableLevel + root.energy.FinalLevelOffset + masteryOffset;
+            /*Log.Warning($"基础伤害: {baseDamage}");*/
             if (root.energy.IsUltimate)
             {
                 damageAmount += (int)Math.Floor(root.energy.PowerEnergy);
             }
             damageAmount *= root.energy.Multiplier;
+            damageAmount = Math.Min(damageAmount, int.MaxValue);
+            /*Log.Warning($"伤害计算结果: {damageAmount}");*/
             return damageAmount;
         }
         public static Hediff_TargetBase MakeEMHediff(HediffDef def, Pawn pawn, Hediff_RWrd_PowerRoot root, BodyPartRecord partRecord = null)

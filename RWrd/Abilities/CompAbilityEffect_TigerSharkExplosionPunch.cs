@@ -28,13 +28,13 @@ namespace Electromagnetic.Abilities
             num *= Ability.outputPower;
             if (root.SelfDestruction)
             {
-                DamageInfo dinfo = new DamageInfo(DamageDefOf.Bomb, (float)num * 10, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true);
+                DamageInfo dinfo = new DamageInfo(DamageDefOf.Bomb, (float)num * 10, Caster.GetPowerRoot().energy.completerealm * 4, -1f, this.Caster);
                 Tools.MillionHp(Caster, pawn, dinfo);
             }
             else
             {
 
-                DamageInfo dinfo = new DamageInfo(DamageDefOf.Blunt, (float)num, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true);
+                DamageInfo dinfo = new DamageInfo(DamageDefOf.Blunt, (float)num, Caster.GetPowerRoot().energy.completerealm * 4, -1f, this.Caster);
                 pawn.TakeDamage(dinfo);
                 //赋予目标爆破劲力Hediff
                 Hediff_ExplosiveEnergy hediff = (Hediff_ExplosiveEnergy)Tools.MakeEMHediff(RWrd_DefOf.RWrd_ExplosiveEnergy, pawn, this.parent.pawn.GetPowerRoot(), null);
@@ -45,7 +45,7 @@ namespace Electromagnetic.Abilities
                 int num2 = (int)Math.Ceiling(this.Ability.mastery / 40f);
                 hediff.Severity = 0.1f * num2;
                 hediff.damage *= num2;
-                pawn.health.AddHediff(hediff, null, null, null);
+                pawn.health.AddHediff(hediff);
             }
         }
     }

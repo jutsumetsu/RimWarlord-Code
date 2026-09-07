@@ -19,7 +19,7 @@ namespace Electromagnetic.Abilities
                                                where x.Part.depth == BodyPartDepth.Outside
                                                select x).ToList();
             List<Hediff_Injury> listInside = (from x in Caster.health.hediffSet.hediffs.OfType<Hediff_Injury>()
-                                               where x.Part.depth == BodyPartDepth.Inside
+                                              where x.Part.depth == BodyPartDepth.Inside
                                               select x).ToList();
             float injuryOutside = 0;
             float injuryInside = 0;
@@ -31,20 +31,25 @@ namespace Electromagnetic.Abilities
             {
                 injuryInside += listInside[i].Severity;
             }
+
             float targetHP = 0;
+            const int maxIterations = 10000;  // 最大迭代次数，防止死循环
+
             if (target.Thing.def.category == ThingCategory.Pawn)
             {
-                /*Log.Warning("Target is animal");*/
                 Pawn pawn = (Pawn)target.Thing;
                 for (int i = 0; i < pawn.def.race.body.AllParts.Count; i++)
                 {
                     targetHP += pawn.def.race.body.AllParts[i].def.GetMaxHealth(pawn);
                 }
                 targetHP *= pawn.health.summaryHealth.SummaryHealthPercent;
+
                 float animalReduceHP = 0;
-                for (; targetHP > 0 && injuryInside > 0;)
+                int iterations = 0;
+                // 内部伤害循环
+                while (targetHP > 0 && injuryInside > 0 && iterations < maxIterations)
                 {
-                    /*Log.Warning("Heal inside");*/
+                    iterations++;
                     Hediff_Injury injuryToHeal = listInside.RandomElement<Hediff_Injury>();
                     if (targetHP > injuryToHeal.Severity)
                     {
@@ -69,13 +74,17 @@ namespace Electromagnetic.Abilities
                     pawn.TakeDamage(dinfo);
                     animalReduceHP = 0;
                 }
-                for (; targetHP > 0 && injuryOutside > 0;)
+                if (iterations >= maxIterations)
+                    Log.Warning("RWrd_LifeDrain: 内部伤害循环达到最大迭代次数，可能陷入死循环，已强制退出。");
+
+                iterations = 0;
+                // 外部伤害循环
+                while (targetHP > 0 && injuryOutside > 0 && iterations < maxIterations)
                 {
-                    /*Log.Warning("Heal outside");*/
+                    iterations++;
                     Hediff_Injury injuryToHeal = listOutside.RandomElement<Hediff_Injury>();
                     if (targetHP > injuryToHeal.Severity)
                     {
-                        /*Log.Warning($"Injury name: {injuryToHeal}, Heal HP: {injuryToHeal.Severity}");*/
                         animalReduceHP += injuryToHeal.Severity;
                         injuryOutside -= injuryToHeal.Severity;
                         targetHP -= injuryToHeal.Severity;
@@ -83,13 +92,11 @@ namespace Electromagnetic.Abilities
                     }
                     else
                     {
-                        /*Log.Warning($"Injury name: {injuryToHeal}, Heal HP: {targetHP}");*/
                         animalReduceHP += targetHP;
                         injuryOutside -= targetHP;
                         injuryToHeal.Heal(targetHP);
                         targetHP -= targetHP;
                     }
-                    /*Log.Warning($"Target Surplus HP: {targetHP}, Now Reduce HP: {animalReduceHP}");*/
                     DamageInfo dinfo = new DamageInfo(
                         def: RWrd_DefOf.RWrd_LifeDrain,
                         amount: animalReduceHP,
@@ -99,17 +106,20 @@ namespace Electromagnetic.Abilities
                     pawn.TakeDamage(dinfo);
                     animalReduceHP = 0;
                 }
+                if (iterations >= maxIterations)
+                    Log.Warning("RWrd_LifeDrain: 外部伤害循环达到最大迭代次数，可能陷入死循环，已强制退出。");
             }
+
             if (target.Thing.def.category == ThingCategory.Plant)
             {
-                /*Log.Warning("Target is plant");*/
                 Plant plant = (Plant)target.Thing;
                 targetHP = plant.HitPoints;
-                /*Log.Warning($"Plant HP: {plant.HitPoints} = {targetHP}");*/
                 float plantReduceHP = 0;
-                for (;targetHP > 0 && injuryInside > 0;)
+
+                int iterations = 0;
+                while (targetHP > 0 && injuryInside > 0 && iterations < maxIterations)
                 {
-                    /*Log.Warning("Heal inside");*/
+                    iterations++;
                     Hediff_Injury injuryToHeal = listInside.RandomElement<Hediff_Injury>();
                     if (targetHP > injuryToHeal.Severity)
                     {
@@ -126,13 +136,16 @@ namespace Electromagnetic.Abilities
                         targetHP -= targetHP;
                     }
                 }
-                for (; targetHP > 0 && injuryOutside > 0;)
+                if (iterations >= maxIterations)
+                    Log.Warning("RWrd_LifeDrain (Plant): 内部伤害循环达到最大迭代次数，可能陷入死循环，已强制退出。");
+
+                iterations = 0;
+                while (targetHP > 0 && injuryOutside > 0 && iterations < maxIterations)
                 {
-                    /*Log.Warning("Heal outside");*/
+                    iterations++;
                     Hediff_Injury injuryToHeal = listOutside.RandomElement<Hediff_Injury>();
                     if (targetHP > injuryToHeal.Severity)
                     {
-                        /*Log.Warning($"Injury name: {injuryToHeal}, Heal HP: {injuryToHeal.Severity}");*/
                         plantReduceHP += injuryToHeal.Severity;
                         injuryOutside -= injuryToHeal.Severity;
                         targetHP -= injuryToHeal.Severity;
@@ -140,15 +153,15 @@ namespace Electromagnetic.Abilities
                     }
                     else
                     {
-                        /*Log.Warning($"Injury name: {injuryToHeal}, Heal HP: {targetHP}");*/
                         plantReduceHP += targetHP;
                         injuryOutside -= targetHP;
                         injuryToHeal.Heal(targetHP);
                         targetHP -= targetHP;
                     }
-                    /*Log.Warning($"Target Surplus HP: {targetHP}, Now Reduce HP: {plantReduceHP}");*/
                 }
-                /*Log.Warning($"Plant name: {plant}, Reduce HP: {plantReduceHP}");*/
+                if (iterations >= maxIterations)
+                    Log.Warning("RWrd_LifeDrain (Plant): 外部伤害循环达到最大迭代次数，可能陷入死循环，已强制退出。");
+
                 DamageInfo dinfo = new DamageInfo(
                         def: RWrd_DefOf.RWrd_LifeDrain,
                         amount: plantReduceHP,

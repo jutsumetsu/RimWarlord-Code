@@ -94,7 +94,7 @@ namespace Electromagnetic.Core
             }
             else
             {
-                var targetDef = RWrd_DefOf.Hediff_RWrd_PowerRoot;
+                var targetDef = RWrd_DefOf.RWrd_HeavenLock;
                 return (Hediff_HeavenLock)pawn.health.hediffSet.hediffs
                     .FirstOrDefault(h => h.def == targetDef);
             }

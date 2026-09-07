@@ -48,7 +48,7 @@ namespace Electromagnetic.Abilities
                 num = Tools.FinalDamage(root, num, masteryOffset);
                 num *= Ability.outputPower;
             }
-            pawn.TakeDamage(new DamageInfo(DamageDefOf.Flame, num, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true));
+            pawn.TakeDamage(new DamageInfo(DamageDefOf.Flame, num, Caster.GetPowerRoot().energy.completerealm * 4, -1f, this.Caster));
         }
     }
 }

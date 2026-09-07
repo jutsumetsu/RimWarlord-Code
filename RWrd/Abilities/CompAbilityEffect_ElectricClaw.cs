@@ -91,6 +91,7 @@ namespace Electromagnetic.Abilities
             Hediff_TargetBase hediff1 = hediff as Hediff_TargetBase;
             hediff1.root = this.parent.pawn.GetPowerRoot();
             hediff1.mastery = this.Ability.mastery;
+            hediff1.outputPower = this.Ability.outputPower;
             pawn.health.AddHediff(hediff1, null, null, null);
         }
     }

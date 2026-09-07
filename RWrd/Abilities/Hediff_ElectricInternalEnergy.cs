@@ -19,6 +19,7 @@ namespace Electromagnetic.Abilities
             tickCounter++;
             if (tickCounter == 60)
             {
+                Log.Warning("电爪触发");
                 this.Trigger();
             }
         }
@@ -37,7 +38,7 @@ namespace Electromagnetic.Abilities
             FleckCreationData dataStatic1 = FleckMaker.GetDataStatic(this.pawn.DrawPos, map, RWrd_DefOf.RWrd_ElectricClawFleck, 1f);
             map.flecks.CreateFleck(dataStatic1);
             //造成伤害
-            pawn.TakeDamage(new DamageInfo(DamageDefOf.Flame, num, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true));
+            pawn.TakeDamage(new DamageInfo(DamageDefOf.Flame, num, 999, -1f, this.root.pawn));
             tickCounter = 0;
             this.Severity = 0;
         }

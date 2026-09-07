@@ -100,17 +100,22 @@ namespace Electromagnetic.UI
 
             Rect outRect = new Rect(inRect);
             outRect.y = searchRect.yMax + 5;
-            /*outRect.yMax -= 10f;*/
+            outRect.height = inRect.yMax - outRect.y - 10f;
 
             var thingDefs = searchKey.NullOrEmpty() ? allArtifactDefs : allArtifactDefs.Where(x => x.label.ToLower().Contains(searchKey.ToLower())).ToList();
+            List<ThingDef> displayItem = thingDefs.OrderBy(x => x.label).ToList();
 
-            Rect viewRect = new Rect(0f, 0f, outRect.width - 16f, thingDefs.Count() * 35f);
+            Rect viewRect = new Rect(0f, 0f, outRect.width - 16f, displayItem.Count * 35f);
+            Widgets.AdjustRectsForScrollView(outRect, ref outRect, ref viewRect);
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
+            int firstRow = Mathf.Max(0, Mathf.FloorToInt(scrollPosition.y / 35f) - 1);
+            int lastRow = Mathf.Min(thingDefs.Count() - 1, Mathf.CeilToInt((scrollPosition.y + outRect.height) / 35f) + 1);
             try
             {
-                float num = 0f;
-                foreach (ThingDef thingDef in thingDefs.OrderBy(x => x.label))
+                for (int i = firstRow; i <= lastRow; i++)
                 {
+                    float num = i * 35f;
+                    ThingDef thingDef = displayItem[i];
                     //图标矩形
                     Rect iconRect = new Rect(0f, num, 24, 32);
                     //详情界面按钮
@@ -156,7 +161,7 @@ namespace Electromagnetic.UI
                         if (isButtonEnabled)
                         {
                             int itemCount = thingValues[thingDef];
-                            for (int i = 0; i < itemCount; i++)
+                            for (int j = 0; j < itemCount; j++)
                             {
                                 Thing thing = ThingMaker.MakeThing(thingDef, GenStuff.DefaultStuffFor(thingDef));
                                 SoundDefOf.Click.PlayOneShotOnCamera();
@@ -169,7 +174,6 @@ namespace Electromagnetic.UI
                             Close();
                         }
                     }
-                    num += 35f;
                 }
             }
             finally
