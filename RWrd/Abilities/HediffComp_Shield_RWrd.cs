@@ -119,10 +119,10 @@ namespace Electromagnetic.Abilities
                         switch (this.Props.absorbAttackType)
                         {
                             case AttackType.Melee:
-                                flag3 = !dinfo.Def.isRanged;
+                                flag3 = !this.IsRangedDamage(dinfo);
                                 break;
                             case AttackType.Ranged:
-                                flag3 = dinfo.Def.isRanged || dinfo.Def.isExplosive;
+                                flag3 = this.IsRangedDamage(dinfo) || dinfo.Def.isExplosive;
                                 break;
                             case AttackType.Both:
                                 flag3 = true;
@@ -154,10 +154,10 @@ namespace Electromagnetic.Abilities
                         switch (this.Props.damageOnAttack)
                         {
                             case AttackType.Melee:
-                                flag6 = !dinfo.Def.isRanged;
+                                flag6 = !this.IsRangedDamage(dinfo);
                                 break;
                             case AttackType.Ranged:
-                                flag6 = (dinfo.Def.isRanged || dinfo.Def.isExplosive);
+                                flag6 = (this.IsRangedDamage(dinfo) || dinfo.Def.isExplosive);
                                 break;
                             case AttackType.Both:
                                 flag6 = true;
@@ -171,6 +171,11 @@ namespace Electromagnetic.Abilities
                     }
                 }
             }
+        }
+
+        private bool IsRangedDamage(DamageInfo dinfo)
+        {
+            return dinfo.Def.isRanged || HediffCompProperties_Shield_RWrd.IsProjectileDamage(dinfo.Def);
         }
 
         protected virtual void ApplyDamage(DamageInfo dinfo)

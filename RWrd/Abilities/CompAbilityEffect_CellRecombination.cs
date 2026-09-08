@@ -17,9 +17,12 @@ namespace Electromagnetic.Abilities
         {
             base.Apply(target, dest);
             Pawn pawn = target.Pawn;
-            foreach(Hediff hediff in pawn.health.hediffSet.hediffs)
+            List<Hediff> hediffsToRemove = pawn.health.hediffSet.hediffs
+                .Where(hediff => badHediffs.Contains(hediff.def))
+                .ToList();
+            foreach (Hediff hediff in hediffsToRemove)
             {
-                if (badHediffs.Contains(hediff.def)) pawn.health.RemoveHediff(hediff);
+                pawn.health.RemoveHediff(hediff);
             }
             float maxQuality = 1.3f;
             float quality;

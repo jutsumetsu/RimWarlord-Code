@@ -34,12 +34,34 @@ namespace Electromagnetic.Abilities
         }
         public bool Absorbs(DamageDef def)
         {
-            return this.absorb == null || this.absorb.Contains(def);
+            return this.absorb == null || this.absorb.Contains(def) || IsProjectileDamage(def);
+        }
+
+        public static bool IsProjectileDamage(DamageDef def)
+        {
+            return def != null && projectileDamageDefs.Contains(def);
         }
         public override void PostLoad()
         {
             base.PostLoad();
+            InitializeProjectileDamageDefs();
             ShieldsSystem_RWrd.ApplyShieldPatches();
+        }
+
+        private static void InitializeProjectileDamageDefs()
+        {
+            if (projectileDamageDefsInitialized)
+            {
+                return;
+            }
+            foreach (ThingDef thingDef in DefDatabase<ThingDef>.AllDefsListForReading)//可能会在开技能的时候卡一下
+            {
+                if (thingDef.projectile != null && thingDef.projectile.damageDef != null)
+                {
+                    projectileDamageDefs.Add(thingDef.projectile.damageDef);
+                }
+            }
+            projectileDamageDefsInitialized = true;
         }
         public List<DamageDef> breakOn;
         public List<DamageDef> absorb;
@@ -63,5 +85,7 @@ namespace Electromagnetic.Abilities
         public int damageAmount = -1;
         public float armorPenetration = -1f;
         public bool doRandomRotation = true;
+        private static readonly HashSet<DamageDef> projectileDamageDefs = new HashSet<DamageDef>();
+        private static bool projectileDamageDefsInitialized;
     }
 }
