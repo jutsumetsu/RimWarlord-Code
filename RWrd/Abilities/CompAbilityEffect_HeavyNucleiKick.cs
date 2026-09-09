@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -42,8 +43,9 @@ namespace Electromagnetic.Abilities
                     Hediff_RWrd_PowerRoot root = caster.GetPowerRoot();
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
                     int num = 40;
-                    num = (int)Tools.FinalDamage(root, num, masteryOffset);
-                    num = (int)Math.Floor(num * Ability.outputPower);
+                    float num2 = Tools.FinalDamage(root, num, masteryOffset);
+                    num2 *= Ability.outputPower;
+                    num = (num2 >= int.MaxValue) ? int.MaxValue : Mathf.FloorToInt(num2);
                     //关闭友伤
                     List<Thing> list = new List<Thing>();
                     foreach (Pawn pawn2 in pawn.MapHeld.mapPawns.AllPawns)

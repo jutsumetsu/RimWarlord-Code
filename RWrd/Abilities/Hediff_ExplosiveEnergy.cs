@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 
 namespace Electromagnetic.Abilities
@@ -27,8 +28,10 @@ namespace Electromagnetic.Abilities
             Pawn pawn = this.pawn;
             //伤害计算
             Hediff_RWrd_PowerRoot root = this.root;
-            int num = (int)Tools.FinalDamage(root, damage);
-            num = (int)Math.Floor(num * outputPower);
+            int num = damage;
+            float num2 = Tools.FinalDamage(root, num);
+            num2 *= outputPower;
+            num = (num2 >= int.MaxValue) ? int.MaxValue : Mathf.FloorToInt(num2);
             //友伤豁免
             List<Thing> list = new List<Thing>();
             foreach (Pawn pawn2 in pawn.MapHeld.mapPawns.AllPawns)

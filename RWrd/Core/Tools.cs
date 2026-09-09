@@ -57,7 +57,6 @@ namespace Electromagnetic.Core
                 damageAmount += (int)Math.Floor(root.energy.PowerEnergy);
             }
             damageAmount *= root.energy.Multiplier;
-            damageAmount = Math.Min(damageAmount, int.MaxValue);
             /*Log.Warning($"伤害计算结果: {damageAmount}");*/
             return damageAmount;
         }

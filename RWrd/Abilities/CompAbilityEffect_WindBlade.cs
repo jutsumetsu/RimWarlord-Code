@@ -49,8 +49,9 @@ namespace Electromagnetic.Abilities
             {
                 //计算伤害
                 Hediff_RWrd_PowerRoot root = Caster.GetPowerRoot();
-                num2 = (int)Tools.FinalDamage(root, num2, masteryOffset);
-                num2 = (int)Math.Floor(num2 * Ability.outputPower);
+                float num3 = Tools.FinalDamage(root, num2, masteryOffset);
+                num3 *= Ability.outputPower;
+                num2 = (num3 >= int.MaxValue) ? int.MaxValue : Mathf.FloorToInt(num3);
             }
             //友伤豁免
             List<Thing> list = new List<Thing>();
@@ -62,6 +63,7 @@ namespace Electromagnetic.Abilities
                     list.Add(pawn2);
                 }
             }
+            Log.Warning($"WindBlade damage: {num2}");
             GenExplosion.DoExplosion(position, this.parent.pawn.MapHeld, this.Props.range, named, this.Caster, num2, Caster.GetPowerRoot().energy.completerealm * 4, null, null, null, null, null, 1f, 1, null, null, 0, false, null, 0, 1, 0, false, null, list, null, false, 1.6f, 0f, false, null, 1f, null, this.AffectedCells(target));
             base.Apply(target, dest);
         }
