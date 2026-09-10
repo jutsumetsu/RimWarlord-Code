@@ -31,6 +31,34 @@ namespace Electromagnetic.Core
             }
         }
         /// <summary>
+        /// 在攻击吗
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <returns></returns>
+        public static bool IsAttacking(this Pawn pawn)
+        {
+            if (pawn.stances.curStance != null)
+            {
+                if (pawn.stances.curStance is Stance_Busy)
+                {
+                    Stance_Busy stanceBusy = pawn.stances.curStance as Stance_Busy;
+                    bool hasAttackJob = pawn.CurJob?.def == JobDefOf.AttackMelee || pawn.CurJob?.def == JobDefOf.AttackStatic;
+                    bool hasMeleeVerb = stanceBusy?.verb is Verb_MeleeAttack;
+                    bool hasTarget = stanceBusy.focusTarg.IsValid;
+                    bool attacking = (hasAttackJob || hasMeleeVerb) && hasTarget;
+                    return attacking;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        /// <summary>
         /// 角度工具
         /// </summary>
         /// <param name="p1">目标点</param>

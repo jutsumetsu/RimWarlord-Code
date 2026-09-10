@@ -90,7 +90,9 @@ namespace Electromagnetic.Core
         {
             get
             {
-                return this.pawn.jobs.curDriver.GetType() == typeof(JobDriver_AttackMelee);
+                var curDriver = this.pawn.jobs.curDriver;
+                bool attacking = this.pawn.IsAttacking() || curDriver is JobDriver_CastAbility;
+                return attacking;
             }
         }
         public Need_Training(Pawn pawn) : base(pawn)
@@ -122,7 +124,6 @@ namespace Electromagnetic.Core
             {
                 if (!this.Disabled)
                 {
-                    JobDriver jobDriver = this.pawn.jobs.curDriver;
                     if (!this.IsTraining && !this.IsBattle)
                     {
                         Hediff_RWrd_PowerRoot root = this.pawn.GetPowerRoot();

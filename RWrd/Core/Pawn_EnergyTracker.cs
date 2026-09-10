@@ -346,13 +346,14 @@ namespace Electromagnetic.Core
         public void EnergyRecharge()
         {
             bool flag = this.MaxEnergy > 5000;
-            bool drafted = this.pawn.Drafted;
+            Hediff_RWrd_PowerRoot root = this.pawn.GetPowerRoot();
+            bool attacking = root.meleeAttackCounter >= 3 || root.nonMeleeCounter <= 10 || root.hasBeatenBefore;
             bool NPC = this.pawn.Faction != Faction.OfPlayer;
             if (!NPC)
             {
                 if (!flag)
                 {
-                    if (drafted)
+                    if (attacking)
                     {
                         this.SetEnergy(100);
                     }
@@ -363,7 +364,7 @@ namespace Electromagnetic.Core
                 }
                 else
                 {
-                    if (drafted)
+                    if (attacking)
                     {
                         this.SetEnergy(this.PCTEnergyFight);
                     }

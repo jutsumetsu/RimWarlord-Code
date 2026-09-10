@@ -33,7 +33,7 @@ namespace Electromagnetic.Abilities
             }
 
             float targetHP = 0;
-            const int maxIterations = 10000;  // 最大迭代次数，防止死循环
+            const int maxIterations = 100;  // 最大迭代次数，防止死循环
 
             if (target.Thing.def.category == ThingCategory.Pawn)
             {

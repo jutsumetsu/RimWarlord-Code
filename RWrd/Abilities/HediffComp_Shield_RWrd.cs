@@ -270,7 +270,7 @@ namespace Electromagnetic.Abilities
                 float factor = 1 - offset;
                 float num = dinfo.Amount * this.Props.energyLossPerDamage * factor;
                 bool flag2 = num < this.Energy;
-                Log.Message("Damage:" + num.ToString() + ", Energy:" + this.Energy.ToString());
+                /*Log.Message("Damage:" + num.ToString() + ", Energy:" + this.Energy.ToString());*/
                 Pawn pawn = this.Pawn;
                 bool powerful = pawn.IsHavePowerRoot();
 

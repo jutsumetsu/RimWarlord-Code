@@ -437,7 +437,7 @@ namespace Electromagnetic.HarmonyPatchs
                     {
                         Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                         float num = root.energy.DamageImmunityThreshold;
-                        Log.Message(pawn.Name.ToStringShort + "'s Damage Immunity Threshold: " + num.ToString() + " Current damage: " + dinfo.Amount.ToString());
+                        /*Log.Message(pawn.Name.ToStringShort + "'s Damage Immunity Threshold: " + num.ToString() + " Current damage: " + dinfo.Amount.ToString());*/
                         if (dinfo.Amount <= num)
                         {
                             dinfo.SetAmount(0f);
@@ -450,6 +450,7 @@ namespace Electromagnetic.HarmonyPatchs
                         {
                             dinfo.SetAmount(num * 1.25f);
                         }
+                        root.beatenCounter++;
                     }
                 }
                 return true;

@@ -19,7 +19,6 @@ namespace Electromagnetic.Abilities
             tickCounter++;
             if (tickCounter == 60)
             {
-                Log.Warning("电爪触发");
                 this.Trigger();
             }
         }

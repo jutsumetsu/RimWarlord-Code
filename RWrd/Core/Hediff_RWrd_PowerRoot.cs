@@ -708,8 +708,33 @@ namespace Electromagnetic.Core
                 //随时间增加力量流量
                 this.energy.SetPowerFlow(100);
             }
+            if (Find.TickManager.TicksGame % 30 == 0)
+            {
+                if (beatenCounter > 0)
+                {
+                    hasBeatenBefore = true;
+                    beatenCounter = 0;
+                }
+                else hasBeatenBefore = false;
+                if (this.pawn.jobs.curDriver != null)
+                {
+                    var curDriver = this.pawn.jobs.curDriver;
+                    bool attacking = this.pawn.IsAttacking() || curDriver is JobDriver_CastAbility;
+                    if (attacking)
+                    {
+                        if (meleeAttackCounter <= 30) meleeAttackCounter++;
+                        nonMeleeCounter = 0;
+                    }
+                    else if (!hasBeatenBefore)
+                    {
+                        if (nonMeleeCounter <= 30) nonMeleeCounter++;
+                        meleeAttackCounter = 0;
+                    }
+                }
+            }
             if (Find.TickManager.TicksGame % 180 == 0)
             {
+                /*Log.Warning($"now MAC: {meleeAttackCounter} NMC: {nonMeleeCounter}");*/
                 if (!SDRecharge)
                 {
                     this.energy.EnergyRecharge();
@@ -748,10 +773,12 @@ namespace Electromagnetic.Core
                 }
             }
         }
-        private Command_ActionWithFloat _cachedGodCommand;
         private Command_ActionWithFloat _cachedReloadCommand;
 
         public int meleeAttackCounter = 0;
+        public int nonMeleeCounter = 0;
+        public int beatenCounter = 0;
+        public bool hasBeatenBefore = false;
 
         public Pawn_EnergyTracker energy;
 
