@@ -788,6 +788,9 @@ namespace Electromagnetic.Core
         public float MartialTalent = 0;
 
         public bool Qigong = false;
+        public bool noGeneralTrain = false;
+        public bool noFightDeath = true;
+
         public bool newBorn = false;
         public bool starter = false;
 

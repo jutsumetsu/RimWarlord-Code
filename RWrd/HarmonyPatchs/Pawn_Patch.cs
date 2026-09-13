@@ -193,7 +193,9 @@ namespace Electromagnetic.HarmonyPatchs
                                 float armorPenetration = __instance.verbProps.AdjustedArmorPenetration(__instance, __instance.CasterPawn);
                                 armorPenetration += cr * 4;
                                 num = Rand.Range(num * 0.8f, num * 1.2f);
-                                num = Tools.FinalDamage(root, num);
+                                bool socialFight = casterPawn.MentalStateDef == MentalStateDefOf.SocialFighting;
+                                bool noFightDeath = socialFight && root.noFightDeath == true;
+                                if (!noFightDeath) num = Tools.FinalDamage(root, num);
                                 if (useNormalTool)
                                 {
                                     num += tool.AdjustedBaseMeleeDamageAmount(__instance.EquipmentSource, __instance.verbProps.meleeDamageDef);
@@ -272,7 +274,7 @@ namespace Electromagnetic.HarmonyPatchs
                                 radius *= RWrdSettings.WaveRangeFactor * root.energy.waveRange;
                                 radius = Math.Min(radius, 56);
                                 int waveDamage = (int)Math.Floor((root.energy.DamageImmunityThreshold - 5) * root.energy.wavePower);
-                                if (radius > 1f && RWrdSettings.PowerfulEnergyWave && root.energy.personalEnergyWave)
+                                if (radius > 1f && RWrdSettings.PowerfulEnergyWave && root.energy.personalEnergyWave && !socialFight)
                                 {
                                     GenExplosion.DoExplosion(target.Thing.PositionHeld, target.Thing.MapHeld, radius, RWrd_DefOf.RWrd_PowerfulWave, casterPawn, waveDamage, 0, null, null, null, null, null, 0, 1, null, null, 0, false, null, 0, 1, 0, false, null, list, null, RWrdSettings.DoVisualWaveEffect, 1, 0, false, null, 0);
                                 }
@@ -369,6 +371,7 @@ namespace Electromagnetic.HarmonyPatchs
                         bool flag2 = stat.ToString() == nameof(StatDefOf.ArmorRating_Heat);
                         bool flag15 = stat.ToString() == nameof(StatDefOf.MeleeDodgeChance);
                         bool flag18 = stat.ToString() == nameof(StatDefOf.MeleeCooldownFactor);
+                        bool socialFight = pawn.MentalStateDef == MentalStateDefOf.SocialFighting;
                         bool flag21 = stat.ToString() == nameof(StatDefOf.IncomingDamageFactor);
                         if (flag || flag1 || flag2)
                         {
@@ -379,7 +382,7 @@ namespace Electromagnetic.HarmonyPatchs
                         {
                             __result = Math.Min(__result, 0.85f);
                         }
-                        if (flag18)
+                        if (flag18 && !socialFight)
                         {
                             int lf = root.energy.AvailableLevel + root.energy.FinalLevelOffset + 1;
                             __result += -lf * 0.02f;

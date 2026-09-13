@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using Electromagnetic.Abilities;
 using Electromagnetic.Core;
+using Electromagnetic.Setting;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -214,10 +215,12 @@ namespace Electromagnetic.UI
                 {
                     listing_Standard.Label("RWrd_Ultimate".Translate() + ": " + this.root.energy.PowerEnergy.ToString() + "RWrd_UltimatePower".Translate(), -1f, null);
                 }
-                listing_Standard.Label("RWrd_CompleteRealm".Translate() + ": " + this.root.energy.completerealm.ToString("0.##") + "/10000", -1f, null);
-                listing_Standard.Label("RWrd_PowerFlow".Translate() + ": " + this.root.energy.powerflow.ToString("0.##") + "/100000000", -1f, null);
+                listing_Standard.Label("RWrd_CompleteRealm".Translate() + ": " + this.root.energy.completerealm.ToString("0.##") + "/10000", -1f, "RWrd_EarnCP".Translate());
+                listing_Standard.Label("RWrd_PowerFlow".Translate() + ": " + this.root.energy.powerflow.ToString("0.##") + "/100000000", -1f, "RWrd_EarnPF".Translate());
                 listing_Standard.Label("RWrd_MartialTalent".Translate() + ": " + this.root.MartialTalent.ToString("0.##"), -1f, null);
                 listing_Standard.Label("RWrd_TrainingDesire".Translate() + ": " + this.root.energy.trainDesireFactor.ToString(), -1f, null);
+                listing_Standard.CheckboxLabeled("RWrd_NoGeneralTrain".Translate(), ref this.root.noGeneralTrain);
+                listing_Standard.CheckboxLabeled("RWrd_NoFightDeath".Translate(), ref this.root.noFightDeath);
                 //力量体系介绍按钮
                 Rect buttonRect = listing_Standard.GetRect(40f, 1f);
                 Rect buttonLeft = listing_Standard.GetRect(40f, 0.5f);

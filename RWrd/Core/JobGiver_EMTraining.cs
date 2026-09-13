@@ -30,6 +30,10 @@ namespace Electromagnetic.Core
             {
                 return null;
             }
+            else if (pawn.GetPowerRoot().noGeneralTrain)
+            {
+                return null;
+            }
             if (PowerRootUtillity.LordPreventsGettingTraining(pawn))
             {
                 return null;
