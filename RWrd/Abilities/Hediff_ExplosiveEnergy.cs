@@ -29,7 +29,10 @@ namespace Electromagnetic.Abilities
             //伤害计算
             Hediff_RWrd_PowerRoot root = this.root;
             int num = damage;
-            float num2 = Tools.FinalDamage(root, num);
+            int masteryOffset = (int)Math.Floor(mastery / 10f);
+            bool AAC = false;
+            if (Severity == 0.1 && mastery > 80) AAC = true;
+            float num2 = Tools.FinalDamage(root, num, masteryOffset, AAC);
             num2 *= outputPower;
             num = (num2 >= int.MaxValue) ? int.MaxValue : Mathf.FloorToInt(num2);
             //友伤豁免

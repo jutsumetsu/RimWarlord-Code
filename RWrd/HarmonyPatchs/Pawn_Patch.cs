@@ -366,29 +366,29 @@ namespace Electromagnetic.HarmonyPatchs
                     if (pawn.IsHavePowerRoot())
                     {
                         Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
-                        bool flag = stat.ToString() == nameof(StatDefOf.ArmorRating_Sharp);
-                        bool flag1 = stat.ToString() == nameof(StatDefOf.ArmorRating_Blunt);
-                        bool flag2 = stat.ToString() == nameof(StatDefOf.ArmorRating_Heat);
-                        bool flag15 = stat.ToString() == nameof(StatDefOf.MeleeDodgeChance);
-                        bool flag18 = stat.ToString() == nameof(StatDefOf.MeleeCooldownFactor);
+                        bool IsSharpAR = stat.ToString() == nameof(StatDefOf.ArmorRating_Sharp);
+                        bool IsBluntAR = stat.ToString() == nameof(StatDefOf.ArmorRating_Blunt);
+                        bool IsHeatAR = stat.ToString() == nameof(StatDefOf.ArmorRating_Heat);
+                        bool IsMeleeDodgeChance = stat.ToString() == nameof(StatDefOf.MeleeDodgeChance);
+                        bool IsMeleeCooldownFactor = stat.ToString() == nameof(StatDefOf.MeleeCooldownFactor);
                         bool socialFight = pawn.MentalStateDef == MentalStateDefOf.SocialFighting;
-                        bool flag21 = stat.ToString() == nameof(StatDefOf.IncomingDamageFactor);
-                        if (flag || flag1 || flag2)
+                        bool IsIncomingDamageFactor = stat.ToString() == nameof(StatDefOf.IncomingDamageFactor);
+                        if (IsSharpAR || IsBluntAR || IsHeatAR)
                         {
                             float cr = root.energy.completerealm;
                             __result += cr * 4;
                         }
-                        if (flag15)
+                        if (IsMeleeDodgeChance)
                         {
                             __result = Math.Min(__result, 0.85f);
                         }
-                        if (flag18 && !socialFight)
+                        if (IsMeleeCooldownFactor && !socialFight)
                         {
                             int lf = root.energy.AvailableLevel + root.energy.FinalLevelOffset + 1;
-                            __result += -lf * 0.02f;
+                            __result += -lf * 0.01f;
                             __result = Math.Max(__result, 0.05f);
                         }
-                        if (flag21)
+                        if (IsIncomingDamageFactor)
                         {
                             __result = Math.Max(__result, 0.01f);
                         }

@@ -75,7 +75,7 @@ namespace Electromagnetic.Core
         /// <param name="baseDamage">基础伤害</param>
         /// <param name="masteryOffset">精通加成</param>
         /// <returns></returns>
-        public static float FinalDamage(Hediff_RWrd_PowerRoot root, float baseDamage, float masteryOffset = 0)
+        public static float FinalDamage(Hediff_RWrd_PowerRoot root, float baseDamage, float masteryOffset = 0, bool applyAbilityCorrection = false)
         {
             float damageAmount = 0;
             damageAmount += baseDamage + root.energy.AvailableLevel + root.energy.FinalLevelOffset + masteryOffset;
@@ -85,6 +85,12 @@ namespace Electromagnetic.Core
                 damageAmount += (int)Math.Floor(root.energy.PowerEnergy);
             }
             damageAmount *= root.energy.Multiplier;
+            if (applyAbilityCorrection)
+            {
+                float MCF = root.pawn.GetStatValue(StatDefOf.MeleeCooldownFactor);
+                int APS = (int)Math.Ceiling(1 / (2 * MCF));
+                if (APS > 1) damageAmount *= APS;
+            }
             /*Log.Warning($"伤害计算结果: {damageAmount}");*/
             return damageAmount;
         }

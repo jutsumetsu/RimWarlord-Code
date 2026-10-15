@@ -32,6 +32,8 @@ namespace Electromagnetic.UI
             this.mtNumber = mt.ToString();
             this.tdf = parent.root.energy.trainDesireFactor;
             this.tdfNumber = tdf.ToString();
+            this.energy = parent.root.energy.energy;
+            this.energyNumber = energy.ToString();
         }
         public override Vector2 InitialSize
         {
@@ -76,6 +78,10 @@ namespace Electromagnetic.UI
             Rect pfRect = listingStandard.GetRect(Text.LineHeight, 1f);
             Widgets.Label(pfRect.LeftHalf().Rounded(), "RWrd_PowerFlow".Translate());
             Widgets.TextFieldNumeric<int>(pfRect.RightHalf().LeftPartPixels(60).Rounded(), ref pf, ref pfNumber, 10000, 100000000);
+            //能量
+            Rect energyRect = listingStandard.GetRect(Text.LineHeight, 1f);
+            Widgets.Label(energyRect.LeftHalf().Rounded(), "RWrd_EP_Energy".Translate());
+            Widgets.TextFieldNumeric<float>(energyRect.RightHalf().LeftPartPixels(60).Rounded(), ref energy, ref energyNumber, 0, parent.root.energy.MaxEnergy);
             //练功渴望
             Rect tdfRect = listingStandard.GetRect(Text.LineHeight, 1f);
             Widgets.Label(tdfRect.LeftHalf().Rounded(), "RWrd_TrainingDesire".Translate());
@@ -89,6 +95,7 @@ namespace Electromagnetic.UI
             this.parent.root.energy.ForceSetExp(exp);
             this.parent.root.energy.ForceSetCompleteRealm(cr);
             this.parent.root.energy.ForceSetPowerFlow(pf);
+            this.parent.root.energy.ForceSetEnergy(energy);
             this.parent.root.MartialTalent = this.mt;
             this.parent.root.energy.trainDesireFactor = this.tdf;
             base.PreClose();
@@ -99,11 +106,13 @@ namespace Electromagnetic.UI
         int pf;
         float mt;
         int tdf;
+        float energy;
         string levelNumber;
         string expNumber;
         string crNumber;
         string pfNumber;
         string mtNumber;
         string tdfNumber;
+        string energyNumber;
     }
 }

@@ -49,7 +49,7 @@ namespace Electromagnetic.Abilities
             {
                 //计算伤害
                 Hediff_RWrd_PowerRoot root = Caster.GetPowerRoot();
-                float num3 = Tools.FinalDamage(root, num2, masteryOffset);
+                float num3 = Tools.FinalDamage(root, num2, masteryOffset, true);
                 num3 *= Ability.outputPower;
                 num2 = (num3 >= int.MaxValue) ? int.MaxValue : Mathf.FloorToInt(num3);
             }

@@ -340,6 +340,10 @@ namespace Electromagnetic.Core
                 this.energy = 0f;
             }
         }
+        public void ForceSetEnergy(float num)
+        {
+            this.energy = num;
+        }
         /// <summary>
         /// 能量回复
         /// </summary>

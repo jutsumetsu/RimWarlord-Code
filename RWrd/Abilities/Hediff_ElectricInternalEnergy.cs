@@ -31,7 +31,7 @@ namespace Electromagnetic.Abilities
             //伤害计算
             int masteryOffset = (int)Math.Floor(mastery / 10f);
             float num = 20;
-            num = Tools.FinalDamage(root, num, masteryOffset);
+            num = Tools.FinalDamage(root, num, masteryOffset, true);
             num *= outputPower;
             //生成特效
             FleckCreationData dataStatic1 = FleckMaker.GetDataStatic(this.pawn.DrawPos, map, RWrd_DefOf.RWrd_ElectricClawFleck, 1f);

@@ -80,12 +80,28 @@ namespace Electromagnetic.UI
                 //判断有无力量之源
                 if (pawn != null && pawn.IsHavePowerRoot())
                 {
-                    Faction faction = pawn.Faction;
-                    result = (faction != null && faction.IsPlayer);
+                    result = true;
                 }
                 else
                 {
                     result = false;
+                }
+                return result;
+            }
+        }
+        private bool IsMyPeople
+        {
+            get
+            {
+                Faction faction = pawn.Faction;
+                bool result;
+                if (faction == null)
+                {
+                    result = false;
+                }
+                else
+                {
+                    result = faction.IsPlayer;
                 }
                 return result;
             }
@@ -219,32 +235,38 @@ namespace Electromagnetic.UI
                 listing_Standard.Label("RWrd_PowerFlow".Translate() + ": " + this.root.energy.powerflow.ToString("0.##") + "/100000000", -1f, "RWrd_EarnPF".Translate());
                 listing_Standard.Label("RWrd_MartialTalent".Translate() + ": " + this.root.MartialTalent.ToString("0.##"), -1f, null);
                 listing_Standard.Label("RWrd_TrainingDesire".Translate() + ": " + this.root.energy.trainDesireFactor.ToString(), -1f, null);
-                listing_Standard.CheckboxLabeled("RWrd_NoGeneralTrain".Translate(), ref this.root.noGeneralTrain);
-                listing_Standard.CheckboxLabeled("RWrd_NoFightDeath".Translate(), ref this.root.noFightDeath);
+                if (IsMyPeople || DebugSettings.godMode)
+                {
+                    listing_Standard.CheckboxLabeled("RWrd_NoGeneralTrain".Translate(), ref this.root.noGeneralTrain);
+                    listing_Standard.CheckboxLabeled("RWrd_NoFightDeath".Translate(), ref this.root.noFightDeath);
+                }
                 //力量体系介绍按钮
-                Rect buttonRect = listing_Standard.GetRect(40f, 1f);
-                Rect buttonLeft = listing_Standard.GetRect(40f, 0.5f);
-                Rect buttonRight = new Rect(buttonLeft.x + buttonLeft.width, buttonLeft.y, buttonLeft.width, buttonLeft.height);
+                if (IsMyPeople)
+                {
+                    Rect buttonRect = listing_Standard.GetRect(40f, 1f);
+                    Rect buttonLeft = listing_Standard.GetRect(40f, 0.5f);
+                    Rect buttonRight = new Rect(buttonLeft.x + buttonLeft.width, buttonLeft.y, buttonLeft.width, buttonLeft.height);
+                    if (Widgets.ButtonText(buttonRect, "RWrd_IntroduceButton".Translate()))
+                    {
+                        Find.WindowStack.Add(new Dialog_PowerIntroduce());
+                    }
+                    //出力设置按钮&&技能组按钮
+                    if (Mouse.IsOver(buttonLeft))
+                    {
+                        TooltipHandler.TipRegion(buttonLeft, "RWrd_OPIntroduce".Translate());
+                    }
+                    if (Widgets.ButtonText(buttonLeft, "RWrd_OutputPower".Translate()))
+                    {
+                        var powerOption = new Dialog_OutputPower(this);
+                        Find.WindowStack.Add(powerOption);
+                    }
+                    if (Widgets.ButtonText(buttonRight, "RWrd_AbilitySets".Translate()))
+                    {
+                        var editSets = new Dialog_EditAbilitySets(this);
+                        Find.WindowStack.Add(editSets);
+                    }
+                }
                 Rect buttonRect2 = listing_Standard.GetRect(40f, 1f);
-                if (Widgets.ButtonText(buttonRect, "RWrd_IntroduceButton".Translate()))
-                {
-                    Find.WindowStack.Add(new Dialog_PowerIntroduce());
-                }
-                //出力设置按钮&&技能组按钮
-                if (Mouse.IsOver(buttonLeft))
-                {
-                    TooltipHandler.TipRegion(buttonLeft, "RWrd_OPIntroduce".Translate());
-                }
-                if (Widgets.ButtonText(buttonLeft, "RWrd_OutputPower".Translate()))
-                {
-                    var powerOption = new Dialog_OutputPower(this);
-                    Find.WindowStack.Add(powerOption);
-                }
-                if (Widgets.ButtonText(buttonRight, "RWrd_AbilitySets".Translate()))
-                {
-                    var editSets = new Dialog_EditAbilitySets(this);
-                    Find.WindowStack.Add(editSets);
-                }
                 if (DebugSettings.godMode && Widgets.ButtonText(buttonRect2, "RWrd_ChangeEMStats".Translate()))
                 {
                     var EMStats = new Dialog_ChangeEMStats(this);

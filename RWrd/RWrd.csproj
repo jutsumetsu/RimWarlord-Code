@@ -39,7 +39,7 @@
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
-	  <Private>False</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -118,7 +118,6 @@
     <Compile Include="Abilities\CompAbilityToggle_Electromagnetic.cs" />
     <Compile Include="Abilities\CompAbilityToggle_ProtectiveForce.cs" />
     <Compile Include="Abilities\CompAbilityToggle_Flight.cs" />
-    <Compile Include="Abilities\CompProperties_AbilityElectricClaw.cs" />
     <Compile Include="Abilities\CompProperties_AbilityGiveTargetHediff.cs" />
     <Compile Include="Abilities\CompProperties_AbilityMatterHardening.cs" />
     <Compile Include="Abilities\CompProperties_AbilityWindBlade.cs" />

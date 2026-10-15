@@ -43,7 +43,7 @@ namespace Electromagnetic.Abilities
                     Hediff_RWrd_PowerRoot root = caster.GetPowerRoot();
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
                     int num = 40;
-                    float num2 = Tools.FinalDamage(root, num, masteryOffset);
+                    float num2 = Tools.FinalDamage(root, num, masteryOffset, true);
                     num2 *= Ability.outputPower;
                     num = (num2 >= int.MaxValue) ? int.MaxValue : Mathf.FloorToInt(num2);
                     //关闭友伤

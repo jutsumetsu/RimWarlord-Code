@@ -11,14 +11,6 @@ namespace Electromagnetic.Abilities
 {
     public class CompAbilityEffect_ElectricClaw : CompAbilityEffect_Electromagnetic
     {
-        //绑定Properties
-        public new CompProperties_AbilityElectricClaw Props
-        {
-            get
-            {
-                return (CompProperties_AbilityElectricClaw)this.props;
-            }
-        }
         //特效组
         public virtual FleckDef[] EffectSet
         {

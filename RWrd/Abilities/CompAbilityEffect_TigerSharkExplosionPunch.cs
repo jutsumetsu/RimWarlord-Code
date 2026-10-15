@@ -24,7 +24,7 @@ namespace Electromagnetic.Abilities
             float num = 20;
             //伤害计算
             Hediff_RWrd_PowerRoot root = Caster.GetPowerRoot();
-            num = Tools.FinalDamage(root, num, masteryOffset);
+            num = Tools.FinalDamage(root, num, masteryOffset, true);
             num *= Ability.outputPower;
             if (root.SelfDestruction)
             {

@@ -45,7 +45,7 @@ namespace Electromagnetic.Abilities
             {
                 //伤害计算
                 Hediff_RWrd_PowerRoot root = Caster.GetPowerRoot();
-                num = Tools.FinalDamage(root, num, masteryOffset);
+                num = Tools.FinalDamage(root, num, masteryOffset, true);
                 num *= Ability.outputPower;
             }
             pawn.TakeDamage(new DamageInfo(DamageDefOf.Flame, num, Caster.GetPowerRoot().energy.completerealm * 4, -1f, this.Caster));
