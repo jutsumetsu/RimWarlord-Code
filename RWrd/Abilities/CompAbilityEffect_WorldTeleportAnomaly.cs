@@ -131,7 +131,7 @@ namespace Electromagnetic.Abilities
             if (targetMap != null)
             {
                 Pawn allied = targetMap.mapPawns.AllPawnsSpawned.FirstOrDefault(p =>
-                    p.IsColonist && p.HomeFaction == Faction.OfPlayer);
+                    p.IsColonist && p.HomeFaction == RimWorld.Faction.OfPlayer);
                 IntVec3 targetCell = allied?.Position ?? target.Cell;
                 if(allied==null)
                 {

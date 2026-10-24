@@ -1,0 +1,39 @@
+{
+  "$comment": "边缘武神系列工作流配置。路径全部用绝对路径，正斜杠即可。",
+
+  "gameDir": "D:/Steam/steamapps/common/RimWorld",
+  "modsDir": "D:/Steam/steamapps/common/RimWorld/Mods",
+  "repoRoot": "D:/Desktop/RimWorldMods/RWrd",
+
+  "buildProject": "RWrd/RWrd.csproj",
+  "distDir": "dist",
+  "snapshotRoot": "Mod",
+
+  "basePackageId": "jm.rimwarlord",
+  "defNamePrefix": "",
+
+  "$activeModsComment": "判断 LoadFolders.xml 的 IfModActive/IfModNotActive 时，假定这些包是启用的",
+  "activeMods": [
+    "Ludeon.RimWorld",
+    "Ludeon.RimWorld.Royalty",
+    "Ludeon.RimWorld.Ideology",
+    "Ludeon.RimWorld.Biotech",
+    "Ludeon.RimWorld.Anomaly",
+    "Ludeon.RimWorld.Odyssey"
+  ],
+
+  "mods": [
+    {
+      "id": "RimWarlord",
+      "packageId": "jm.rimwarlord",
+      "version": "1.6",
+      "languages": ["ChineseSimplified", "ChineseTraditional", "English"]
+    },
+    {
+      "id": "baak-imperial-family",
+      "packageId": "jm.rimwarlord.baak",
+      "version": "1.6",
+      "languages": ["ChineseSimplified", "ChineseTraditional", "English"]
+    }
+  ]
+}

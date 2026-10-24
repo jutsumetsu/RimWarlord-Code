@@ -15,21 +15,20 @@ namespace Electromagnetic.Core
         /// </summary>
         /// <param name="pawn">小人实例</param>
         /// <returns></returns>
-        public virtual bool CanPawnUnlock(Pawn pawn)
+        public virtual bool CanPawnUnlock(Hediff_RWrd_PowerRoot root, Pawn pawn)
         {
-            return this.PawnHasEnoughLevel(pawn) && this.PawnHasEnoughCompleteRealm(pawn) && this.PawnHasUnlockPreAbility(pawn);
+            return this.PawnHasEnoughLevel(root) && this.PawnHasEnoughCompleteRealm(root) && this.PawnHasUnlockPreAbility(root);
         }
         /// <summary>
         /// 检测是否抵达需求等级
         /// </summary>
         /// <param name="pawn">小人实例</param>
         /// <returns></returns>
-        private bool PawnHasEnoughLevel(Pawn pawn)
+        private bool PawnHasEnoughLevel(Hediff_RWrd_PowerRoot root)
         {
             bool result;
-            if (pawn.IsHavePowerRoot())
+            if (root != null)
             {
-                Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                 int level = root.energy.AvailableLevel;
                 if (level >= requiredLevel)
                 {
@@ -51,12 +50,11 @@ namespace Electromagnetic.Core
         /// </summary>
         /// <param name="pawn">小人实例</param>
         /// <returns></returns>
-        private bool PawnHasEnoughCompleteRealm(Pawn pawn)
+        private bool PawnHasEnoughCompleteRealm(Hediff_RWrd_PowerRoot root)
         {
             bool result;
-            if (pawn.IsHavePowerRoot())
+            if (root != null)
             {
-                Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
                 float cr = root.energy.completerealm;
                 if (cr >= requiredCompleteRealm)
                 {
@@ -78,17 +76,17 @@ namespace Electromagnetic.Core
         /// </summary>
         /// <param name="pawn">小人实例</param>
         /// <returns></returns>
-        private bool PawnHasUnlockPreAbility(Pawn pawn)
+        private bool PawnHasUnlockPreAbility(Hediff_RWrd_PowerRoot root)
         {
             bool result;
-            if (pawn.IsHavePowerRoot())
+            if (root != null)
             {
                 result = false;
                 if (this.requiredAbilities.Count > 0)
                 {
                     foreach (AbilityDef ability in this.requiredAbilities)
                     {
-                        Ability flag = pawn.abilities.GetAbility(ability);
+                        Ability flag = root.pawn.abilities.GetAbility(ability);
                         if (flag != null)
                         {
                             result = true;

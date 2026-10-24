@@ -1,6 +1,8 @@
 ﻿using Electromagnetic.Abilities;
+using Electromagnetic.ModExtension;
 using Electromagnetic.Setting;
 using Electromagnetic.UI;
+using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections;
@@ -233,20 +235,33 @@ namespace Electromagnetic.Core
         /// <returns></returns>
         public static float GaussianRandom(float min, float max)
         {
-            // 计算区间中心（均值）和标准差（区间宽度/6覆盖99.7%数据）
+            if (min > max)
+            {
+                (max, min) = (min, max);
+            }
+
             float mean = (min + max) / 2f;
             float stdDev = (max - min) / 6f;
 
-            // 使用Box-Muller变换生成标准正态分布
-            float u1 = 1.0f - UnityEngine.Random.Range(0f, 1f); // 避免0值
-            float u2 = 1.0f - UnityEngine.Random.Range(0f, 1f);
-            float randStdNormal = Mathf.Sqrt(-2f * Mathf.Log(u1)) * Mathf.Sin(2f * Mathf.PI * u2);
+            // 区间退化时直接返回边界值，避免除零/死循环
+            if (stdDev <= 0f)
+                return mean;
 
-            // 缩放并平移至目标分布
-            float randNormal = mean + stdDev * randStdNormal;
+            while (true)
+            {
+                // UnityEngine.Random.Range(0f, 1f) 返回 [0, 1)
+                float u1 = 1.0f - UnityEngine.Random.Range(0f, 1f); // u1 ∈ (0, 1]
+                float u2 = 1.0f - UnityEngine.Random.Range(0f, 1f); // u2 ∈ (0, 1]
 
-            // 确保结果在指定区间内（3σ原则下概率<0.3%需要重试）
-            return Mathf.Clamp(randNormal, min, max);
+                float randStdNormal = Mathf.Sqrt(-2f * Mathf.Log(u1))
+                                    * Mathf.Sin(2f * Mathf.PI * u2);
+
+                float randNormal = mean + stdDev * randStdNormal;
+
+                // 3σ 内直接接受；约 0.27% 概率落入尾部，触发重采样
+                if (randNormal >= min && randNormal <= max)
+                    return randNormal;
+            }
         }
         /// <summary>
         /// 带强度参数的重载
@@ -255,17 +270,44 @@ namespace Electromagnetic.Core
         /// <param name="max"></param>
         /// <param name="strength"></param>
         /// <returns></returns>
-        public static float GaussianRandom(float min, float max, float strength)
+        public static float GaussianRandom(float min, float max, float strength, bool resample = false)
         {
+            if (min > max)
+            {
+                float t = min;
+                min = max;
+                max = t;
+            }
+
             strength = Mathf.Clamp(strength, 0.1f, 10f);
+
             float mean = (min + max) / 2f;
-            float stdDev = (max - min) / (2f * strength);
+            float width = max - min;
+            float stdDev = width / (2f * strength);
 
-            float u1 = 1.0f - UnityEngine.Random.Range(0f, 1f);
-            float u2 = 1.0f - UnityEngine.Random.Range(0f, 1f);
-            float randNormal = mean + stdDev * Mathf.Sqrt(-2f * Mathf.Log(u1)) * Mathf.Sin(2f * Mathf.PI * u2);
+            // 区间退化，直接返回中心值，避免死循环
+            if (stdDev <= 0f)
+                return mean;
 
-            return Mathf.Clamp(randNormal, min, max);
+            while (true)
+            {
+                // UnityEngine.Random.Range(0f, 1f) 返回 [0, 1)
+                // 1 - 后得到 (0, 1]，避免 Log(0)
+                float u1 = 1.0f - UnityEngine.Random.Range(0f, 1f);
+                float u2 = 1.0f - UnityEngine.Random.Range(0f, 1f);
+
+                float randNormal = mean
+                    + stdDev
+                    * Mathf.Sqrt(-2f * Mathf.Log(u1))
+                    * Mathf.Sin(2f * Mathf.PI * u2);
+
+                if (!resample)
+                    return Mathf.Clamp(randNormal, min, max);
+
+                // 超出 [min, max] 则重采样
+                if (randNormal >= min && randNormal <= max)
+                    return randNormal;
+            }
         }
         public static void DamageUntilSI(Pawn p, bool allowBleedingWounds = true, ThingDef sourceDef = null, BodyPartGroupDef bodyGroupDef = null)
         {
@@ -334,6 +376,50 @@ namespace Electromagnetic.Core
             }
             p.health.forceDowned = false;
         }
+        /// <summary>
+        /// 处理文化自定义拓展
+        /// </summary>
+        /// <param name="ideo"></param>
+        public static void resolveRWrdIdeoCustom(this Ideo ideo, IdeoCustom ideoCustom)
+        {
+            List<PreceptDef> forcedPrecepts = ideoCustom.forcedPrecepts;
+            for (int i = 0; i < forcedPrecepts.Count; i++)
+            {
+                ideo.AddPrecept(PreceptMaker.MakePrecept(forcedPrecepts[i]), true);
+            }
+            List<ThingDef> softDesire = ideoCustom.apparelDesiredSoft;
+            for (int i = 0; i < softDesire.Count; i++)
+            {
+                Precept_Apparel desireSoft = PreceptMaker.MakePrecept(RWrd_DefOf.ApparelDesired_Soft_Subordinate) as Precept_Apparel;
+                desireSoft.apparelDef = softDesire[i];
+                ideo.AddPrecept(desireSoft, true);
+            }
+        }
+        /// <summary>
+        /// 设置派系盟友关系
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        public static void MakeAllyRelation(RimWorld.Faction a, RimWorld.Faction b)
+        {
+            FactionRelation factionRelation = new FactionRelation();
+            factionRelation.other = b;
+            factionRelation.baseGoodwill = 100;
+            factionRelation.kind = FactionRelationKind.Ally;
+            var aRelations = Traverse.Create(a).Field<List<FactionRelation>>("relations").Value;
+            aRelations.Add(factionRelation);
+            FactionRelation factionRelation2 = new FactionRelation();
+            factionRelation2.other = a;
+            factionRelation2.baseGoodwill = 100;
+            factionRelation2.kind = FactionRelationKind.Ally;
+            var bRelations = Traverse.Create(b).Field<List<FactionRelation>>("relations").Value;
+            bRelations.Add(factionRelation2);
+        }
+        /// <summary>
+        /// 设置小人性别
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <param name="gender"></param>
         public static void SetPawnGender(this Pawn pawn, Gender gender)
         {
             if (pawn != null)

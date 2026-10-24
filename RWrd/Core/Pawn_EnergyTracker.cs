@@ -352,7 +352,7 @@ namespace Electromagnetic.Core
             bool flag = this.MaxEnergy > 5000;
             Hediff_RWrd_PowerRoot root = this.pawn.GetPowerRoot();
             bool attacking = root.meleeAttackCounter >= 3 || root.nonMeleeCounter <= 10 || root.hasBeatenBefore;
-            bool NPC = this.pawn.Faction != Faction.OfPlayer;
+            bool NPC = this.pawn.Faction != RimWorld.Faction.OfPlayer;
             if (!NPC)
             {
                 if (!flag)
@@ -422,7 +422,7 @@ namespace Electromagnetic.Core
         /// <param name="num">数值</param>
         public void ForceSetExp(float num)
         {
-            bool flag = num <= 0f;
+            bool flag = num < 0f;
             if (!flag)
             {
                 float num2 = this.exp + num;
@@ -594,6 +594,7 @@ namespace Electromagnetic.Core
             Scribe_Values.Look<float>(ref this.wavePower, "wavePower", 1f, false);
             Scribe_Values.Look<float>(ref this.waveRange, "waveRange", 1f, false);
             Scribe_Values.Look<int>(ref this.powerflow, "powerflow", 0, false);
+            Scribe_Values.Look<int>(ref this.trainDesireFactor, "traindesirefactor", 1, false);
             Scribe_Values.Look<int>(ref this.level, "level", 0, false);
             Scribe_Values.Look<int>(ref this.powerLimit, "powerLimit", 999, false);
             Scribe_Values.Look<bool>(ref this.personalEnergyWave, "personalEnergyWave", true, false);

@@ -16,6 +16,7 @@ namespace Electromagnetic.HarmonyPatchs
 {
     public class Pawn_Patch
     {
+        // 特质和Hediff绑定
         [HarmonyPatch(typeof(TraitSet))]
         [HarmonyPatch(nameof(TraitSet.GainTrait))]
         class GainTraitPatch

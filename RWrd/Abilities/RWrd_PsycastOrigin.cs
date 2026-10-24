@@ -113,7 +113,7 @@ namespace Electromagnetic.Abilities
                 if (flag2)
                 {
                     bool flag3;
-                    if (pawn.Faction != null && pawn.Faction == Faction.OfMechanoids)
+                    if (pawn.Faction != null && pawn.Faction == RimWorld.Faction.OfMechanoids)
                     {
                         flag3 = base.EffectComps.Any((CompAbilityEffect e) => !e.Props.applicableToMechs);
                     }

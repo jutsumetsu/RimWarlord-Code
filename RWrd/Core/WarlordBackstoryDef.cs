@@ -11,5 +11,6 @@ namespace Electromagnetic.Core
     {
         public int minLevel = 0;
         public int maxLevel = 0;
+        public float talentOffset = 0;
     }
 }

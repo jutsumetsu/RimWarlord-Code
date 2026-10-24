@@ -78,6 +78,18 @@ namespace Electromagnetic.Core
                 return ModDetect(null, "rim.job.world");
             }
         }
+
+        /// <summary>
+        /// 白家皇族加载检测
+        /// </summary>
+        public static bool BaakIsLoaded
+        {
+            get
+            {
+                return ModDetect(null, "jm.rimwarlord.baak");
+            }
+        }
+
         public static bool ModDetect(string packName = null, params string[] packIDs)
         {
             bool nameFlag = false;

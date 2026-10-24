@@ -31,10 +31,35 @@ namespace Electromagnetic.Core
         public static FleckDef RWrd_FragmentsB;
         public static FleckDef RWrd_FragmentsC;
         public static FleckDef RWrd_FragmentsD;
+        //衣服
+        
         //建筑
         public static ThingDef RWrd_Building_TrainingSpot;
 
         public static ThingDef HiTechResearchBench;
+        [MayRequireIdeology]
+        public static ThingDef Altar_Grand;
+        [MayRequireIdeology]
+        public static ThingDef Pew;
+        //派系
+        [MayRequire("jm.rimwarlord.baak")]
+        public static FactionDef RWrd_Faction_Empire_Baak;
+        //颜色
+        public static ColorDef BaakRed;
+        //文化图标
+        [MayRequireIdeology]
+        public static IdeoIconDef DownBurst;
+        //戒律
+        [MayRequireIdeology]
+        public static PreceptDef IdeoRole_Leader;
+        [MayRequireIdeology]
+        public static PreceptDef IdeoRole_Moralist;
+        [MayRequireIdeology]
+        public static PreceptDef IdeoRitualSeat;
+        [MayRequireIdeology]
+        public static PreceptDef ApparelDesired_Soft_Subordinate;
+        [MayRequireIdeology]
+        public static PreceptDef Festival;
         //Job
         public static JobDef RWrd_General_Training;
         public static JobDef RWrd_ResearchDisc;

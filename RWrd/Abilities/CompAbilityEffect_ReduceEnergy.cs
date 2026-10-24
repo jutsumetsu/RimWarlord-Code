@@ -125,6 +125,7 @@ namespace Electromagnetic.Abilities
                 try
                 {
                     bool flag = false;
+                    if (this.root == null) this.Initialize(this.props);
                     if (this.root.SelfDestruction)
                     {
                         flag = !this.Props.isEx;

@@ -1,0 +1,14 @@
+{
+  "gameDir": "D:/Steam/steamapps/common/RimWorld",
+  "modsDir": "{tools}/selftest/mods",
+  "repoRoot": "{tools}",
+  "distDir": "{tools}/_dist",
+  "snapshotRoot": "Mod",
+  "buildProject": "RWrd/RWrd.csproj",
+  "basePackageId": "jm.rimwarlord",
+  "defNamePrefix": "RWrd_",
+  "activeMods": ["Ludeon.RimWorld"],
+  "mods": [
+    { "id": "BrokenMod", "packageId": "bad.id", "version": "1.6", "languages": ["ChineseSimplified"] }
+  ]
+}

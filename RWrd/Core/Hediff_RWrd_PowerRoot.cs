@@ -630,8 +630,8 @@ namespace Electromagnetic.Core
                 this.IsInit = true;
                 this.initActivity = true;
             }
-            bool flag3 = this.pawn.Faction != Faction.OfPlayer;
-            if (flag3)
+            bool NonPlayerFaction = this.pawn.Faction != RimWorld.Faction.OfPlayerSilentFail;
+            if (NonPlayerFaction)
             {
                 //NPC生成
                 this.energy.level = this.InitialLevel(this.Qigong || this.newBorn, this.starter);

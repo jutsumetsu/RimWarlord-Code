@@ -93,7 +93,7 @@ namespace Electromagnetic.UI
         {
             get
             {
-                Faction faction = pawn.Faction;
+                RimWorld.Faction faction = pawn.Faction;
                 bool result;
                 if (faction == null)
                 {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <ThingDef>
+    <defName>RWrd_Dup</defName>
+    <graphicData><texPath>Things/Nope/Missing</texPath><graphicClass>Graphic_Single</graphicClass></graphicData>
+  </ThingDef>
+  <ThingDef><defName>RWrd_Dup</defName></ThingDef>
+  <NotADef><defName>RWrd_Weird</defName></NotADef>
+  <ThingDef ParentName="NoSuchTemplate"><defName>RWrd_OrphanParent</defName></ThingDef>
+  <ThingDef>
+    <defName>RWrd_Case</defName>
+    <graphicData><texPath>things/demo/casetest</texPath><graphicClass>Graphic_Single</graphicClass></graphicData>
+  </ThingDef>
+</Defs>

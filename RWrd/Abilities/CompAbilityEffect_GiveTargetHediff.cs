@@ -1,4 +1,5 @@
 ﻿using Electromagnetic.Core;
+using Electromagnetic.Faction;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -89,7 +90,7 @@ namespace Electromagnetic.Abilities
         }
         public override bool AICanTargetNow(LocalTargetInfo target)
         {
-            return this.parent.pawn.Faction != Faction.OfPlayer && target.Pawn != null;
+            return this.parent.pawn.Faction != RimWorld.Faction.OfPlayer && target.Pawn != null;
         }
     }
 }

@@ -79,6 +79,13 @@
       <Namespace>Electromagnetic.$(RelativeDir.Replace('Electromagnetic\', '').Replace('\', '.').TrimEnd('.'))</Namespace>
     </Compile>
     <Compile Include="Abilities\CompAbilityEffect_WorldTeleportAnomaly.cs" />
+    <Compile Include="Core\ThoughtWorker_Precept_EMPowerPresentAlter.cs" />
+    <Compile Include="Core\ThoughtWorker_Precept_EMPowerPresent.cs" />
+    <Compile Include="Faction\GoodwillSituationWorker_SubFaction.cs" />
+    <Compile Include="ModExtension\IdeoCustom.cs" />
+    <Compile Include="ModExtension\PawnkindCustom.cs" />
+    <Compile Include="HarmonyPatchs\FactionPatch.cs" />
+    <Compile Include="ModExtension\RelationCustom.cs" />
     <Compile Include="UI\BodyTool.cs" />
     <Compile Include="UI\ColorTool.cs" />
     <Compile Include="UI\ColorType.cs" />

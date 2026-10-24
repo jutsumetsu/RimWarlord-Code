@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Electromagnetic.Abilities;
 using Electromagnetic.Setting;
+using Electromagnetic.ModExtension;
 using RimWorld;
 using Verse;
 using Verse.AI.Group;
@@ -178,7 +179,7 @@ namespace Electromagnetic.Core
                 {
                     foreach (RWrd_RouteDef route in root.routes)
                     {
-                        list2.AddRange(pawn.CheckEMAbilityTree(route));
+                        list2.AddRange(pawn.CheckEMAbilityTree(root, route));
                     }
                 }
                 foreach (Ability ability in pawn.abilities.abilities)
@@ -224,6 +225,10 @@ namespace Electromagnetic.Core
                     if (skillGain.skill == SkillDefOf.Melee) melee += skillGain.amount;
                     if (skillGain.skill == SkillDefOf.Intellectual) intellectual += skillGain.amount;
                 }
+                if (pawn.story.Childhood is WarlordBackstoryDef warlordChildhood)
+                {
+                    num += warlordChildhood.talentOffset;
+                }
             }
             if (pawn.story.Adulthood != null)
             {
@@ -231,6 +236,10 @@ namespace Electromagnetic.Core
                 {
                     if (skillGain.skill == SkillDefOf.Melee) melee += skillGain.amount;
                     if (skillGain.skill == SkillDefOf.Intellectual) intellectual += skillGain.amount;
+                }
+                if (pawn.story.Adulthood is WarlordBackstoryDef warlordAdulthood)
+                {
+                    num += warlordAdulthood.talentOffset;
                 }
             }
             foreach (Trait trait in pawn.story.traits.allTraits)
@@ -272,6 +281,21 @@ namespace Electromagnetic.Core
                     num = UnityEngine.Random.Range(adultMin, warlordAdulthood.maxLevel);
                 }
                 Log.Message(pawn.Name.ToStringShort + "'s warlordAdulthood:" + pawn.story.Adulthood.title + "[" + warlordAdulthood.minLevel + "," + warlordAdulthood.maxLevel + ")");
+            }
+            if (pawn.kindDef != null)
+            {
+                PawnKindDef warlordKindDef = pawn.kindDef;
+                if (warlordKindDef.HasModExtension<PawnkindCustom>())
+                {
+                    int maxLevel = warlordKindDef.GetModExtension<PawnkindCustom>().maxLevel;
+                    int minLevel = warlordKindDef.GetModExtension<PawnkindCustom>().minLevel;
+                    if (num < maxLevel)
+                    {
+                        int kindMin = Math.Max(num, minLevel);
+                        num = UnityEngine.Random.Range(kindMin, maxLevel);
+                    }
+                    Log.Message(pawn.Name.ToStringShort + "'s kindDef:" + pawn.kindDef.defName + "[" + minLevel + "," + maxLevel + ")");
+                }
             }
             if (num == 0)
             {
@@ -326,14 +350,14 @@ namespace Electromagnetic.Core
         /// <param name="pawn">小人实例</param>
         /// <param name="route">技能树</param>
         /// <returns></returns>
-        public static List<Ability> CheckEMAbilityTree(this Pawn pawn, RWrd_RouteDef route)
+        public static List<Ability> CheckEMAbilityTree(this Pawn pawn, Hediff_RWrd_PowerRoot root, RWrd_RouteDef route)
         {
             List<Ability> list = new List<Ability>();
             foreach (RWrd_RouteNode rwrd_RouteNode in route.routeNodes)
             {
                 string text = route.defName + "-Node" + rwrd_RouteNode.number.ToString() + "：";
                 bool flag;
-                flag = rwrd_RouteNode.CanPawnUnlock(pawn);
+                flag = rwrd_RouteNode.CanPawnUnlock(root, pawn);
                 text += (flag ? "(Enabled)" : "(Disabled)");
                 foreach (AbilityDef abilityDef in rwrd_RouteNode.abilities)
                 {
