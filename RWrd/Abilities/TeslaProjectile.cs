@@ -131,7 +131,7 @@ namespace Electromagnetic.Abilities
                         {
                             GenExplosion.DoExplosion(
                                 hitThing.Position, base.Map, this.Props.impactRadius, this.Props.explosionDamageDef,
-                                base.Launcher, this.def.projectile.GetDamageAmount(1f, null)
+                                base.Launcher, this.GetDamageAmount
                             );
                         }
 

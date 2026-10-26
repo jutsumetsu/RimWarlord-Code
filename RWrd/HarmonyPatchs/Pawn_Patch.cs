@@ -158,7 +158,11 @@ namespace Electromagnetic.HarmonyPatchs
             {
                 if (Find.TickManager.TicksGame % 45 != 0) return;
                 Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
-                if (pawn == null || !pawn.Spawned || pawn.Dead || pawn.Downed || pawn.Faction.IsPlayer || pawn.abilities == null) return;
+                if (pawn == null || !pawn.Spawned || pawn.Dead || pawn.Downed || pawn.abilities == null) return;
+                if (pawn.Faction != null)
+                {
+                    if (pawn.Faction.IsPlayer) return;
+                }
                 if (!pawn.IsHavePowerRoot()) return;
                 Job cur = pawn.CurJob;
                 if (cur == null) return;
