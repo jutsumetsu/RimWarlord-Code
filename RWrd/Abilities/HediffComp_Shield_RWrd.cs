@@ -122,7 +122,7 @@ namespace Electromagnetic.Abilities
                                 flag3 = !this.IsRangedDamage(dinfo);
                                 break;
                             case AttackType.Ranged:
-                                flag3 = this.IsRangedDamage(dinfo) || dinfo.Def.isExplosive;
+                                flag3 = this.IsRangedDamage(dinfo) || dinfo.Def.isExplosive || (bool)dinfo.Weapon?.IsRangedWeapon;
                                 break;
                             case AttackType.Both:
                                 flag3 = true;

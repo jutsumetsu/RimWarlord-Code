@@ -735,6 +735,7 @@ namespace Electromagnetic.Core
             if (Find.TickManager.TicksGame % 180 == 0)
             {
                 /*Log.Warning($"now MAC: {meleeAttackCounter} NMC: {nonMeleeCounter}");*/
+                if (!this.pawn.IsHavePowerRoot()) PowerRootUtillity.powerRootCacheMap.Add(this.pawn, this);
                 if (!SDRecharge)
                 {
                     this.energy.EnergyRecharge();

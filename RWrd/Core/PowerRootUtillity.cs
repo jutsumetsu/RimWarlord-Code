@@ -56,8 +56,8 @@ namespace Electromagnetic.Core
             else
             {
                 var targetDef = RWrd_DefOf.Hediff_RWrd_PowerRoot;
-                return (Hediff_RWrd_PowerRoot)pawn.health.hediffSet.hediffs
-                    .FirstOrDefault(h => h.def == targetDef);
+                Hediff_RWrd_PowerRoot root = pawn.health.hediffSet.hediffs.FirstOrDefault(h => h.def == targetDef) as Hediff_RWrd_PowerRoot;
+                return root;
             }
         }
         /// <summary>

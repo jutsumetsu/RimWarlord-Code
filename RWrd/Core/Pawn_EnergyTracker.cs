@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Electromagnetic.Abilities;
 using Electromagnetic.Setting;
 using HarmonyLib;
 using RimWorld;
@@ -382,11 +383,34 @@ namespace Electromagnetic.Core
             {
                 if (!flag)
                 {
-                    this.SetEnergy(100);
+                    if (attacking)
+                    {
+                        this.SetEnergy(100);
+                    }
+                    else
+                    {
+                        this.SetEnergy(300);
+                    }
                 }
                 else
                 {
-                    this.SetEnergy(this.PCTEnergyFight);
+                    if (attacking)
+                    {
+                        this.SetEnergy(this.PCTEnergyFight);
+                    }
+                    else
+                    {
+                        this.SetEnergy(this.PCTEnergy);
+                    }
+                }
+
+                if (!attacking)
+                {
+                    RWrd_PsyCastToggle ab = pawn.abilities?.GetAbility(RWrd_DefOf.RWrd_Ability_ProtectiveForce) as RWrd_PsyCastToggle;
+                    if (ab != null)
+                    {
+                        if (ab.isActive) ab.CompOfType<CompAbilityToggle_ProtectiveForce>()?.Apply();
+                    }
                 }
             }
         }

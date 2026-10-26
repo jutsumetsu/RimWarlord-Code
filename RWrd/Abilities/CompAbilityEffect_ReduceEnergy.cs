@@ -153,6 +153,10 @@ namespace Electromagnetic.Abilities
                 }
             }
         }
+        public override bool AICanTargetNow(LocalTargetInfo target)
+        {
+            return !this.GizmoDisabled(out string text);
+        }
         public bool disabled = true;
         public Hediff_RWrd_PowerRoot root;
         private int tick = 0;

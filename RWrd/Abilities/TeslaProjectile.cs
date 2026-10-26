@@ -387,6 +387,13 @@ namespace Electromagnetic.Abilities
                 base.Destroy(mode);
             }
         }
+        public override bool AnimalsFleeImpact
+        {
+            get
+            {
+                return false;
+            }
+        }
         public override void ExposeData()
         {
             base.ExposeData();

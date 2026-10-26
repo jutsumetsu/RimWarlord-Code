@@ -69,6 +69,35 @@ namespace Electromagnetic.Abilities
             }
         }
 
+        public override bool AICanTargetNow(LocalTargetInfo target)
+        {
+            if (target.Pawn == this.Caster)
+            {
+                return true;
+            }
+            if (this.Caster.Faction != null)
+            {
+                if (target.Pawn.Faction != null)
+                {
+                    bool friend = target.Pawn.Faction == this.Caster.Faction || this.Caster.Faction.RelationKindWith(target.Pawn.Faction) == FactionRelationKind.Ally;
+                    if (friend)
+                    {
+                        if (target.Pawn.health.HasHediffsNeedingTend(true)) return true;
+                    }
+                }
+            }
+            return false;
+        }
+        public override bool CanApplyOn(LocalTargetInfo target, LocalTargetInfo dest)
+        {
+            Pawn p = target.Pawn;
+            if (p == null) return false;
+            if (p == Caster) return true;
+            if (p.Faction == null) return false;
+            return Caster.Faction != null && (p.Faction == Caster.Faction ||
+                   Caster.Faction.RelationKindWith(p.Faction) == FactionRelationKind.Ally);
+        }
+
         private static List<Hediff> tendableHediffsInTendPriorityOrder = new List<Hediff>();
         private static List<Hediff> tmpHediffs = new List<Hediff>();
         private static List<HediffDef> badHediffs = new List<HediffDef>()

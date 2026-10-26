@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 
 namespace Electromagnetic.Core
 {
@@ -39,26 +40,62 @@ namespace Electromagnetic.Core
         /// <returns></returns>
         public static bool IsAttacking(this Pawn pawn)
         {
-            if (pawn.stances.curStance != null)
+            if (pawn?.CurJob is Job job)
             {
-                if (pawn.stances.curStance is Stance_Busy)
+                var def = job.def;
+                if (def == JobDefOf.AttackMelee || def == JobDefOf.AttackStatic)
                 {
-                    Stance_Busy stanceBusy = pawn.stances.curStance as Stance_Busy;
-                    bool hasAttackJob = pawn.CurJob?.def == JobDefOf.AttackMelee || pawn.CurJob?.def == JobDefOf.AttackStatic;
-                    bool hasMeleeVerb = stanceBusy?.verb is Verb_MeleeAttack;
-                    bool hasTarget = stanceBusy.focusTarg.IsValid;
-                    bool attacking = (hasAttackJob || hasMeleeVerb) && hasTarget;
-                    return attacking;
-                }
-                else
-                {
-                    return false;
+                    if (job.targetA.HasThing)
+                    {
+                        Thing t = job.targetA.Thing;
+                        if (t != null && !t.Destroyed)
+                            return true;
+                    }
                 }
             }
-            else
+            if (pawn.stances.curStance is Stance_Busy busy)
+                return busy.focusTarg.IsValid && (busy.verb is Verb_MeleeAttack || busy.verb is Verb_CastAbility);
+            return false;
+        }
+        /// <summary>
+        /// 打断原地近战状态
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <returns></returns>
+        public static bool WantToBreakMeleeAttackForAbility(Pawn pawn)
+        {
+            if (pawn == null) return false;
+            if (pawn.CurJob == null)
             {
+                /*Log.Message("Where the job???");*/
                 return false;
             }
+            Job job = pawn.CurJob;
+            if (job.def == null)
+            {
+                /*Log.Message("Where the JobDef???");*/
+                return false;
+            }
+            /*Log.Message($"{pawn.LabelShort} job={job?.def?.defName ?? "null"} ");*/
+            if (job.def != JobDefOf.AttackStatic && job.def != JobDefOf.AttackMelee)
+            {
+                /*Log.Message("Isn't MeleeAttack");*/
+                return false;
+            }
+            if (job.targetA == null)
+            {
+                /*Log.Message("Where the target???");*/
+                return false;
+            }
+            /*Log.Message($"target={job?.targetA.Thing?.LabelShort ?? "none"} ");*/
+            if (!job.targetA.HasThing) return false;
+            if (!(job.targetA.Thing is Pawn)) return false;
+            Pawn target = job.targetA.Thing as Pawn;
+            if (target.Destroyed || target.Dead || !target.HostileTo(pawn)) return false;
+            if (pawn.abilities == null) return false;
+            /*Log.Message($"stance={pawn.stances.curStance?.GetType().Name ?? "null"} " +
+                $"attackVerbs={pawn.abilities?.AllAbilitiesForReading.Count(a => a.def.aiCanUse) ?? 0}");*/
+            return pawn.abilities.AICastableAbilities(target, offensive: true).Count > 0;
         }
         /// <summary>
         /// 角度工具

@@ -11,6 +11,7 @@ using System.Linq;
 using Electromagnetic.Abilities;
 using Electromagnetic.Setting;
 using System.Reflection;
+using Unity.Jobs;
 
 namespace Electromagnetic.HarmonyPatchs
 {
@@ -149,6 +150,84 @@ namespace Electromagnetic.HarmonyPatchs
                 return otherParent != null && BaakFamily.Contains(otherParent.kindDef);
             }
         }
+        [HarmonyPatch(typeof(Pawn_JobTracker), nameof(Pawn_JobTracker.JobTrackerTick))]
+        class AIUseAbilityInsteadOfMeleePatch
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Pawn_JobTracker __instance)
+            {
+                if (Find.TickManager.TicksGame % 45 != 0) return;
+                Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
+                if (pawn == null || !pawn.Spawned || pawn.Dead || pawn.Downed || pawn.Faction.IsPlayer || pawn.abilities == null) return;
+                if (!pawn.IsHavePowerRoot()) return;
+                Job cur = pawn.CurJob;
+                if (cur == null) return;
+                if (cur.def != JobDefOf.AttackMelee && cur.def != JobDefOf.AttackStatic) return;
+                Pawn target = cur.targetA.Thing as Pawn;
+                if (target.Destroyed || target.Dead || !target.HostileTo(pawn)) return;
+                Ability pick = null;
+                foreach (Ability a in pawn.abilities.AICastableAbilities(target, offensive: true))
+                {
+                    if (a.verb.CanHitTarget(target) && a.CanApplyOn((LocalTargetInfo)target)) { pick = a; break; }
+                }
+                if (pick == null) return;
+                Log.Message($"Choose to use ability: {pick.def.label}");
+                pawn.jobs.EndCurrentJob(JobCondition.Succeeded, startNewJob: false);
+                pawn.jobs.TryTakeOrderedJob(pick.GetJob(target, target), JobTag.Misc);
+            }
+        }
+        // 细胞重组AI使用patch
+        [HarmonyPatch(typeof(JobGiver_AIFightEnemy), "TryGiveJob")]
+        class AICellRecombinationPatch
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(Pawn pawn, ref Job __result)
+            {
+                if (pawn.abilities?.GetAbility(RWrd_DefOf.RWrd_Ability_CellRecombination) is Ability heal && heal.CanCast)
+                {
+                    if (pawn.health.HasHediffsNeedingTend(true))
+                    {
+                        __result = heal.GetJob(pawn, pawn);
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        /*[HarmonyPatch(typeof(JobGiver_AIFightEnemy), nameof(JobGiver_AIFightEnemy.GetAbilityJob))]
+        class AIBugTest
+        {
+            public static void Postfix(Pawn pawn, Thing enemyTarget, Job __result)
+            {
+                if (__result == null) return;
+                if (pawn == null) return; if (enemyTarget == null) return;
+                if (!pawn.IsHavePowerRoot()) return;
+                Ability a = __result.ability;
+                if (a == null) return;
+                Log.Message($"{pawn}: canCast={a.CanCast} canApply={(a.def.HasAreaOfEffect ? true : a.CanApplyOn((LocalTargetInfo)enemyTarget))} " +
+            $"canHit={a.verb.CanHitTarget(enemyTarget)} canReach={pawn.CanReach(enemyTarget, PathEndMode.Touch, Danger.Deadly)} " +
+            $"job={(a.def.jobDef != null ? a.def.jobDef.defName : "no JobDef")} warmup={a.def.verbProperties.warmupTime}");
+            }
+        }*/
+        //电弧激发补丁
+        [HarmonyPatch(typeof(Projectile), "Impact")]
+        class LightningBoltPatch
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(Projectile __instance, bool blockedByShield = false)
+            {
+                if (__instance is TeslaProjectile)
+                {
+                    if (!blockedByShield && __instance.def.projectile.landedEffecter != null)
+                    {
+                        __instance.def.projectile.landedEffecter.Spawn(__instance.ExactPosition.ToIntVec3(), __instance.Map, 1f).Cleanup();
+                    }
+                    __instance.Destroy(DestroyMode.Vanish);
+                    return false;
+                }
+                return true;
+            }
+        }
         // Pawn伤害patch
         [HarmonyPatch(typeof(Verb_MeleeAttackDamage))]
         [HarmonyPatch("DamageInfosToApply")]
@@ -210,7 +289,7 @@ namespace Electromagnetic.HarmonyPatchs
                                         __instance.EquipmentSource.HitPoints = 0;
                                     }
                                 }
-                                /*Log.Message($"EM melee damage: {num}");*/
+                                Log.Message($"EM melee damage: {num}");
                                 num *= root.energy.outputPower;
                                 bool ReachLimit = root.energy.level == root.energy.LevelMax && root.energy.exp == root.energy.MaxExp;
                                 if (target.Thing.GetType() == typeof(Pawn) && !ReachLimit)
@@ -437,6 +516,7 @@ namespace Electromagnetic.HarmonyPatchs
             {
                 if (__instance is Pawn pawn)
                 {
+                    if (dinfo.Instigator == pawn) return true;
                     if (pawn.IsHavePowerRoot())
                     {
                         Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
@@ -458,6 +538,25 @@ namespace Electromagnetic.HarmonyPatchs
                     }
                 }
                 return true;
+            }
+        }
+        //强者自动开盾
+        [HarmonyPatch(typeof(ThingWithComps), nameof(ThingWithComps.PreApplyDamage))]
+        static class Patch_PreApplyDamage_AutoShield
+        {
+            [HarmonyPrefix]
+            static void Prefix(ThingWithComps __instance, ref DamageInfo dinfo)
+            {
+                if (!(__instance is Pawn pawn) || !pawn.IsHavePowerRoot()) return;
+                if (pawn.Faction == RimWorld.Faction.OfPlayer) return;
+                var root = pawn.GetPowerRoot();
+                RWrd_PsyCastToggle ab = pawn.abilities?.GetAbility(RWrd_DefOf.RWrd_Ability_ProtectiveForce) as RWrd_PsyCastToggle;
+                if (dinfo.Instigator == pawn) return;
+                if (!(dinfo.Def.isRanged || HediffCompProperties_Shield_RWrd.IsProjectileDamage(dinfo.Def)) && !dinfo.Def.isExplosive && !(bool)(dinfo.Weapon?.IsRangedWeapon)) return;
+                Log.Message($"{pawn.Name} was shot by {dinfo.Def.label}. Current damage: {dinfo.Amount}. Damage Immunity Threshold: {root.energy.DamageImmunityThreshold}");
+                if (dinfo.Amount < root.energy.DamageImmunityThreshold) return;
+                if (ab == null || ab.isActive) return;
+                ab.CompOfType<CompAbilityToggle_ProtectiveForce>()?.Apply();
             }
         }
         //强者免疫疾病事件

@@ -23,6 +23,7 @@ namespace Electromagnetic.Core
         public static RWrd_RouteDef SixSecret;
         //能力
         public static AbilityDef RWrd_Ability_CellRecombination;
+        public static AbilityDef RWrd_Ability_ProtectiveForce;
         //特效
         public static FleckDef RWrd_ElectricClawAttractFleck;
         public static FleckDef RWrd_ElectricClawFleck;
