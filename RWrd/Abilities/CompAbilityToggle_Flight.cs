@@ -24,12 +24,18 @@ namespace Electromagnetic.Abilities
             {
                 Hediff newHediff = HediffMaker.MakeHediff(targetDef, Caster);
                 Caster.health.AddHediff(newHediff);
+                if (Caster.flight != null && !Caster.Flying && Caster.flight.CanFlyNow)
+                    Caster.flight.StartFlying();
+            }
+            else
+            {
+                Caster.flight?.ForceLand();
             }
         }
         public override void CompTick()
         {
             base.CompTick();
-            if (Find.TickManager.TicksGame % 60 == 0 && ModDetector.PFIsLoaded && this.Ability.isActive && Caster.GetPowerRoot().energy.AvailableLevel < 50)
+            if (Find.TickManager.TicksGame % 60 == 0 && this.Ability.isActive && Caster.GetPowerRoot().energy.AvailableLevel < 50)
             {
                 if (Caster.GetPowerRoot().energy.energy >= Caster.GetPowerRoot().energy.FlightConsumptionPerSecond) Caster.GetPowerRoot().energy.SetEnergy(-Caster.GetPowerRoot().energy.FlightConsumptionPerSecond);
                 else

@@ -36,6 +36,7 @@ namespace Electromagnetic.HarmonyPatchs
                     }
                 }, "DelayedHarmonyInit", false, null);
             }
+            // 应用关系补丁
             private static void ApplyRelationPatch()
             {
                 var targetMethods = Pawn_Patch.RelationPatch.TargetMethods().ToList();

@@ -12,6 +12,8 @@ using Electromagnetic.Abilities;
 using Electromagnetic.Setting;
 using System.Reflection;
 using Unity.Jobs;
+using Electromagnetic.ModExtension;
+using System.Security.Cryptography;
 
 namespace Electromagnetic.HarmonyPatchs
 {
@@ -46,7 +48,7 @@ namespace Electromagnetic.HarmonyPatchs
                 yield return AccessTools.Method(typeof(PawnRelationWorker), nameof(PawnRelationWorker.CreateRelation));
 
                 // 获取所有子类中重写的方法
-                foreach (Type subclass in GetAllSubclasses(typeof(PawnRelationWorker)))
+                foreach (Type subclass in GenTypes.AllSubclassesNonAbstract(typeof(PawnRelationWorker)))
                 {
                     MethodInfo method = AccessTools.Method(subclass, nameof(PawnRelationWorker.CreateRelation));
                     if (method != null && method.DeclaringType == subclass)
@@ -56,18 +58,20 @@ namespace Electromagnetic.HarmonyPatchs
                 }
             }
 
-            // 获取所有子类
-            private static IEnumerable<Type> GetAllSubclasses(Type baseType)
-            {
-                return baseType.Assembly.GetTypes()
-                    .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(baseType));
-            }
-
             // 使用HashSet提高查找性能
-            private static readonly HashSet<PawnKindDef> BaakFamily = new HashSet<PawnKindDef>
+            private static HashSet<PawnKindDef> baakKinds;
+            private static HashSet<PawnKindDef> BaakFamily
             {
-                RWrd_DefOf.RWrd_Pawn_BaakSide
-            };
+                get
+                {
+                    if (baakKinds == null)
+                        baakKinds = DefDatabase<PawnKindDef>.AllDefs
+                            .Where(k => k.HasModExtension<PawnkindCustom>()
+                                     && k.GetModExtension<PawnkindCustom>().familyTag == "Baak")
+                            .ToHashSet();
+                    return baakKinds;
+                }
+            }
 
             private static readonly HashSet<PawnRelationDef> ParentChildRelations = new HashSet<PawnRelationDef>
             {
@@ -99,46 +103,27 @@ namespace Electromagnetic.HarmonyPatchs
                 if (!isBaakGenerated && !isBaakOther)
                     return true;
 
-                Log.Message($"Baak Family Relation Check: {generated.Name} & {other.Name}");
+                if (Prefs.DevMode) Log.Message($"Baak Family Relation Check: {generated.Name} & {other.Name}");
 
                 // 处理亲子关系
                 if (ParentChildRelations.Contains(__instance.def))
-                    return HandleParentChildRelation(__instance.def, generated, other, isBaakGenerated, isBaakOther);
+                    return HandleParentChildRelation(__instance.def, generated, other);
 
                 // 非亲子血缘关系
-                return generated.kindDef == other.kindDef;
+                return isBaakGenerated && isBaakOther;
             }
 
             private static bool HandleParentChildRelation(PawnRelationDef relation, Pawn generated,
-                Pawn other, bool isBaakGenerated, bool isBaakOther)
+                Pawn other)
             {
-                // 双方都是白家人，允许关系
-                if (isBaakGenerated && isBaakOther)
-                    return true;
-
-                // 简化逻辑：提取共同模式
-                if (relation == PawnRelationDefOf.Parent)
-                    return HandleParentRelation(generated, other, isBaakGenerated, isBaakOther);
-                else
-                    return HandleChildRelation(generated, other, isBaakGenerated, isBaakOther);
-            }
-
-            private static bool HandleParentRelation(Pawn generated, Pawn other, bool isBaakGenerated, bool isBaakOther)
-            {
-                // other是parent，generated是child
-                if (isBaakOther)
-                    return generated.ageTracker.AgeBiologicalYears < 1; // 孩子必须是婴儿
-
-                return CheckOtherParentIsBaak(generated, other);
-            }
-
-            private static bool HandleChildRelation(Pawn generated, Pawn other, bool isBaakGenerated, bool isBaakOther)
-            {
-                // generated是parent，other是child  
-                if (isBaakGenerated)
-                    return other.ageTracker.AgeBiologicalYears < 1; // 孩子必须是婴儿
-
-                return CheckOtherParentIsBaak(other, generated);
+                Pawn child = relation == PawnRelationDefOf.Parent ? generated : other;
+                Pawn parent = relation == PawnRelationDefOf.Parent ? other : generated;
+                bool childBaak = BaakFamily.Contains(child.kindDef);
+                bool parentBaak = BaakFamily.Contains(parent.kindDef);
+                if (childBaak && parentBaak) return true;
+                if (parentBaak) return child.ageTracker.AgeBiologicalYears < 1;
+                if (childBaak) return CheckOtherParentIsBaak(child, parent);
+                return true;
             }
 
             private static bool CheckOtherParentIsBaak(Pawn child, Pawn parent)
@@ -146,10 +131,26 @@ namespace Electromagnetic.HarmonyPatchs
                 // 获取另一性别父母
                 Pawn otherParent = parent.gender == Gender.Male ?
                     child.GetMother() : child.GetFather();
-
-                return otherParent != null && BaakFamily.Contains(otherParent.kindDef);
+                if (otherParent == null) return false;
+                else return BaakFamily.Contains(otherParent.kindDef);
             }
         }
+        //开发者看见Gizmo
+        [HarmonyPatch(typeof(Pawn), nameof(Pawn.GetGizmos))]
+        class DevShowGizmoPatch
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
+            {
+                if (!DebugSettings.godMode) return;
+                if (__instance.IsColonistPlayerControlled || __instance.IsColonyMech || __instance.IsPrisonerOfColony)
+                    return;
+                if (!__instance.IsHavePowerRoot()) return;
+                var root = __instance.GetPowerRoot();
+                __result = __result.Concat(root.GetGizmos().Where(g => g != null));
+            }
+        }
+        //近战中穿插使用技能
         [HarmonyPatch(typeof(Pawn_JobTracker), nameof(Pawn_JobTracker.JobTrackerTick))]
         class AIUseAbilityInsteadOfMeleePatch
         {
@@ -552,11 +553,15 @@ namespace Electromagnetic.HarmonyPatchs
             static void Prefix(ThingWithComps __instance, ref DamageInfo dinfo)
             {
                 if (!(__instance is Pawn pawn) || !pawn.IsHavePowerRoot()) return;
-                if (pawn.Faction == RimWorld.Faction.OfPlayer) return;
+                if (pawn.Faction != null)
+                {
+                    if (pawn.Faction.IsPlayer) return;
+                }
                 var root = pawn.GetPowerRoot();
                 RWrd_PsyCastToggle ab = pawn.abilities?.GetAbility(RWrd_DefOf.RWrd_Ability_ProtectiveForce) as RWrd_PsyCastToggle;
                 if (dinfo.Instigator == pawn) return;
-                if (!(dinfo.Def.isRanged || HediffCompProperties_Shield_RWrd.IsProjectileDamage(dinfo.Def)) && !dinfo.Def.isExplosive && !(bool)(dinfo.Weapon?.IsRangedWeapon)) return;
+                bool rangedWeapon = dinfo.Weapon == null || dinfo.Weapon.IsRangedWeapon;
+                if (!(dinfo.Def.isRanged || HediffCompProperties_Shield_RWrd.IsProjectileDamage(dinfo.Def)) && !dinfo.Def.isExplosive && !rangedWeapon) return;
                 Log.Message($"{pawn.Name} was shot by {dinfo.Def.label}. Current damage: {dinfo.Amount}. Damage Immunity Threshold: {root.energy.DamageImmunityThreshold}");
                 if (dinfo.Amount < root.energy.DamageImmunityThreshold) return;
                 if (ab == null || ab.isActive) return;
@@ -600,6 +605,30 @@ namespace Electromagnetic.HarmonyPatchs
                 if (pawn.IsHavePowerRoot())
                 {
                     return false;
+                }
+                return true;
+            }
+        }
+        //磁场强者会飞
+        [HarmonyPatch(typeof(Pawn_FlightTracker)), HarmonyPatch("Notify_JobStarted")]
+        public static class ForcedFlightPatch
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(Job job, Pawn_FlightTracker __instance, Pawn ___pawn)
+            {
+                if (___pawn.IsHavePowerRoot())
+                {
+
+                    if (___pawn.abilities?.GetAbility(RWrd_DefOf.RWrd_Ability_ProtectiveForce) is RWrd_PsyCastToggle ab)
+                    {
+                        bool flightNow = ab.isActive && __instance.CanEverFly;
+                        if (flightNow)
+                        {
+                            __instance.StartFlying();
+                            job.flying = true;
+                            return false;
+                        }
+                    }
                 }
                 return true;
             }

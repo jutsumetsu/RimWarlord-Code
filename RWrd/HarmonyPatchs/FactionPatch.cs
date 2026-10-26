@@ -64,7 +64,7 @@ namespace Electromagnetic.HarmonyPatchs
         class FactionIdeoPatch
         {
             [HarmonyPostfix]
-            public static void Postfix(Ideo __result)
+            public static void Postfix(Ideo __result, IdeoGenerationParms parms)
             {
                 if (ModsConfig.IdeologyActive)
                 {
@@ -104,10 +104,12 @@ namespace Electromagnetic.HarmonyPatchs
                                 ritualSeat.ThingDef = RWrd_DefOf.Pew;
                             }
 
-                            IdeoCustom custom = RWrd_DefOf.RWrd_Faction_Empire_Baak.GetModExtension<IdeoCustom>();
-                            __result.resolveRWrdIdeoCustom(custom);
                             __result.SetIcon(RWrd_DefOf.DownBurst, RWrd_DefOf.BaakRed);
                         }
+                    }
+                    if (parms.forFaction != null)
+                    {
+                        if (parms.forFaction.GetModExtension<IdeoCustom>() is IdeoCustom custom) __result.resolveRWrdIdeoCustom(custom);
                     }
                 }
             }

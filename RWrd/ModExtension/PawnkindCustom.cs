@@ -11,5 +11,6 @@ namespace Electromagnetic.ModExtension
     {
         public int minLevel = 0;
         public int maxLevel = 0;
+        public string familyTag;
     }
 }

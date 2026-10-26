@@ -24,6 +24,7 @@ namespace Electromagnetic.Core
         //能力
         public static AbilityDef RWrd_Ability_CellRecombination;
         public static AbilityDef RWrd_Ability_ProtectiveForce;
+        public static AbilityDef RWrd_Ability_Flight;
         //特效
         public static FleckDef RWrd_ElectricClawAttractFleck;
         public static FleckDef RWrd_ElectricClawFleck;
