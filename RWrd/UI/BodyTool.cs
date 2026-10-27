@@ -7,8 +7,28 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
+// ============================================================================
+// BodyTool.cs —— 借自「人物编辑器」(Character Editor) 的体型辅助
+// 用途：躯体重塑对话框的「体型」页：读写体型、前后/随机切换。
+// 关键点：GetBodyList 会用 pawn 当前的裸体贴图路径，为每个候选 BodyTypeDef
+//         拼出「该种族是否有这个体型的贴图」，只把有贴图的体型放进列表，
+//         避免玩家选到没有立绘的体型。
+// ============================================================================
 namespace Electromagnetic.UI
 {
+    /// <summary>
+    /// 体型（BodyTypeDef）的读写与候选列表构建。静态类，无状态。
+    /// </summary>
+    /// <remarks>
+    /// 成员：
+    /// <list type="bullet">
+    /// <item><description><c>GetBodyTypeName(p)</c> —— 当前体型的翻译名，无数据时返回空串。</description></item>
+    /// <item><description><c>GetBodyDefList(p, restricted)</c> —— 转调 <c>GetBodyList</c>（restricted 未使用）。</description></item>
+    /// <item><description><c>SetBody(p, next, random)</c> —— 在候选列表里前/后/随机切换。</description></item>
+    /// <item><description><c>SetBody(p, b)</c> —— 直接设置并刷新渲染。</description></item>
+    /// <item><description><c>GetBodyList(p)</c> —— 核心：用贴图存在性过滤候选体型。</description></item>
+    /// </list>
+    /// </remarks>
     internal static class BodyTool
     {
         internal static string GetBodyTypeName(this Pawn pawn)

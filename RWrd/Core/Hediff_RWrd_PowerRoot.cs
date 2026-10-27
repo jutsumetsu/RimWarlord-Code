@@ -609,6 +609,10 @@ namespace Electromagnetic.Core
                 return this.stage;
             }
         }
+        public override int CurStageIndex
+        {
+            get { return 0; }
+        }
         // 绘制详情页
         public override IEnumerable<StatDrawEntry> SpecialDisplayStats(StatRequest req)
         {

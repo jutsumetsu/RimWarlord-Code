@@ -10,7 +10,7 @@ using Verse;
 
 namespace Electromagnetic.UI
 {
-    internal class Selected
+    public class Selected
     {
         internal static Selected ByThingDef(ThingDef _thingDef)
         {
@@ -41,7 +41,7 @@ namespace Electromagnetic.UI
             bool flag2 = thing != null;
             if (flag2)
             {
-                Dialog_​BodyRemold.tDefName = thing.def.defName;
+                Dialog_BodyRemold.tDefName = thing.def.defName;
                 this.Set(thing.Stuff, thing.StyleDef, thing.DrawColor, thing.GetQuality(), thing.stackCount);
             }
             this.stuffIndex = ((this.stuff == null) ? 0 : this.stuffIndex);

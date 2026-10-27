@@ -312,7 +312,7 @@ namespace Electromagnetic.UI
             bool flag = this.colorType == ColorType.HairColor;
             if (flag)
             {
-                Dialog_​BodyRemold.ButtonTextureTextHighlight2(new Rect((float)(x + 5), (float)y, (float)(w - 26), 28f), HairTool.onMouseover ? "RWrd_SETONMOUSEOVER".Translate() : "RWrd_SETONCLICK".Translate(), null, Color.white, delegate
+                UIPrimitives.ButtonTextureTextHighlight2(new Rect((float)(x + 5), (float)y, (float)(w - 26), 28f), HairTool.onMouseover ? "RWrd_SETONMOUSEOVER".Translate() : "RWrd_SETONCLICK".Translate(), null, Color.white, delegate
                 {
                     HairTool.onMouseover = !HairTool.onMouseover;
                 }, "RWrd_TOGGLESELECTIONONMOUSEOVER".Translate(), true, 10f);
@@ -327,7 +327,7 @@ namespace Electromagnetic.UI
             if (!flag)
             {
                 Rect rect = new Rect((float)x, (float)y, (float)w, 24f);
-                Dialog_​BodyRemold.NavSelectorImageBox(rect, () => HairTool.AChooseHairCustom(this.tempPawn), null, null, null, "RWrd_FRISUR".Translate() + " - " + this.tempPawn.GetHairName());
+                UIPrimitives.NavSelectorImageBox(rect, () => HairTool.AChooseHairCustom(this.tempPawn), null, null, null, "RWrd_FRISUR".Translate() + " - " + this.tempPawn.GetHairName());
                 y += 30;
             }
         }
@@ -337,7 +337,7 @@ namespace Electromagnetic.UI
             if (!flag)
             {
                 Rect rect = new Rect((float)x, (float)y, (float)w, 24f);
-                Dialog_​BodyRemold.NavSelectorImageBox(rect, () => StyleTool.AChooseBeardCustom(this.tempPawn), null, null, null, "RWrd_BEARD".Translate() + " - " + this.tempPawn.GetBeardName());
+                UIPrimitives.NavSelectorImageBox(rect, () => StyleTool.AChooseBeardCustom(this.tempPawn), null, null, null, "RWrd_BEARD".Translate() + " - " + this.tempPawn.GetBeardName());
                 y += 30;
             }
         }
@@ -357,8 +357,8 @@ namespace Electromagnetic.UI
                         bool flag3 = this.tempPawn.genes.Xenogenes.Contains(g);
                         Color col = g.def.IconColor;
                         Rect rect = new Rect((float)x, (float)y, (float)h, (float)h);
-                        Dialog_​BodyRemold.Image(rect, flag3 ? "UI/Icons/Genes/GeneBackground_Xenogene" : "UI/Icons/Genes/GeneBackground_Endogene");
-                        Dialog_​BodyRemold.ButtonHighlight(rect, g.def.iconPath, delegate (Color a)
+                        UIPrimitives.Image(rect, flag3 ? "UI/Icons/Genes/GeneBackground_Xenogene" : "UI/Icons/Genes/GeneBackground_Endogene");
+                        UIPrimitives.ButtonHighlight(rect, g.def.iconPath, delegate (Color a)
                         {
                             this.AColorSelectedByGene(col, g);
                         }, col, "select color from gene\n[CTRL]remove gene");
@@ -375,8 +375,8 @@ namespace Electromagnetic.UI
                     if (flag5)
                     {
                         Rect rect2 = new Rect(0f, (float)(y + h + 5), (float)h, (float)h);
-                        Dialog_​BodyRemold.Image(rect2, "UI/Icons/Genes/GeneBackground_Endogene");
-                        Dialog_​BodyRemold.ButtonHighlight(rect2, this.closestGeneDef.iconPath, delegate (Color a)
+                        UIPrimitives.Image(rect2, "UI/Icons/Genes/GeneBackground_Endogene");
+                        UIPrimitives.ButtonHighlight(rect2, this.closestGeneDef.iconPath, delegate (Color a)
                         {
                             this.AGeneSelectedByColor(this.closestGeneColr, this.closestGeneDef);
                         }, this.closestGeneColr, "add as new gene");
@@ -622,7 +622,7 @@ namespace Electromagnetic.UI
             float num = 0.15f;
             for (int i = 0; i < 14; i++)
             {
-                Dialog_​BodyRemold.ButtonImageCol((float)x, (float)y, (float)h, (float)h, "bwhite", new Action<Color>(this.AColorSelected), ColorTool.GetDerivedColor(this.selectedColor, num), "");
+                UIPrimitives.ButtonImageCol((float)x, (float)y, (float)h, (float)h, "bwhite", new Action<Color>(this.AColorSelected), ColorTool.GetDerivedColor(this.selectedColor, num), "");
                 x += h;
                 num -= 0.03f;
             }
@@ -637,7 +637,7 @@ namespace Electromagnetic.UI
             {
                 for (int j = 0; j < 13; j++)
                 {
-                    Dialog_​BodyRemold.ButtonImageCol((float)x, (float)y, (float)num2, (float)h, "bwhite", new Action<Color>(this.AColorSelected), ColorTool.ListOfColors.ElementAtOrDefault(num), "");
+                    UIPrimitives.ButtonImageCol((float)x, (float)y, (float)num2, (float)h, "bwhite", new Action<Color>(this.AColorSelected), ColorTool.ListOfColors.ElementAtOrDefault(num), "");
                     y += h;
                     num++;
                 }
@@ -651,7 +651,7 @@ namespace Electromagnetic.UI
             bool flag = this.colorType == ColorType.FavColor || this.colorType == ColorType.GeneColorHair || this.colorType == ColorType.GeneColorSkinBase || this.colorType == ColorType.GeneColorSkinOverride || (this.tempPawn == null && this.tempPawn.story == null) || this.tempPawn.story.favoriteColor == null;
             if (!flag)
             {
-                Dialog_​BodyRemold.ButtonTextureTextHighlight2(new Rect((float)(w - 30), (float)y, 30f, 30f), "", "bfavcolor", this.tempPawn.story.favoriteColor.color, new Action(this.AFromFavColor), CompatibilityTool.GetFavoriteColorTooltip(this.tempPawn), true, 10f);
+                UIPrimitives.ButtonTextureTextHighlight2(new Rect((float)(w - 30), (float)y, 30f, 30f), "", "bfavcolor", this.tempPawn.story.favoriteColor.color, new Action(this.AFromFavColor), CompatibilityTool.GetFavoriteColorTooltip(this.tempPawn), true, 10f);
             }
         }
         private void AFromFavColor()

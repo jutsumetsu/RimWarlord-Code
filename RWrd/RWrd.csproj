@@ -83,8 +83,9 @@
     <Compile Include="Core\ThoughtWorker_Precept_EMPowerPresent.cs" />
     <Compile Include="Faction\GoodwillSituationWorker_SubFaction.cs" />
     <Compile Include="ModExtension\IdeoCustom.cs" />
-    <Compile Include="ModExtension\PawnkindCustom.cs" />
+    <Compile Include="ModExtension\EMPowerLevelCustom.cs" />
     <Compile Include="HarmonyPatchs\FactionPatch.cs" />
+    <Compile Include="ModExtension\PawnKindBaseCustom.cs" />
     <Compile Include="ModExtension\RelationCustom.cs" />
     <Compile Include="UI\BodyTool.cs" />
     <Compile Include="UI\ColorTool.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="UI\SkinTool.cs" />
     <Compile Include="UI\StyleTool.cs" />
     <Compile Include="UI\TextureTool.cs" />
+    <Compile Include="UI\UIPrimitives.cs" />
     <Compile Include="UI\WindowTool.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -199,7 +201,7 @@
     <Compile Include="UI\Dialog_PowerIntroduce.cs" />
     <Compile Include="UI\Dialog_RenameAbilitySet.cs" />
     <Compile Include="UI\Dialog_SelectThings.cs" />
-    <Compile Include="UI\Dialog_​BodyRemold.cs" />
+    <Compile Include="UI\Dialog_BodyRemold.cs" />
     <Compile Include="UI\HairTool.cs" />
     <Compile Include="UI\ITab_Pawn_RWrd.cs" />
     <Compile Include="UI\RWrd_ItemFilterDef.cs" />

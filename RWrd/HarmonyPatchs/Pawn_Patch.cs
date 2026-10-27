@@ -66,8 +66,8 @@ namespace Electromagnetic.HarmonyPatchs
                 {
                     if (baakKinds == null)
                         baakKinds = DefDatabase<PawnKindDef>.AllDefs
-                            .Where(k => k.HasModExtension<PawnkindCustom>()
-                                     && k.GetModExtension<PawnkindCustom>().familyTag == "Baak")
+                            .Where(k => k.HasModExtension<PawnKindBaseCustom>()
+                                     && k.GetModExtension<PawnKindBaseCustom>().familyTag == "Baak")
                             .ToHashSet();
                     return baakKinds;
                 }
@@ -350,7 +350,7 @@ namespace Electromagnetic.HarmonyPatchs
                                 };
                                 foreach (Pawn pawn2 in casterPawn.MapHeld.mapPawns.AllPawns)
                                 {
-                                    bool flag = pawn2.Faction == casterPawn.Faction;
+                                    bool flag = Tools.NotMyEnemy(casterPawn, pawn2);
                                     if (flag)
                                     {
                                         list.Add(pawn2);
@@ -619,7 +619,7 @@ namespace Electromagnetic.HarmonyPatchs
                 if (___pawn.IsHavePowerRoot())
                 {
 
-                    if (___pawn.abilities?.GetAbility(RWrd_DefOf.RWrd_Ability_ProtectiveForce) is RWrd_PsyCastToggle ab)
+                    if (___pawn.abilities?.GetAbility(RWrd_DefOf.RWrd_Ability_Flight) is RWrd_PsyCastToggle ab)
                     {
                         bool flightNow = ab.isActive && __instance.CanEverFly;
                         if (flightNow)

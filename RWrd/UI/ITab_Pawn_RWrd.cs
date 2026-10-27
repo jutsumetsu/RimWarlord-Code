@@ -53,7 +53,6 @@ namespace Electromagnetic.UI
                          }, () => this.curTab == kv.Key)).ToList<TabRecord>();
             this.curTab = this.pathsByTab.Keys.FirstOrDefault<string>();*/
             this.tabs = new List<TabRecord>();
-            this.curTab = "DefaultTab"; 
         }
         protected override void UpdateSize()
         {
@@ -465,19 +464,19 @@ namespace Electromagnetic.UI
             {
                 foreach (AbilitySet abilitySet in this.root.abilitySets.ToList<AbilitySet>())
                 {
-                    Rect rect = listing_Standard.GetRect(30f, 1f);
-                    Widgets.Label(rect.LeftHalf().LeftHalf(), abilitySet.Name);
-                    bool flag = Widgets.ButtonText(rect.LeftHalf().RightHalf(), "RWrd_Rename".Translate(), true, true, true, null);
+                    Rect row = listing_Standard.GetRect(30f, 1f);
+                    Widgets.Label(row.LeftHalf().LeftHalf(), abilitySet.Name);
+                    bool flag = Widgets.ButtonText(row.LeftHalf().RightHalf(), "RWrd_Rename".Translate(), true, true, true, null);
                     if (flag)
                     {
                         Find.WindowStack.Add(new Dialog_RenameAbilitySet(abilitySet));
                     }
-                    bool flag2 = Widgets.ButtonText(rect.RightHalf().LeftHalf(), "RWrd_Edit".Translate(), true, true, true, null);
+                    bool flag2 = Widgets.ButtonText(row.RightHalf().LeftHalf(), "RWrd_Edit".Translate(), true, true, true, null);
                     if (flag2)
                     {
                         Find.WindowStack.Add(new Dialog_AbilitySet(abilitySet, this.pawn));
                     }
-                    bool flag3 = Widgets.ButtonText(rect.RightHalf().RightHalf(), "RWrd_Remove".Translate(), true, true, true, null);
+                    bool flag3 = Widgets.ButtonText(row.RightHalf().RightHalf(), "RWrd_Remove".Translate(), true, true, true, null);
                     if (flag3)
                     {
                         this.root.RemoveAbilitySet(abilitySet);
@@ -501,14 +500,10 @@ namespace Electromagnetic.UI
         private readonly Dictionary<AbilityDef, Vector2> abilityPos = new Dictionary<AbilityDef, Vector2>();
         //private readonly Dictionary<string, List<RWrd_RouteDef>> pathsByTab = new Dictionary<string, List<RWrd_RouteDef>>();
         private readonly List<TabRecord> tabs;
-        private string curTab;
-        private bool devMode;
         public Hediff_RWrd_PowerRoot root;
         private float lastPathsHeight;
         private int pathsPerRow;
-        private Vector2 pathsScrollPos;
         public Pawn pawn;
-        private Vector2 psysetsScrollPos;
         private static readonly float[][] abilityTreeXOffsets = new float[][]
         {
             new float[] { -18f },                   // 1 ability

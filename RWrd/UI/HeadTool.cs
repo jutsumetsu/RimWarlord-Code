@@ -8,8 +8,29 @@ using UnityEngine;
 using Electromagnetic.Core;
 using Verse;
 
+// ============================================================================
+// HeadTool.cs —— 借自「人物编辑器」(Character Editor) 的头部工具
+// 用途：躯体重塑对话框的「头部」页：列出该种族/性别实际有贴图的头型、前后/随机切换。
+// 说明：头型名是从贴图路径里「猜」出来的（♀/♂、Average/Narrow/Wide/Pointy/Normal），
+//       这是人物编辑器的启发式做法，路径不规则时会退化到末段子串。
+// ============================================================================
 namespace Electromagnetic.UI
 {
+    /// <summary>
+    /// 头部类型（HeadTypeDef）的候选列表、名称与切换。静态类，无状态。
+    /// </summary>
+    /// <remarks>
+    /// 成员：
+    /// <list type="bullet">
+    /// <item><description><c>GetHeadName(p, path)</c> —— 从 graphicPath 猜「性别符 + 头型名」。</description></item>
+    /// <item><description><c>GetHeadDefList(p, genderized)</c> —— 用头部贴图目录过滤 HeadTypeDef，优先「实测贴图存在」的集合。</description></item>
+    /// <item><description><c>GetTestedHeadList(l, skipSkull)</c> —— 逐个验贴图，可跳过 Skull/Stump。</description></item>
+    /// <item><description><c>TestHead(headPath)</c> —— 只测 <c>&lt;path&gt;_south</c> 是否存在（TextureTool.TestTexturePath）。</description></item>
+    /// <item><description><c>SetHeadTypeDef(def)</c> —— 设置并刷新渲染。</description></item>
+    /// <item><description><c>SetHead(p, next, random)</c> —— 在候选列表里前/后/随机切换。</description></item>
+    /// <item><description><c>GetHeadPathFolderFor</c> —— 由当前头部路径推出「性别化 / 非性别化」目录（标准 Heads 目录与 /Male、/Female 两种布局）。</description></item>
+    /// </list>
+    /// </remarks>
     internal static class HeadTool
     {
         internal static string GetHeadName(this Pawn pawn, string path = null)

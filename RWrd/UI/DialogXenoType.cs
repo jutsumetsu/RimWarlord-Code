@@ -624,15 +624,15 @@ namespace Electromagnetic.UI
 
         protected override void DoBottomButtons(Rect rect)
         {
-            Dialog_​BodyRemold.ButtonText(new Rect(rect.xMax - GeneCreationDialogBase.ButSize.x - 10f, rect.y, GeneCreationDialogBase.ButSize.x + 10f, GeneCreationDialogBase.ButSize.y), this.AcceptButtonLabel, delegate ()
+            UIPrimitives.ButtonText(new Rect(rect.xMax - GeneCreationDialogBase.ButSize.x - 10f, rect.y, GeneCreationDialogBase.ButSize.x + 10f, GeneCreationDialogBase.ButSize.y), this.AcceptButtonLabel, delegate ()
             {
                 this.ACheckSaveAnd(true);
             }, "");
-            Dialog_​BodyRemold.ButtonText(new Rect(rect.x, rect.y, GeneCreationDialogBase.ButSize.x, GeneCreationDialogBase.ButSize.y), "Close".Translate(), delegate ()
+            UIPrimitives.ButtonText(new Rect(rect.x, rect.y, GeneCreationDialogBase.ButSize.x, GeneCreationDialogBase.ButSize.y), "Close".Translate(), delegate ()
             {
                 this.Close(true);
             }, "");
-            Dialog_​BodyRemold.ButtonText(new Rect(rect.x + rect.width - 270f, rect.y, 110f, 38f), "Save".Translate(), delegate ()
+            UIPrimitives.ButtonText(new Rect(rect.x + rect.width - 270f, rect.y, 110f, 38f), "Save".Translate(), delegate ()
             {
                 this.ACheckSaveAnd(false);
             }, "");

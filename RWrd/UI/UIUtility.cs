@@ -7,8 +7,24 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
+// ============================================================================
+// UIUtility.cs —— 借自「人物编辑器」(Character Editor) 的 UI 基础工具
+// 用途：Rect 切分（上/下/左/右取一块）、数量选择器、矩形网格切分。
+// 说明：代码主体来自人物编辑器；本文件仅补充注释，逻辑未改动。
+// ============================================================================
 namespace Electromagnetic.UI
 {
+    /// <summary>
+    /// UI 布局与控件的静态工具方法。
+    /// </summary>
+    /// <remarks>
+    /// 成员：
+    /// <list type="bullet">
+    /// <item><description><c>TakeTopPart / TakeBottomPart / TakeLeftPart / TakeRightPart</c> —— 从矩形切走一条并原地收缩矩形（扩展方法，返回被切走的部分）。</description></item>
+    /// <item><description><c>DrawCountAdjuster</c> —— 「&lt;&lt; &lt; 数字框 &gt; &gt;&gt;」数量选择器，支持 min/max、只读与自定义跳到端点；步长跟随 Shift/Ctrl 倍率。</description></item>
+    /// <item><description><c>Divide(rect, items, cols, rows, drawLines)</c> —— 把矩形均分成网格并逐个 yield，可画分隔线；行列都省略时要求矩形为正方形。</description></item>
+    /// </list>
+    /// </remarks>
     public static class UIUtility
     {
         /// <summary>
@@ -173,6 +189,8 @@ namespace Electromagnetic.UI
             }
             yield break;
         }
+        // 借来的「临时入口」：ITab_Pawn_RWrd 在面板打开期间把它设为当前 pawn 的能力追踪器，
+        // 供绘制能力连线时判断某能力是否已获得（见 ITab_Pawn_RWrd.cs:126/135/413）；关闭面板时置 null。
         public static Pawn_AbilityTracker abilities;
     }
 }

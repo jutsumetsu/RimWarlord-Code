@@ -8,8 +8,30 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
+// ============================================================================
+// GeneTool.cs —— 借自「人物编辑器」(Character Editor) 的基因/异种工具
+// 用途：按颜色找最接近的肤色/发色基因；整体替换或追加基因；保持「生效基因在首位」。
+// 注意：改基因后要自己调 SetDirty/SetAllGraphicsDirty；RemoveGeneKeepFirst 和
+//       MakeGeneFirst 是为了让「最后一个添加的基因」仍然是生效的那一个。
+// ============================================================================
 namespace Electromagnetic.UI
 {
+    /// <summary>
+    /// 基因与自定义异种的读写。静态类，无状态。
+    /// </summary>
+    /// <remarks>
+    /// 成员：
+    /// <list type="bullet">
+    /// <item><description><c>ClosestColorGene(color, hair)</c> —— 在皮肤/发色基因的 IconColor 里按 RGB 距离找最近色（分档 0.1~0.7 保留候选）。</description></item>
+    /// <item><description><c>SetPawnXenotype(c, toXenogene)</c> —— 应用自定义异种（登记数据库、设 name/icon、按基因列表写入）。</description></item>
+    /// <item><description><c>SetGenesFromList / ClearXenogenes / ClearEndogenes</c> —— 批量写入 / 清空，keepOld 可保留原基因。</description></item>
+    /// <item><description><c>GetAllSkinGenes / GetAllHairGenes / IsSkinGene / IsHairGene</c> —— 判定规则：Melanin 或 defName 前缀 Skin_；HairColor 类别。</description></item>
+    /// <item><description><c>GetHairGenes / GetSkinGenes</c> —— 身上基因，未覆盖且激活的排前。</description></item>
+    /// <item><description><c>RemoveGeneKeepFirst / MakeGeneFirst / OverrideAllConflictingGenes</c> —— 移除后把同类首个设为生效、覆盖冲突基因。</description></item>
+    /// <item><description><c>IsBodySizeGene(Def)</c> —— defName 前缀 SZBodySize_。</description></item>
+    /// <item><description><c>AddGeneAsFirst(def, xeno)</c> —— 已存在则拒绝，否则添加并置首位。</description></item>
+    /// </list>
+    /// </remarks>
     internal static class GeneTool
     {
         internal static GeneDef ClosestColorGene(Color color, bool hair)

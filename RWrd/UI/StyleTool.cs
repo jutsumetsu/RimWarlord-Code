@@ -7,13 +7,32 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
+// ============================================================================
+// StyleTool.cs —— 借自「人物编辑器」(Character Editor) 的胡须/纹身辅助
+// 用途：按模组筛选胡须、面纹/身纹，前后/随机切换；发色之外的「风格」页都用它。
+// 关键点：1.6 的 faceTattoo / bodyTattoo 没有公开 setter，这里沿用人物编辑器的做法，
+//         用反射（SetMemberValue）写入；胡须的「无胡须」在装了 CAT 类模组时无法直接设，
+//         需要临时改 NoBeard 的贴图再设、随后恢复（FixForCATMod_BeardsNotSettableToNoBeard）。
+// ============================================================================
 namespace Electromagnetic.UI
 {
+    /// <summary>
+    /// 胡须、纹身的读写与候选列表构建。静态类，无状态。
+    /// </summary>
+    /// <remarks>
+    /// 成员：
+    /// <list type="bullet">
+    /// <item><description><c>GetBeardList / GetFaceTattooList / GetBodyTattooList</c> —— 按来源模组过滤，<c>noGraphic</c> 排后。</description></item>
+    /// <item><description><c>AChooseBeardCustom(pawn)</c> / <c>ASelectedBeardModName</c> —— 浮动菜单选择胡须。</description></item>
+    /// <item><description><c>SetFaceTattoo / SetBodyTattoo</c> —— 反射写 <c>style</c> 字段，含 (next, random) 重载。</description></item>
+    /// <item><description><c>SetBeard</c> —— 直接/切换两版；直接版会处理 CAT 模组的 NoBeard 问题。</description></item>
+    /// </list>
+    /// </remarks>
     internal static class StyleTool
     {
         internal static void AChooseBeardCustom(Pawn pawn)
         {
-            Dialog_​BodyRemold.FloatMenuOnRect<BeardDef>(StyleTool.GetBeardList(null), (BeardDef s) => s.LabelCap, (BeardDef beardDef) => StyleTool.ASetBeardCustom(pawn, beardDef), null, true);
+            UIPrimitives.FloatMenuOnRect<BeardDef>(StyleTool.GetBeardList(null), (BeardDef s) => s.LabelCap, (BeardDef beardDef) => StyleTool.ASetBeardCustom(pawn, beardDef), null, true);
         }
         internal static string GetBeardName(this Pawn p)
         {

@@ -1,4 +1,4 @@
-﻿# AGENTS.md — 边缘武神（RimWarlord）
+# AGENTS.md — 边缘武神（RimWarlord）
 
 给在这个仓库里干活的 agent 看的操作约定。
 
@@ -83,3 +83,12 @@ powershell -File tools\rw.ps1 search -Like "*PowerArmor*" -All
 - 不要修改 `About.xml` 的 `modVersion`（版本号由作者在发布时统一处理）。
 - 不要把 `.cache/`、`reports/`、`dist/`、`out/` 提交进仓库（`tools/.gitignore` 已忽略）。
 - C# 代码由作者手写；需要改代码时先问，不要顺手重构。
+
+## 会话交接
+
+长会话会越来越慢，还会撞上工具/路由的硬限制，所以**常规操作是定期换会话**，靠文件而不是记忆衔接：
+
+- 开会话**先读** `D:\Desktop\RimWorldMods\Lore\dev\交接单.md`（现状、基线数字、待办、环境坑、下一步）。
+- 交接规程见 `D:\Desktop\RimWorldMods\Lore\dev\交接规范.md`；交接单只写**能复核的事实**（带路径/行号/实测数字），不写过程与情绪。
+- **第 25 轮起**：出现新决定、新坑、新待办就随手追加进交接单。
+- **第 30 轮**：无论任务是否完成，都在回复末尾提示「已到 30 轮，建议起新会话」，并把交接单整体刷新（基线的 validate/lang/git 三个数字当场重跑，不要抄旧的）。

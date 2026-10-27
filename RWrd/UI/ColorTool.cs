@@ -6,8 +6,27 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
+// ============================================================================
+// ColorTool.cs —— 借自「人物编辑器」(Character Editor) 的颜色工具
+// 用途：51 色调色板、按亮度区间取随机色、整体提亮/压暗的派生色。
+// 注意：offsetCX 是全局亮度偏移，构建调色板时一次性套用；调色板有缓存
+//       （lcolors），改 offsetCX 后必须把 lcolors 置 null 才会重新生成。
+// ============================================================================
 namespace Electromagnetic.UI
 {
+    /// <summary>
+    /// 调色板与颜色计算。静态类，无状态（调色板缓存除外）。
+    /// </summary>
+    /// <remarks>
+    /// 成员：
+    /// <list type="bullet">
+    /// <item><description><c>ListOfColors</c> —— 懒加载的 51 色调色板（GetDerivedColor 按 offsetCX 派生）。</description></item>
+    /// <item><description><c>GetRandomColor(minbright, maxbright, andAlpha)</c> —— 按亮度区间生成随机色；内部先映射到 0~255 再还原。</description></item>
+    /// <item><description><c>RandomAlphaColor</c> —— 全亮度区间 + 随机 alpha。</description></item>
+    /// <item><description><c>GetDerivedColor(color, offset)</c> —— 每通道减 offset 并夹到 [0, IMAX]，alpha 保留。</description></item>
+    /// </list>
+    /// 常量：IMAX/FMAX/DMAX 是 0~1 量程，*B 是 0~255 量程，换算用。
+    /// </remarks>
     internal static class ColorTool
     {
         internal static float offsetCX = 0f;

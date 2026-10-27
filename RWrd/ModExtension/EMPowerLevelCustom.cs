@@ -7,10 +7,9 @@ using Verse;
 
 namespace Electromagnetic.ModExtension
 {
-    public class PawnkindCustom : DefModExtension
+    public class EMPowerLevelCustom : DefModExtension
     {
         public int minLevel = 0;
         public int maxLevel = 0;
-        public string familyTag;
     }
 }

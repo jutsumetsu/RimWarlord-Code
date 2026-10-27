@@ -57,7 +57,7 @@ namespace Electromagnetic.Abilities
             List<Thing> list = new List<Thing>();
             foreach (Pawn pawn2 in Caster.MapHeld.mapPawns.AllPawns)
             {
-                bool flag3 = pawn2.Faction == Caster.Faction;
+                bool flag3 = Tools.NotMyEnemy(Caster, pawn2);
                 if (flag3)
                 {
                     list.Add(pawn2);

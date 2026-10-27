@@ -16,7 +16,7 @@ namespace Electromagnetic.Core
             if (!ModsConfig.IdeologyActive) return ThoughtState.Inactive;
             foreach (Pawn pawn in p.MapHeld.mapPawns.AllPawnsSpawned)
             {
-                if (pawn.IsHavePowerRoot() && (pawn.IsPrisonerOfColony || pawn.IsSlaveOfColony || pawn.IsColonist))
+                if (p != pawn && pawn.IsHavePowerRoot() && (p.Faction != null && pawn.Faction != null && p.Faction == pawn.Faction))
                 {
                     return ThoughtState.ActiveDefault;
                 }

@@ -6,8 +6,23 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
+// ============================================================================
+// Listing_X.cs —— 借自「人物编辑器」(Character Editor) 的 Listing 扩展
+// 用途：在 RimWorld 的 Listing 上补三样东西：
+//       ① 可读写 curY（同步内部光标）；
+//       ② 带颜色/不带颜色的 22 像素水平滑条（自动走一次 verticalSpacing）；
+//       ③ 自动计算高度的标签，超 maxHeight 时改用可滚动标签，并为每个标签记住滚动位置。
+// 说明：躯体重塑对话框用它纵向排布控件；逻辑未改动，仅补注释。
+// ============================================================================
 namespace Electromagnetic.UI
 {
+    /// <summary>
+    /// 在 <see cref="Listing"/> 基础上补充滑条、自动高度标签与光标读写。
+    /// </summary>
+    /// <remarks>
+    /// <c>labelScrollbarPositions</c> 以「标签绘制时的 (curX, curY)」为键缓存滚动位置，
+    /// 这样窗口重绘/滚动时每个标签的横向滚动条不会跳回起点。
+    /// </remarks>
     internal class Listing_X : Listing
     {
         internal float CurY
@@ -21,6 +36,7 @@ namespace Electromagnetic.UI
                 this.curY = value;
             }
         }
+        // 22 像素高的水平滑条；传了颜色就临时改 GUI.color。画完 Gap 一次，避免与后继控件重叠。
         internal float Slider(float val, float min, float max, Color color)
         {
             GUI.color = color;

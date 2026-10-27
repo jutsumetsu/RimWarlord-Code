@@ -285,10 +285,10 @@ namespace Electromagnetic.Core
             if (pawn.kindDef != null)
             {
                 PawnKindDef warlordKindDef = pawn.kindDef;
-                if (warlordKindDef.HasModExtension<PawnkindCustom>())
+                if (warlordKindDef.HasModExtension<EMPowerLevelCustom>())
                 {
-                    int maxLevel = warlordKindDef.GetModExtension<PawnkindCustom>().maxLevel;
-                    int minLevel = warlordKindDef.GetModExtension<PawnkindCustom>().minLevel;
+                    int maxLevel = warlordKindDef.GetModExtension<EMPowerLevelCustom>().maxLevel;
+                    int minLevel = warlordKindDef.GetModExtension<EMPowerLevelCustom>().minLevel;
                     if (num < maxLevel)
                     {
                         int kindMin = Math.Max(num, minLevel);

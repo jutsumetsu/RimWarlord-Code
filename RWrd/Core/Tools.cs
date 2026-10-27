@@ -432,6 +432,13 @@ namespace Electromagnetic.Core
                 ideo.AddPrecept(desireSoft, true);
             }
         }
+        public static bool NotMyEnemy(Pawn pawn, Pawn other)
+        {
+            if (other.HostileTo(pawn)) return false;
+            if (pawn.Faction == null) return true;
+            if (other.Faction == null) return true;
+            return other.Faction == pawn.Faction || pawn.Faction.RelationKindWith(other.Faction) > FactionRelationKind.Hostile;
+        }
         /// <summary>
         /// 设置派系盟友关系
         /// </summary>
@@ -555,7 +562,7 @@ namespace Electromagnetic.Core
                                             bool flag10 = typeof(T) == typeof(ThingStyleDef);
                                             if (flag10)
                                             {
-                                                texture2D = Dialog_​BodyRemold.IconForStyleCustom(s, def as ThingStyleDef);
+                                                texture2D = UIPrimitives.IconForStyleCustom(s, def as ThingStyleDef);
                                             }
                                             else
                                             {

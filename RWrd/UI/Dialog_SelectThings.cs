@@ -102,7 +102,11 @@ namespace Electromagnetic.UI
             outRect.y = searchRect.yMax + 5;
             outRect.height = inRect.yMax - outRect.y - 10f;
 
-            var thingDefs = searchKey.NullOrEmpty() ? allArtifactDefs : allArtifactDefs.Where(x => x.label.ToLower().Contains(searchKey.ToLower())).ToList();
+            float offset = this.mastery / 100 * 0.5f;
+            var thingDefsOrigin = allArtifactDefs.Where(x => Mathf.Clamp(
+                        Mathf.FloorToInt(root.energy.energy / CalculateValueToShow(x, offset)),
+                        0, x.stackLimit) > 0);
+            var thingDefs = searchKey.NullOrEmpty() ? thingDefsOrigin : thingDefsOrigin.Where(x => x.label.ToLower().Contains(searchKey.ToLower())).ToList();
             List<ThingDef> displayItem = thingDefs.OrderBy(x => x.label).ToList();
 
             Rect viewRect = new Rect(0f, 0f, outRect.width - 16f, displayItem.Count * 35f);
@@ -114,8 +118,11 @@ namespace Electromagnetic.UI
             {
                 for (int i = firstRow; i <= lastRow; i++)
                 {
-                    float num = i * 35f;
                     ThingDef thingDef = displayItem[i];
+                    int maxNumber = Mathf.Clamp(
+                        Mathf.FloorToInt(root.energy.energy / CalculateValueToShow(thingDef, offset)),
+                        0, thingDef.stackLimit);
+                    float num = i * 35f;
                     //图标矩形
                     Rect iconRect = new Rect(0f, num, 24, 32);
                     //详情界面按钮
@@ -137,19 +144,25 @@ namespace Electromagnetic.UI
                     }
 
                     // 在按钮左侧绘制输入框
-                    float offset = this.mastery / 100 * 0.5f;
                     Rect textFieldNumeric = new Rect(iconRect.xMax + 345f, num, 50f, 32f);
                     int textFieldNumber = thingValues[thingDef];
                     string text = textFieldNumber.ToString();
-                    int maxNumber = (int)Math.Floor(root.energy.energy / CalculateValueToShow(thingDef, offset));
-                    Widgets.TextFieldNumeric<int>(textFieldNumeric, ref textFieldNumber, ref text, 1f, Math.Min(thingDef.stackLimit, maxNumber));
-                    thingValues[thingDef] = textFieldNumber;
+                    /*int maxNumber = (int)Math.Floor(root.energy.energy / CalculateValueToShow(thingDef, offset));*/
+                    /*Widgets.TextFieldNumeric<int>(textFieldNumeric, ref textFieldNumber, ref text, 1f, Math.Min(thingDef.stackLimit, maxNumber));
+                    thingValues[thingDef] = textFieldNumber;*/
+                    int stored = thingValues[thingDef];
+                    int count = Mathf.Clamp(stored, 0, maxNumber);
+                    string buffer = countBuffers.TryGetValue(thingDef, out string b) ? b : count.ToString();
+                    if (count != stored) buffer = count.ToString();
+                    Widgets.TextFieldNumeric<int>(textFieldNumeric, ref count, ref buffer, 0f, maxNumber);
+                    thingValues[thingDef] = Mathf.Clamp(count, 0, maxNumber);
+                    countBuffers[thingDef] = buffer;
 
 
                     //能耗数值
                     float valueToShow = CalculateValueToShow(thingDef, offset) * thingValues[thingDef];
                     float valueToReduce = CalculateValueToShow(thingDef, offset);
-                    bool isButtonEnabled = pawn != null && valueToShow <= root.energy.energy;
+                    bool isButtonEnabled = pawn != null &&  valueToShow <= root.energy.energy;
                     //能耗显示
                     if (Mouse.IsOver(rect))
                     {
@@ -210,8 +223,7 @@ namespace Electromagnetic.UI
             value *= 1 - offset;
             return value;
         }
-
         private Dictionary<ThingDef, int> thingValues = new Dictionary<ThingDef, int>();
-
+        private Dictionary<ThingDef, string> countBuffers = new Dictionary<ThingDef, string>();
     }
 }

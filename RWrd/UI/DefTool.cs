@@ -7,8 +7,28 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
+// ============================================================================
+// DefTool.cs —— 借自「人物编辑器」(Character Editor) 的 Def 通用工具
+// 用途：按来源模组/谓词筛 Def；按 Def 类型取「图标色」和「tooltip 文本」。
+// 说明：GetTColor / STooltip 是靠 typeof(T) 分支的「类型分派」，遇到新类型只会
+//       落到默认分支（白色 / description + 模组名），不会报错。
+// ============================================================================
 namespace Electromagnetic.UI
 {
+    /// <summary>
+    /// Def 的筛选、取色与 tooltip 拼装。静态类，无状态。
+    /// </summary>
+    /// <remarks>
+    /// 成员：
+    /// <list type="bullet">
+    /// <item><description><c>ListByMod&lt;T&gt;(name[, condition])</c> —— 按来源模组名（可空）过滤，按 label 排序，返回 HashSet。</description></item>
+    /// <item><description><c>ListAll&lt;T&gt; / ListBy&lt;T&gt;(condition)</c> —— 全部 / 自定义谓词，均按 label 排序。</description></item>
+    /// <item><description><c>SDefname / IsNullOrEmpty / IsFromMod / Modname</c> —— 空安全的 defName、空判断、来源判断。</description></item>
+    /// <item><description><c>GetTColor&lt;T&gt;(def, stuff)</c> —— 按类型取图标色；未知类型返回白色。</description></item>
+    /// <item><description><c>STooltip&lt;T&gt;(def)</c> —— 按类型拼 tooltip（Stat/Gene/Hediff/Xenotype/Ability/Damage/Research/其它 Def）。</description></item>
+    /// <item><description><c>IsDef&lt;T&gt;()</c> —— T 是否为 Def 或其两代内子类（借来的简易判定）。</description></item>
+    /// </list>
+    /// </remarks>
     internal static class DefTool
     {
         internal static string SDefname(this Def d)
@@ -64,7 +84,7 @@ namespace Electromagnetic.UI
                 bool flag2 = typeof(T) == typeof(XenotypeDef);
                 if (flag2)
                 {
-                    result = RimWorld.XenotypeDef.IconColor;
+                    result = XenotypeDef.IconColor;
                 }
                 else
                 {
@@ -96,7 +116,7 @@ namespace Electromagnetic.UI
                             if (flag6)
                             {
                                 CustomXenotype customXenotype = def as CustomXenotype;
-                                result = (customXenotype.inheritable ? RimWorld.XenotypeDef.IconColor : new Color(0.58f, 0.757f, 0.91f));
+                                result = (customXenotype.inheritable ? XenotypeDef.IconColor : new Color(0.58f, 0.757f, 0.91f));
                             }
                             else
                             {

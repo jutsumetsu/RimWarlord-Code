@@ -25,7 +25,6 @@ namespace Electromagnetic.Abilities
             pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, false);
             pawn.stances.stunner.StunFor(60, this.parent.pawn, false, false);
             //传入参数
-            caster = this.parent.pawn;
             enemy = pawn;
             spawn = false;
         }
@@ -35,12 +34,12 @@ namespace Electromagnetic.Abilities
             //在pawn完成跳跃后对目标施加效果
             if (spawn == false)
             {
-                if (caster.Spawned)
+                if (Caster.Spawned)
                 {
                     spawn = true;
                     Pawn pawn = enemy;
                     //伤害计算
-                    Hediff_RWrd_PowerRoot root = caster.GetPowerRoot();
+                    Hediff_RWrd_PowerRoot root = Caster.GetPowerRoot();
                     int masteryOffset = (int)Math.Floor(this.Ability.mastery / 10f);
                     int num = 40;
                     float num2 = Tools.FinalDamage(root, num, masteryOffset, true);
@@ -50,22 +49,20 @@ namespace Electromagnetic.Abilities
                     List<Thing> list = new List<Thing>();
                     foreach (Pawn pawn2 in pawn.MapHeld.mapPawns.AllPawns)
                     {
-                        bool flag = pawn2.Faction == caster.Faction;
+                        bool flag = Tools.NotMyEnemy(pawn, pawn2);
                         if (flag)
                         {
                             list.Add(pawn2);
                         }
                     }
                     //造成爆炸效果
-                    GenExplosion.DoExplosion(pawn.PositionHeld, pawn.MapHeld, 1f, DamageDefOf.Bomb, caster, num, Caster.GetPowerRoot().energy.completerealm * 4, null, null, null, null, null, 0, 1, null, null, 0, false, null, 0, 1, 0, false, null, list);
+                    GenExplosion.DoExplosion(pawn.PositionHeld, pawn.MapHeld, 1f, DamageDefOf.Bomb, Caster, num, Caster.GetPowerRoot().energy.completerealm * 4, null, null, null, null, null, 0, 1, null, null, 0, false, null, 0, 1, 0, false, null, list);
                     //重新选中小人
-                    CameraJumper.TrySelect(caster);
-                    caster = null;
+                    CameraJumper.TrySelect(Caster);
                     enemy = null;
                 }
             }
         }
-        private Pawn caster;
         private Pawn enemy;
         private bool spawn = true;
     }
