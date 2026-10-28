@@ -106,7 +106,7 @@ namespace Electromagnetic.UI
         protected void DrawCenter(Rect rect, Pawn pawn)
         {
             Rect rect2 = new Rect(rect.x + rect.width / 4f, rect.y + (rect.height - rect.width / 1.5f) / 2, rect.width / 2f, rect.width / 1.5f);
-            RenderTexture image = PortraitsCache.Get(pawn, rect2.size, Rot4.South, default(Vector3), 1f, true, true, false, false, null, null, false, null);
+            RenderTexture image = PortraitsCache.Get(pawn, rect2.size, Rot4.South, default(Vector3), 1f, true, true, false, false);
             GUI.DrawTexture(rect2, image);
             pawn.Drawer.renderer.SetAllGraphicsDirty();
             Rect genderTrans = new Rect(rect.x + rect.width / 4f, rect2.yMax + 10, rect.width / 2f, 28f);

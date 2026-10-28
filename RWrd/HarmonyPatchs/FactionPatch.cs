@@ -238,10 +238,16 @@ namespace Electromagnetic.HarmonyPatchs
             [HarmonyPostfix]
             public static void Postfix(Ideo __instance, IdeoIconDef iconDef)
             {
-                string IdeoName = __instance.name;
-                if (IdeoName == RWrd_DefOf.RWrd_Faction_Empire_Baak.ideoName)
+                if (ModsConfig.IdeologyActive && Prefs.DevMode)
                 {
-                    Log.Message($"Set Icon Name: {iconDef.defName}");
+                    string IdeoName = __instance.name;
+                    if (ModDetector.BaakIsLoaded)
+                    {
+                        if (IdeoName == RWrd_DefOf.RWrd_Faction_Empire_Baak.ideoName)
+                        {
+                            Log.Message($"Set Icon Name: {iconDef.defName}");
+                        }
+                    }
                 }
             }
         }
