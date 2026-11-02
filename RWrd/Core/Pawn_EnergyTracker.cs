@@ -449,8 +449,7 @@ namespace Electromagnetic.Core
             bool flag = num < 0f;
             if (!flag)
             {
-                float num2 = this.exp + num;
-                this.exp = (num2 > this.MaxExp) ? this.MaxExp : num2;
+                this.exp = (num > this.MaxExp) ? this.MaxExp : num;
                 if (this.level == LevelMax)
                 {
                     this.pawn.UpdatePowerRootStageInfo();

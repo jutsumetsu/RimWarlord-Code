@@ -267,7 +267,7 @@ namespace Electromagnetic.HarmonyPatchs
                                 {
                                     useNormalTool = true;
                                     int randomNum = UnityEngine.Random.Range(0, 2);
-                                    tool = casterPawn.Tools[randomNum];
+                                    tool = casterPawn.Tools[Math.Min(randomNum, casterPawn.Tools.Count - 1)];
                                     /*Log.Message($"Random tool: {tool}");*/
                                     num = __instance.verbProps.AdjustedMeleeDamageAmount(tool, casterPawn, __instance.EquipmentSource, __instance.HediffCompSource);
                                 }
@@ -285,13 +285,16 @@ namespace Electromagnetic.HarmonyPatchs
                                 {
                                     num += tool.AdjustedBaseMeleeDamageAmount(__instance.EquipmentSource, __instance.verbProps.meleeDamageDef);
                                     int hpDown = Mathf.CeilToInt(root.energy.Multiplier);
-                                    if (__instance.EquipmentSource.HitPoints >= hpDown)
+                                    if (__instance.EquipmentSource != null)
                                     {
-                                        __instance.EquipmentSource.HitPoints -= hpDown;
-                                    }
-                                    else
-                                    {
-                                        __instance.EquipmentSource.HitPoints = 0;
+                                        if (__instance.EquipmentSource.HitPoints >= hpDown)
+                                        {
+                                            __instance.EquipmentSource.HitPoints -= hpDown;
+                                        }
+                                        else
+                                        {
+                                            __instance.EquipmentSource.HitPoints = 0;
+                                        }
                                     }
                                 }
                                 Log.Message($"EM melee damage: {num}");
@@ -320,7 +323,7 @@ namespace Electromagnetic.HarmonyPatchs
                                 }
 
                                 Need need = casterPawn.needs.TryGetNeed<Need_Training>();
-                                need.CurLevel += 0.001f;
+                                if (need != null) need.CurLevel += 0.001f;
 
                                 List<DamageInfo> damageInfos = new List<DamageInfo>();
                                 DamageDef def = __instance.verbProps.meleeDamageDef;
