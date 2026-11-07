@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 using RimWorld;
 using UnityEngine.Diagnostics;
 using UnityEngine;
@@ -37,6 +37,7 @@ namespace Electromagnetic.UI
             this.root = root;
             this.ability = ability;
             this.mastery = ability.mastery;
+            baseCostCache = new Dictionary<ThingDef, float>();
         }
         /// <summary>
         /// 获取物品列表
@@ -73,10 +74,9 @@ namespace Electromagnetic.UI
                         return false;
 
                     bool hasWhite = categoryWhiteList.Count > 0 &&
-                        x.thingCategories.Any(c => categoryWhiteList.Contains(c));
-
+                        x.thingCategories.Any(c => categoryWhiteList.Any(w => c == w || c.Parents.Contains(w)));
                     bool hasBlack = categoryBlackList.Count > 0 &&
-                        x.thingCategories.Any(c => categoryBlackList.Contains(c));
+                        x.thingCategories.Any(c => categoryBlackList.Any(b => c == b || c.Parents.Contains(b)));
 
                     return (hasWhite || thingWhiteList.Contains(x)) &&
                            !(hasBlack || thingBlackList.Contains(x)) &&
@@ -103,24 +103,32 @@ namespace Electromagnetic.UI
             outRect.height = inRect.yMax - outRect.y - 10f;
 
             float offset = this.mastery / 100 * 0.5f;
-            var thingDefsOrigin = allArtifactDefs.Where(x => Mathf.Clamp(
-                        Mathf.FloorToInt(root.energy.energy / CalculateValueToShow(x, offset)),
-                        0, x.stackLimit) > 0);
-            var thingDefs = searchKey.NullOrEmpty() ? thingDefsOrigin : thingDefsOrigin.Where(x => x.label.ToLower().Contains(searchKey.ToLower())).ToList();
-            List<ThingDef> displayItem = thingDefs.OrderBy(x => x.label).ToList();
+            baseCostCache.Clear();
+
+            var filtered = allArtifactDefs.Where(x => Mathf.Clamp(
+                    Mathf.FloorToInt(root.energy.energy / CostForDraw(x, offset)),
+                    0, x.stackLimit) > 0);
+
+            if (!searchKey.NullOrEmpty())
+            {
+                string key = searchKey.ToLower();
+                filtered = filtered.Where(x => x.label.ToLower().Contains(key));
+            }
+
+            List<ThingDef> displayItem = SortForDraw(filtered.ToList(), x => x.label);
 
             Rect viewRect = new Rect(0f, 0f, outRect.width - 16f, displayItem.Count * 35f);
             Widgets.AdjustRectsForScrollView(outRect, ref outRect, ref viewRect);
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
             int firstRow = Mathf.Max(0, Mathf.FloorToInt(scrollPosition.y / 35f) - 1);
-            int lastRow = Mathf.Min(thingDefs.Count() - 1, Mathf.CeilToInt((scrollPosition.y + outRect.height) / 35f) + 1);
+            int lastRow = Mathf.Min(displayItem.Count() - 1, Mathf.CeilToInt((scrollPosition.y + outRect.height) / 35f) + 1);
             try
             {
                 for (int i = firstRow; i <= lastRow; i++)
                 {
                     ThingDef thingDef = displayItem[i];
                     int maxNumber = Mathf.Clamp(
-                        Mathf.FloorToInt(root.energy.energy / CalculateValueToShow(thingDef, offset)),
+                        Mathf.FloorToInt(root.energy.energy / CostForDraw(thingDef, offset)),
                         0, thingDef.stackLimit);
                     float num = i * 35f;
                     //图标矩形
@@ -160,8 +168,8 @@ namespace Electromagnetic.UI
 
 
                     //能耗数值
-                    float valueToShow = CalculateValueToShow(thingDef, offset) * thingValues[thingDef];
-                    float valueToReduce = CalculateValueToShow(thingDef, offset);
+                    float valueToShow = CostForDraw(thingDef, offset) * thingValues[thingDef];
+                    float valueToReduce = CostForDraw(thingDef, offset);
                     bool isButtonEnabled = pawn != null &&  valueToShow <= root.energy.energy;
                     //能耗显示
                     if (Mouse.IsOver(rect))
@@ -208,11 +216,14 @@ namespace Electromagnetic.UI
             float workAmount = recipeDef != null ? recipeDef.workAmount : 0f;
             float baseMarketValue = thingDef.BaseMarketValue;
 
+            if (float.IsNaN(baseMarketValue)) baseMarketValue = 0f;
+            if (float.IsNaN(workAmount)) workAmount = 0f;
+
             workAmount = Math.Max(0f, workAmount);
             baseMarketValue = Math.Max(0f, baseMarketValue);
 
             // 返回较大的值
-            if (((workAmount != 0f) || (baseMarketValue != 0f && !float.IsNaN(baseMarketValue))) && !float.IsNaN(workAmount))
+            if (workAmount != 0f || baseMarketValue != 0f)
             {
                 value = Math.Max(workAmount, baseMarketValue);
             }
@@ -223,7 +234,87 @@ namespace Electromagnetic.UI
             value *= 1 - offset;
             return value;
         }
+        private void EnsureRecipeIndex()
+        {
+            if (recipeByProduct != null)
+                return;
+
+            recipeByProduct = new Dictionary<ThingDef, RecipeDef>();
+            foreach (RecipeDef recipe in DefDatabase<RecipeDef>.AllDefs)
+            {
+                foreach (ThingDefCountClass product in recipe.products)
+                {
+                    if (!recipeByProduct.ContainsKey(product.thingDef))
+                        recipeByProduct.Add(product.thingDef, recipe);
+                }
+            }
+        }
+        /// <summary>
+        /// 基础消耗
+        /// </summary>
+        /// <param name="thingDef"></param>
+        /// <returns></returns>
+        private float BaseCost(ThingDef thingDef)
+        {
+            if (baseCostCache.TryGetValue(thingDef, out float cached))
+                return cached;
+
+            EnsureRecipeIndex();
+            recipeByProduct.TryGetValue(thingDef, out RecipeDef recipe);
+
+            float workAmount = recipe != null ? recipe.workAmount : 0f;
+            float baseMarketValue = thingDef.BaseMarketValue;
+            if (float.IsNaN(baseMarketValue)) baseMarketValue = 0f;
+            if (float.IsNaN(workAmount)) workAmount = 0f;
+            workAmount = Math.Max(0f, workAmount);
+            baseMarketValue = Math.Max(0f, baseMarketValue);
+
+            float value;
+            if (workAmount != 0f || baseMarketValue != 0f) value = Math.Max(workAmount, baseMarketValue);
+            else value = 0f;
+
+            baseCostCache[thingDef] = value;
+            return value;
+        }
+
+        private float CostForDraw(ThingDef thingDef, float offset)
+        {
+            return BaseCost(thingDef) * (1f - offset);
+        }
+        private List<ThingDef> SortForDraw(List<ThingDef> source, Func<ThingDef, string> selector)
+        {
+            bool reuse = sortedSource != null
+                && sortedCulture == CultureInfo.CurrentCulture
+                && source.Count == sortedSource.Count;
+
+            if (reuse)
+            {
+                for (int i = 0; i < source.Count; i++)
+                {
+                    if (source[i] != sortedSource[i] || selector(source[i]) != sortedLabels[i])
+                    {
+                        reuse = false;
+                        break;
+                    }
+                }
+            }
+
+            if (reuse) return sortedDefs;
+
+            sortedSource = new List<ThingDef>(source);
+            sortedLabels = new string[source.Count];
+            for (int i = 0; i < source.Count; i++) sortedLabels[i] = selector(source[i]);
+            sortedCulture = CultureInfo.CurrentCulture;
+            sortedDefs = source.OrderBy(selector).ToList();
+            return sortedDefs;
+        }
         private Dictionary<ThingDef, int> thingValues = new Dictionary<ThingDef, int>();
         private Dictionary<ThingDef, string> countBuffers = new Dictionary<ThingDef, string>();
+        private Dictionary<ThingDef, RecipeDef> recipeByProduct;
+        private Dictionary<ThingDef, float> baseCostCache;
+        private List<ThingDef> sortedDefs;
+        private List<ThingDef> sortedSource;
+        private string[] sortedLabels;
+        private CultureInfo sortedCulture;
     }
 }
