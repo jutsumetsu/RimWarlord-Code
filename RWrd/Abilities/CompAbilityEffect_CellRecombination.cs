@@ -90,9 +90,10 @@ namespace Electromagnetic.Abilities
         }
         public override bool CanApplyOn(LocalTargetInfo target, LocalTargetInfo dest)
         {
+            if (Caster.IsPlayerControlled) return true;
             Pawn p = target.Pawn;
             if (p == null) return false;
-            if (p == Caster || p.IsPlayerControlled) return true;
+            if (p == Caster) return true;
             if (p.Faction == null) return false;
             return Caster.Faction != null && (p.Faction == Caster.Faction ||
                    Caster.Faction.RelationKindWith(p.Faction) == FactionRelationKind.Ally);
