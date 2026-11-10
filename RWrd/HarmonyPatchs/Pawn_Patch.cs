@@ -612,6 +612,17 @@ namespace Electromagnetic.HarmonyPatchs
                 return true;
             }
         }
+        //强者免疫吞噬兽
+        [HarmonyPatch(typeof(CompDevourer))]
+        [HarmonyPatch(nameof(CompDevourer.StartDigesting))]
+        public static class CompDevourer_StartDigesting_Patch
+        {
+            [HarmonyPrefix]
+            private static bool Prefix(LocalTargetInfo target)
+            {
+                return !target.Pawn.IsDevourImmune();
+            }
+        }
         //磁场强者会飞
         [HarmonyPatch(typeof(Pawn_FlightTracker)), HarmonyPatch("Notify_JobStarted")]
         public static class ForcedFlightPatch

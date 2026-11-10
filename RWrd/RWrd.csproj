@@ -82,6 +82,7 @@
     <Compile Include="Core\ThoughtWorker_Precept_EMPowerPresentAlter.cs" />
     <Compile Include="Core\ThoughtWorker_Precept_EMPowerPresent.cs" />
     <Compile Include="Faction\GoodwillSituationWorker_SubFaction.cs" />
+    <Compile Include="HarmonyPatchs\DevourPatch.cs" />
     <Compile Include="ModExtension\IdeoCustom.cs" />
     <Compile Include="ModExtension\EMPowerLevelCustom.cs" />
     <Compile Include="HarmonyPatchs\FactionPatch.cs" />

@@ -16,6 +16,7 @@ namespace Electromagnetic.HarmonyPatchs
             static PatchMain()
             {
                 HarmonyInit.PatchMain.instance.PatchAll(Assembly.GetExecutingAssembly());
+                DevourPatch.ApplyBigSmallPatches(HarmonyInit.PatchMain.instance);
                 // 延迟应用RJW相关补丁
                 if (ModDetector.RJWIsLoaded)
                 {

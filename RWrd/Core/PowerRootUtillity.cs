@@ -101,6 +101,25 @@ namespace Electromagnetic.Core
             }
         }
         /// <summary>
+        /// 是否免疫吞噬
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <returns></returns>
+        public static bool IsDevourImmune(this Pawn pawn)
+        {
+            if (pawn == null || pawn.health == null || pawn.health.hediffSet == null)
+            {
+                return false;
+            }
+            if (!pawn.IsHavePowerRoot())
+            {
+                return false;
+            }
+            Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
+            if (root != null && root.energy != null && root.energy.level >= 1) return true;
+            return false;
+        }
+        /// <summary>
         /// 获取心脏血量百分比
         /// </summary>
         /// <param name="pawn"></param>

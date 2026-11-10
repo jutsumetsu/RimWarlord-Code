@@ -11,6 +11,10 @@ namespace Electromagnetic.Core
     {
         protected override Job TryGiveJob(Pawn pawn)
         {
+            if (!pawn.GetTimeAssignment().allowJoy)
+            {
+                return null;
+            }
             Need need = pawn.needs.TryGetNeed<Need_Training>();
             IntVec3 intVec = AIUtility.FindRandomSpotOutsideColony(pawn, 16f, false, false);
             if (need == null)

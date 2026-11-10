@@ -41,7 +41,9 @@ namespace Electromagnetic.Core
         }
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
-            return new Job(DefDatabase<JobDef>.GetNamed("RWrd_Specialized_Training", true), t);
+            Job job = new Job(DefDatabase<JobDef>.GetNamed("RWrd_Specialized_Training", true), t);
+            job.ignoreJoyTimeAssignment = true;
+            return job;
         }
     }
 }
