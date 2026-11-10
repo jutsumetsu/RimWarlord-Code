@@ -28,8 +28,6 @@ XML 不在仓库里是作者的明确选择：平时在 Mods 目录里改，游�
 - `D:\Desktop\RimWorldMods\Lore\WIKI-武神词条-定稿.md` — **查原典设定读这一份**（按作者修订稿整理、措辞已中性化，可安全读入对话）
 - `D:\Desktop\RimWorldMods\Lore\WIKI-武神词条-中译修订稿.md` — 作者逐句修订的原典词条，**它比其它一切二手结论都优先**；`WIKI-武神词条-中译稿.md` 是被它取代的初稿，只留作对照
 
-**原典正文不要整段读进对话**：模型侧的内容过滤会拦下含暴力／性描写的片段（`PI_AI_ERROR: The request contains sensitive content`），表现为整轮请求直接失败、看着像「工作流被截断」；一旦该文本进入历史，后续每一轮都会带着它，重试无效。正确做法：脚本落盘 → 生成脱敏副本 `Lore\archive\*.safe.txt` → 只读脱敏副本；原始文件只做 `grep` 计数。详见 `Lore\WORLD.md` 末尾的故障记录。
-
 新术语：先查表；表里没有就给候选并说明依据，同时补进 `GLOSSARY.md` 与 `glossary.csv`。改写已有译名时先改表、再改 Def/语言文件。
 
 ## 写一个 Def 的标准流程
@@ -83,12 +81,3 @@ powershell -File tools\rw.ps1 search -Like "*PowerArmor*" -All
 - 不要修改 `About.xml` 的 `modVersion`（版本号由作者在发布时统一处理）。
 - 不要把 `.cache/`、`reports/`、`dist/`、`out/` 提交进仓库（`tools/.gitignore` 已忽略）。
 - C# 代码由作者手写；需要改代码时先问，不要顺手重构。
-
-## 会话交接
-
-长会话会越来越慢，还会撞上工具/路由的硬限制，所以**常规操作是定期换会话**，靠文件而不是记忆衔接：
-
-- 开会话**先读** `D:\Desktop\RimWorldMods\Lore\dev\交接单.md`（现状、基线数字、待办、环境坑、下一步）。
-- 交接规程见 `D:\Desktop\RimWorldMods\Lore\dev\交接规范.md`；交接单只写**能复核的事实**（带路径/行号/实测数字），不写过程与情绪。
-- **第 25 轮起**：出现新决定、新坑、新待办就随手追加进交接单。
-- **第 30 轮**：无论任务是否完成，都在回复末尾提示「已到 30 轮，建议起新会话」，并把交接单整体刷新（基线的 validate/lang/git 三个数字当场重跑，不要抄旧的）。
