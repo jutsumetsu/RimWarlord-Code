@@ -7,7 +7,7 @@ using Verse;
 
 namespace Electromagnetic.Effect
 {
-    public class GameComponent_FragmentsManager : GameComponent
+    public class GameComponent_FragmentsManager : Verse.GameComponent
     {
         public GameComponent_FragmentsManager(Game game) 
         {

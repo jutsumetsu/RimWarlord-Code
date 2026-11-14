@@ -199,6 +199,29 @@ namespace Electromagnetic.HarmonyPatchs
                 return true;
             }
         }
+        // 友军AI使用细胞重组自愈
+        [HarmonyPatch(typeof(JobGiver_SelfTend))]
+        [HarmonyPatch("TryGiveJob")]
+        class JobGiver_SelfTend_TryGiveJob_Patch
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Pawn pawn, ref Job __result)
+            {
+                if (__result == null || __result.def != JobDefOf.TendPatient)
+                {
+                    return;
+                }
+                if (pawn.Faction == RimWorld.Faction.OfPlayer || pawn.IsColonistPlayerControlled)
+                {
+                    return;
+                }
+                Job job = pawn.TryMakeRWrdSelfHealJob();
+                if (job != null)
+                {
+                    __result = job;
+                }
+            }
+        }
         /*[HarmonyPatch(typeof(JobGiver_AIFightEnemy), nameof(JobGiver_AIFightEnemy.GetAbilityJob))]
         class AIBugTest
         {
@@ -254,7 +277,9 @@ namespace Electromagnetic.HarmonyPatchs
                             int pff = root.energy.PowerFlowFactor(true);
                             int level = root.energy.level;
                             float cr = root.energy.completerealm;
-                            if (acr >= 1 && pff >= 1)
+                            /*Log.Message($"[RWrdDamage] enter {casterPawn.LabelShortCap} verb={__instance.GetType().Name} casterIsPawn={__instance.CasterIsPawn}");
+                            Log.Message($"[RWrdDamage] acr={acr} pff={pff} level={level} powerflow={root.energy.powerflow} heart={casterPawn.GetHeartHealthPercent():P0} cr={root.energy.completerealm}");*/
+                            if (root.energy.Multiplier >= 1)
                             {
                                 float num = __instance.verbProps.meleeDamageBaseAmount;
                                 bool useNormalTool = false;

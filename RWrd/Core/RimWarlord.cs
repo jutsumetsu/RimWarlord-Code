@@ -39,6 +39,12 @@ namespace Electromagnetic.Core
             {
                 listingStandard.CheckboxLabeled("RWrd_DoVisualWaveEffect".Translate(), ref RWrdSettings.DoVisualWaveEffect, "RWrd_DoVisualWaveEffectDesc".Translate());
             }
+            //打字机
+            listingStandard.CheckboxLabeled("RWrd_DirectorTypewriter".Translate(), ref RWrdSettings.DirectorTypewriter, "RWrd_DirectorTypewriterDesc".Translate());
+            if (RWrdSettings.DirectorChoicesWaitForText)
+            {
+                listingStandard.CheckboxLabeled("RWrd_DirectorChoicesWaitForText".Translate(), ref RWrdSettings.DirectorChoicesWaitForText, "RWrd_DirectorChoicesWaitForTextDesc".Translate());
+            }
 
             listingStandard.NewColumn();
             //全局匹数上限

@@ -7,6 +7,7 @@ using Electromagnetic.ModExtension;
 using RimWorld;
 using Verse;
 using Verse.AI.Group;
+using Verse.AI;
 
 namespace Electromagnetic.Core
 {
@@ -493,6 +494,43 @@ namespace Electromagnetic.Core
                 root.stage.capMods = root.GetPCMList.ToList();
             }
             pawn.health.Notify_HediffChanged(root);
+        }
+        public static Ability GetRWrdSelfHealAbility(this Pawn pawn)
+        {
+            if (pawn == null || !pawn.IsHavePowerRoot()) return null;
+            Ability ability = pawn.abilities.GetAbility(RWrd_DefOf.RWrd_Ability_CellRecombination);
+            if (ability == null) return null;
+            if (!ability.CanCast) return null;
+            if (!ability.CanApplyOn(new LocalTargetInfo(pawn))) return null;
+            CompAbilityEffect_ReduceEnergy reduce = ability.CompOfType<CompAbilityEffect_ReduceEnergy>();
+            if (reduce != null && reduce.GizmoDisabled(out string reason)) return null;
+            return ability;
+        }
+
+        public static Job TryMakeRWrdSelfHealJob(this Pawn pawn)
+        {
+            Ability ability = GetRWrdSelfHealAbility(pawn);
+            if (ability == null) return null;
+            return ability.GetJob(new LocalTargetInfo(pawn), new LocalTargetInfo(pawn));
+        }
+        public static Ability GetRWrdTendAbility(this Pawn pawn, Pawn patient)
+        {
+            if (pawn == null || patient == null || pawn == patient) return null;
+            if (!pawn.IsHavePowerRoot()) return null;
+            Ability ability = pawn.abilities.GetAbility(RWrd_DefOf.RWrd_Ability_CellRecombination);
+            if (ability == null) return null;
+            if (!ability.CanCast) return null;
+            if (!ability.CanApplyOn(new LocalTargetInfo(patient))) return null;
+            CompAbilityEffect_ReduceEnergy reduce = ability.CompOfType<CompAbilityEffect_ReduceEnergy>();
+            if (reduce != null && reduce.GizmoDisabled(out string reason)) return null;
+            return ability;
+        }
+
+        public static Job TryMakeRWrdTendJob(this Pawn pawn, Pawn patient)
+        {
+            Ability ability = pawn.GetRWrdTendAbility(patient);
+            if (ability == null) return null;
+            return ability.GetJob(new LocalTargetInfo(patient), new LocalTargetInfo(patient));
         }
     }
 }

@@ -13,6 +13,9 @@ namespace Electromagnetic.Core
         {
             DefOfHelper.EnsureInitializedInCtor(typeof(RWrd_DefOf));
         }
+        // 叙述者
+        public static StorytellerDef RWrd_Storytellers_EvilBaakMounaam;
+        public static StorytellerDef RWrd_Storytellers_SaatAmtin;
         // 小人类型
         public static PawnKindDef RWrd_Pawn_BaakSide;
         //修炼主干

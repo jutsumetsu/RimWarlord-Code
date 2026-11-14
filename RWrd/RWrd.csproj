@@ -81,7 +81,12 @@
     <Compile Include="Abilities\CompAbilityEffect_WorldTeleportAnomaly.cs" />
     <Compile Include="Core\ThoughtWorker_Precept_EMPowerPresentAlter.cs" />
     <Compile Include="Core\ThoughtWorker_Precept_EMPowerPresent.cs" />
+    <Compile Include="Core\WorkGiver_EMSelfHeal.cs" />
+    <Compile Include="Core\WorkGiver_EMTendPatient.cs" />
     <Compile Include="Faction\GoodwillSituationWorker_SubFaction.cs" />
+    <Compile Include="GameComponent\DebugActions_Director.cs" />
+    <Compile Include="GameComponent\DirectorData.cs" />
+    <Compile Include="GameComponent\GameComponent_RWrdDirector.cs" />
     <Compile Include="HarmonyPatchs\DevourPatch.cs" />
     <Compile Include="ModExtension\IdeoCustom.cs" />
     <Compile Include="ModExtension\EMPowerLevelCustom.cs" />
@@ -94,6 +99,7 @@
     <Compile Include="UI\CompatibilityTool.cs" />
     <Compile Include="UI\DialogColorPicker.cs" />
     <Compile Include="UI\DialogXenoType.cs" />
+    <Compile Include="UI\DirectorOverlay.cs" />
     <Compile Include="UI\GeneTool.cs" />
     <Compile Include="UI\HeadTool.cs" />
     <Compile Include="UI\Listing_X.cs" />

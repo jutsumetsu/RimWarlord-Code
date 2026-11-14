@@ -27,6 +27,9 @@ namespace Electromagnetic.Setting
         public static int SDDefaultSuccessRate = 10;
         public static int GlobalLevelLimit = 99;
         public static float WaveRangeFactor = 1;
+
+        public static bool DirectorTypewriter = true;
+        public static bool DirectorChoicesWaitForText = true;
         public override void ExposeData()
         {
             Scribe_Values.Look(ref EnableExpCorrectionFactor, "enableexpcorrectionfactor", true);
@@ -40,6 +43,9 @@ namespace Electromagnetic.Setting
             Scribe_Values.Look(ref GlobalLevelLimit, "globallevellimit", 99);
             Scribe_Values.Look(ref SDDefaultSuccessRate, "sddefaultsuccessrate", 10);
             Scribe_Values.Look(ref WaveRangeFactor, "waverangefactor", 1);
+
+            Scribe_Values.Look(ref DirectorTypewriter, "directortypewriter", true);
+            Scribe_Values.Look(ref DirectorChoicesWaitForText, "directorchoiceswaitfortext", true);
             base.ExposeData();
         }
     }

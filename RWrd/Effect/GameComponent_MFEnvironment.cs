@@ -14,7 +14,7 @@ using static Electromagnetic.HarmonyPatchs.HarmonyInit;
 
 namespace Electromagnetic.Effect
 {
-    public class GameComponent_MFEnvironment : GameComponent
+    public class GameComponent_MFEnvironment : Verse.GameComponent
     {
         public GameComponent_MFEnvironment(Game game) 
         {
