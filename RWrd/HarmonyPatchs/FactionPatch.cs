@@ -1,5 +1,7 @@
 ﻿using Electromagnetic.Core;
+using Electromagnetic.Faction;
 using Electromagnetic.ModExtension;
+using Electromagnetic.UI;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
@@ -161,11 +163,39 @@ namespace Electromagnetic.HarmonyPatchs
                 if (goodwillChange >= 0) return;
                 if (__instance.IsPlayer)
                 {
-                    if (__instance.def.HasModExtension<RelationCustom>())
-                    {
-                        if (other.def == __instance.def.GetModExtension<RelationCustom>().overlord) __result = 0;
-                    }
+                    RimWorld.Faction overlord = RWrd_FactionUtility.GetOverlord(__instance);
+                    if (overlord != null && other == overlord) __result = 0;
                 }
+            }
+        }
+        // 通讯台认主选项
+        [HarmonyPatch(typeof(FactionDialogMaker), nameof(FactionDialogMaker.FactionDialogFor))]
+        public static class FactionDialogMaker_JoinVassal_Patch
+        {
+            [HarmonyPostfix]
+            private static void Postfix(Pawn negotiator, RimWorld.Faction faction, ref DiaNode __result)
+            {
+                if (__result == null)
+                {
+                    return;
+                }
+
+                InsertOption(__result, RWrd_VassalDialog.TryMakeLeaveOption(negotiator, faction));
+                InsertOption(__result, RWrd_VassalDialog.TryMakeJoinOption(negotiator, faction));
+            }
+
+            private static void InsertOption(DiaNode node, DiaOption option)
+            {
+                if (option == null)
+                {
+                    return;
+                }
+                int index = node.options.Count;
+                if (index > 0 && node.options[index - 1].resolveTree)
+                {
+                    index--;
+                }
+                node.options.Insert(index, option);
             }
         }
         //宗主锁定好感补丁
@@ -175,11 +205,12 @@ namespace Electromagnetic.HarmonyPatchs
             [HarmonyPostfix]
             public static void Postfix(RimWorld.Faction __instance, ref bool __result, RimWorld.Faction other)
             {
-                if (RimWorld.Faction.OfPlayerSilentFail == null) return;
-                if (!RimWorld.Faction.OfPlayer.def.HasModExtension<RelationCustom>()) return;
-                FactionDef overlord = RimWorld.Faction.OfPlayer.def.GetModExtension<RelationCustom>().overlord;
+                RimWorld.Faction overlord = RWrd_FactionUtility.GetOverlord(RimWorld.Faction.OfPlayer);
                 if (overlord == null) return;
-                if ((__instance.IsPlayer && other.def == overlord) || (other.IsPlayer && __instance.def == overlord)) __result = false;
+                if ((__instance.IsPlayer && other == overlord) || (other.IsPlayer && __instance == overlord))
+                {
+                    __result = false;
+                }
             }
         }
         //宗主免疫模因负面
@@ -190,10 +221,9 @@ namespace Electromagnetic.HarmonyPatchs
             public static void Postfix(ref int __result, RimWorld.Faction other)
             {
                 if (RimWorld.Faction.OfPlayerSilentFail == null) return;
-                if (!RimWorld.Faction.OfPlayer.def.HasModExtension<RelationCustom>()) return;
-                FactionDef overlord = RimWorld.Faction.OfPlayer.def.GetModExtension<RelationCustom>().overlord;
+                RimWorld.Faction overlord = RWrd_FactionUtility.GetOverlord(RimWorld.Faction.OfPlayer);
                 if (overlord == null) return;
-                if (__result < 0 || other.def == overlord) __result = 0;
+                if (__result < 0 || other == overlord) __result = 0;
             }
         }
         //宗主免疫定居点过近判定
@@ -204,12 +234,11 @@ namespace Electromagnetic.HarmonyPatchs
             public static void Postfix(List<Pair<Settlement, int>> outOffsets)
             {
                 if (RimWorld.Faction.OfPlayerSilentFail == null) return;
-                if (!RimWorld.Faction.OfPlayer.def.HasModExtension<RelationCustom>()) return;
-                FactionDef overlord = RimWorld.Faction.OfPlayer.def.GetModExtension<RelationCustom>().overlord;
+                RimWorld.Faction overlord = RWrd_FactionUtility.GetOverlord(RimWorld.Faction.OfPlayer);
                 if (overlord == null) return;
                 for (int i = 0; i < outOffsets.Count; i++)
                 {
-                    if (outOffsets[i].First.Faction.def == overlord) outOffsets.Remove(outOffsets[i]);
+                    if (outOffsets[i].First.Faction == overlord) outOffsets.Remove(outOffsets[i]);
                 }
             }
         }
@@ -232,6 +261,7 @@ namespace Electromagnetic.HarmonyPatchs
                 }
             }
         }*/
+        // 文化图标设置追踪器
         [HarmonyPatch(typeof(Ideo), nameof(Ideo.SetIcon))]
         class IdeoIconSetTracker
         {

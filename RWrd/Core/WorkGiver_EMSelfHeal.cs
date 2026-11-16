@@ -13,8 +13,22 @@ namespace Electromagnetic.Core
     {
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
-            if (pawn != t) return false;
-            if (!base.HasJobOnThing(pawn, t, forced)) return false;
+            if (pawn != t || pawn.playerSettings == null || !pawn.playerSettings.selfTend)
+            {
+                return false;
+            }
+            if (!HealthAIUtility.ShouldEverReceiveMedicalCareFromPlayer(pawn))
+            {
+                return false;
+            }
+            if (!pawn.CanReserve(pawn, 1, -1, null, forced))
+            {
+                return false;
+            }
+            if (!pawn.HasRWrdTreatableCondition())
+            {
+                return false;
+            }
             return pawn.GetRWrdSelfHealAbility() != null;
         }
 

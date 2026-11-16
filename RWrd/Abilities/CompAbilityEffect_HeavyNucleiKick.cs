@@ -49,7 +49,7 @@ namespace Electromagnetic.Abilities
                     List<Thing> list = new List<Thing>();
                     foreach (Pawn pawn2 in pawn.MapHeld.mapPawns.AllPawns)
                     {
-                        bool flag = Tools.NotMyEnemy(pawn, pawn2);
+                        bool flag = Tools.NotMyEnemy(Caster, pawn2);
                         if (flag)
                         {
                             list.Add(pawn2);

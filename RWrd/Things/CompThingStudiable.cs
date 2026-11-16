@@ -72,7 +72,7 @@ namespace Electromagnetic.Things
         //信息超链接
         private IEnumerable<Dialog_InfoCard.Hyperlink> GetRelatedQuestHyperlinks()
         {
-            List<Quest> quests = Find.QuestManager.QuestsListForReading;
+            List<RimWorld.Quest> quests = Find.QuestManager.QuestsListForReading;
             int num;
             for (int i = 0; i < quests.Count; i = num + 1)
             {

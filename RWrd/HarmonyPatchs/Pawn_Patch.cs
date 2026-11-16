@@ -19,7 +19,7 @@ namespace Electromagnetic.HarmonyPatchs
 {
     public class Pawn_Patch
     {
-        // 特质和Hediff绑定
+        // 特质和Hediff、基因绑定
         [HarmonyPatch(typeof(TraitSet))]
         [HarmonyPatch(nameof(TraitSet.GainTrait))]
         class GainTraitPatch
@@ -35,7 +35,18 @@ namespace Electromagnetic.HarmonyPatchs
                         Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, pawn);
                         pawn.health.AddHediff(hediff);
                     }
+                    pawn.TryAddGiftedGene();
                 }
+            }
+        }
+        // 特质和基因绑定
+        [HarmonyPatch(typeof(Pawn), nameof(Pawn.SpawnSetup))]
+        internal static class Pawn_SpawnSetup_GeneCompat
+        {
+            [HarmonyPostfix]
+            private static void Postfix(Pawn __instance)
+            {
+                __instance.TryAddGiftedGene();
             }
         }
         // 白家强者没有穷亲戚
@@ -655,9 +666,9 @@ namespace Electromagnetic.HarmonyPatchs
             [HarmonyPrefix]
             public static bool Prefix(Job job, Pawn_FlightTracker __instance, Pawn ___pawn)
             {
+                if (job?.def == null) return false;
                 if (___pawn.IsHavePowerRoot())
                 {
-
                     if (___pawn.abilities?.GetAbility(RWrd_DefOf.RWrd_Ability_Flight) is RWrd_PsyCastToggle ab)
                     {
                         bool flightNow = ab.isActive && __instance.CanEverFly;
@@ -672,7 +683,7 @@ namespace Electromagnetic.HarmonyPatchs
                 return true;
             }
         }
-        //磁场力量遗传
+        //磁场力量遗传（原版）
         [HarmonyPatch(typeof(QuestManager))]
         [HarmonyPatch("Notify_PawnBorn")]
         public static class Patch_QuestManager_Notify_PawnBorn
@@ -682,6 +693,10 @@ namespace Electromagnetic.HarmonyPatchs
             {
                 if (baby is Pawn babyPawn)
                 {
+                    if (babyPawn.UseBiotechGeneInheritance())
+                    {
+                        return;
+                    }
                     bool hasRootParent = (mother != null && mother.IsHavePowerRoot() == true) ||
                                          (father != null && father.IsHavePowerRoot() == true);
 
@@ -692,6 +707,63 @@ namespace Electromagnetic.HarmonyPatchs
                         if (!babyPawn.story.traits.HasTrait(RWrd_DefOf.RWrd_Gifted)) babyPawn.story.traits.GainTrait(new Trait(RWrd_DefOf.RWrd_Gifted));
                     }
                 }
+            }
+        }
+        //磁场力量遗传（基因）
+        public static class PregnancyUtility_GetInheritedGenes_Patch
+        {
+            public static MethodBase TargetMethod()
+            {
+                return AccessTools.Method(typeof(PregnancyUtility), "GetInheritedGenes",
+                    new[] { typeof(Pawn), typeof(Pawn), typeof(bool).MakeByRefType() });
+            }
+            public static void Postfix(Pawn father, Pawn mother, ref List<GeneDef> __result)
+            {
+                if (RWrd_DefOf.RWrd_Gene_Gifted == null)
+                {
+                    return;
+                }
+                if (__result == null)
+                {
+                    __result = new List<GeneDef>();
+                }
+                if (__result.Contains(RWrd_DefOf.RWrd_Gene_Gifted))
+                {
+                    return;
+                }
+                if ((father != null && father.HasGiftedGene())
+                    || (mother != null && mother.HasGiftedGene()))
+                {
+                    __result.Add(RWrd_DefOf.RWrd_Gene_Gifted);
+                }
+            }
+            private static bool applied;
+
+            public static bool IsApplied
+            {
+                get { return applied; }
+            }
+
+            public static bool TryApply(Harmony harmony)
+            {
+                if (applied)
+                {
+                    return true;
+                }
+
+                MethodBase target = TargetMethod();
+                if (target == null)
+                {
+                    return false;
+                }
+
+                harmony.Patch(target,
+                    postfix: new HarmonyMethod(
+                        typeof(PregnancyUtility_GetInheritedGenes_Patch),
+                        nameof(Postfix)));
+
+                applied = true;
+                return true;
             }
         }
     }

@@ -98,6 +98,10 @@ namespace Electromagnetic.Abilities
             return Caster.Faction != null && (p.Faction == Caster.Faction ||
                    Caster.Faction.RelationKindWith(p.Faction) == FactionRelationKind.Ally);
         }
+        public static bool IsCurableHediff(HediffDef def)
+        {
+            return def != null && badHediffs.Contains(def);
+        }
 
         private static List<Hediff> tendableHediffsInTendPriorityOrder = new List<Hediff>();
         private static List<Hediff> tmpHediffs = new List<Hediff>();

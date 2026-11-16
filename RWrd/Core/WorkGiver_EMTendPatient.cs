@@ -9,8 +9,38 @@ namespace Electromagnetic.Core
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             Pawn patient = t as Pawn;
-            if (patient == null || patient == pawn) return false;
-            if (!base.HasJobOnThing(pawn, t, forced)) return false;
+            if (patient == null || patient == pawn)
+            {
+                return false;
+            }
+            if (def.emergency && !HealthAIUtility.ShouldBeTendedNowByPlayerUrgent(patient))
+            {
+                return false;
+            }
+            if (!WorkGiver_Tend.GoodLayingStatusForTend(patient, pawn))
+            {
+                return false;
+            }
+            if (!HealthAIUtility.ShouldEverReceiveMedicalCareFromPlayer(patient))
+            {
+                return false;
+            }
+            if (!pawn.CanReserve(patient, 1, -1, null, forced))
+            {
+                return false;
+            }
+            if (patient.IsMutant && !patient.mutant.Def.entitledToMedicalCare)
+            {
+                return false;
+            }
+            if (patient.InAggroMentalState && !patient.health.hediffSet.HasHediff(HediffDefOf.Scaria))
+            {
+                return false;
+            }
+            if (!patient.HasRWrdTreatableCondition())
+            {
+                return false;
+            }
             return pawn.GetRWrdTendAbility(patient) != null;
         }
 

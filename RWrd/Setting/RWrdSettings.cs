@@ -30,6 +30,8 @@ namespace Electromagnetic.Setting
 
         public static bool DirectorTypewriter = true;
         public static bool DirectorChoicesWaitForText = true;
+
+        public static bool AllowAnyFactionVassal = false;
         public override void ExposeData()
         {
             Scribe_Values.Look(ref EnableExpCorrectionFactor, "enableexpcorrectionfactor", true);
@@ -46,6 +48,8 @@ namespace Electromagnetic.Setting
 
             Scribe_Values.Look(ref DirectorTypewriter, "directortypewriter", true);
             Scribe_Values.Look(ref DirectorChoicesWaitForText, "directorchoiceswaitfortext", true);
+
+            Scribe_Values.Look(ref AllowAnyFactionVassal, "allowanyfactionvassal", false);
             base.ExposeData();
         }
     }

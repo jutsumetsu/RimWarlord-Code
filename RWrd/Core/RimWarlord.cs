@@ -86,6 +86,7 @@ namespace Electromagnetic.Core
                 Widgets.Label(wrfRect.LeftHalf().Rounded(), "RWrd_WaveRangeFactor".Translate());
                 Widgets.TextFieldNumeric<float>(wrfRect.RightHalf().LeftPartPixels(60).Rounded(), ref RWrdSettings.WaveRangeFactor, ref waveRangeFactorNumber, 0.01f, 100);
             }
+            listingStandard.CheckboxLabeled("RWrd_AllowAnyFactionVassal".Translate(), ref RWrdSettings.AllowAnyFactionVassal, "RWrd_AllowAnyFactionVassalDesc".Translate());
             listingStandard.End();
         }
     }

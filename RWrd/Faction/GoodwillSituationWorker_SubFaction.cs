@@ -21,15 +21,7 @@ namespace Electromagnetic.Faction
         }
         public bool Apply(RimWorld.Faction other)
         {
-            bool result = false;
-            if (RimWorld.Faction.OfPlayer.def.HasModExtension<RelationCustom>())
-            {
-                if (RimWorld.Faction.OfPlayer.def.GetModExtension<RelationCustom>().overlord == other.def)
-                {
-                    result = true;
-                }
-            }
-            return result;
+            return RWrd_FactionUtility.GetOverlord(RimWorld.Faction.OfPlayer) == other;
         }
     }
 }

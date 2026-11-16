@@ -17,6 +17,7 @@ namespace Electromagnetic.HarmonyPatchs
             {
                 HarmonyInit.PatchMain.instance.PatchAll(Assembly.GetExecutingAssembly());
                 DevourPatch.ApplyBigSmallPatches(HarmonyInit.PatchMain.instance);
+                LongEventHandler.QueueLongEvent(SafePatchGeneInheritance, "RWrd_GeneInheritancePatch", false, null);
                 // 延迟应用RJW相关补丁
                 if (ModDetector.RJWIsLoaded)
                 {
@@ -56,6 +57,42 @@ namespace Electromagnetic.HarmonyPatchs
                         Log.Error($"[RimWarlord] Failed to patch {method.Name}: {ex}");
                     }
                 }
+            }
+            private static int genePatchAttempts;
+
+            private static void SafePatchGeneInheritance()
+            {
+                if (Pawn_Patch.PregnancyUtility_GetInheritedGenes_Patch.IsApplied)
+                {
+                    return;
+                }
+
+                if (genePatchAttempts >= 3)
+                {
+                    Log.Error("[RimWarlord] GetInheritedGenes patch failed after 3 attempts");
+                    return;
+                }
+
+                genePatchAttempts++;
+
+                try
+                {
+                    if (Pawn_Patch.PregnancyUtility_GetInheritedGenes_Patch.TryApply(instance))
+                    {
+                        Log.Message("[RimWarlord] PregnancyUtility.GetInheritedGenes patched");
+                        return;
+                    }
+
+                    Log.Warning("[RimWarlord] GetInheritedGenes target not ready, retry "
+                        + genePatchAttempts);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning("[RimWarlord] GetInheritedGenes patch attempt "
+                        + genePatchAttempts + " failed: " + ex);
+                }
+
+                LongEventHandler.ExecuteWhenFinished(SafePatchGeneInheritance);
             }
             private static void SafePatchRJW()
             {

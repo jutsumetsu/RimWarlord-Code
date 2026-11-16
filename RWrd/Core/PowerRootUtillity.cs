@@ -62,6 +62,59 @@ namespace Electromagnetic.Core
             }
         }
         /// <summary>
+        /// 是否拥有磁场天赋基因
+        /// </summary>
+        public static bool HasGiftedGene(this Pawn pawn)
+        {
+            if (pawn == null || pawn.genes == null || RWrd_DefOf.RWrd_Gene_Gifted == null)
+            {
+                return false;
+            }
+            for (int i = 0; i < pawn.genes.GenesListForReading.Count; i++)
+            {
+                if (pawn.genes.GenesListForReading[i].def == RWrd_DefOf.RWrd_Gene_Gifted)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 有磁场天赋特质、没有磁场基因时补一个系谱基因
+        /// </summary>
+        public static void TryAddGiftedGene(this Pawn pawn)
+        {
+            if (!ModsConfig.BiotechActive || RWrd_DefOf.RWrd_Gene_Gifted == null)
+            {
+                return;
+            }
+            if (pawn == null || pawn.Dead || pawn.genes == null || !pawn.RaceProps.Humanlike)
+            {
+                return;
+            }
+            if (pawn.story == null || !pawn.story.traits.HasTrait(RWrd_DefOf.RWrd_Gifted))
+            {
+                return;
+            }
+            if (pawn.HasGiftedGene())
+            {
+                return;
+            }
+            pawn.genes.AddGene(RWrd_DefOf.RWrd_Gene_Gifted, false);
+        }
+
+        /// <summary>
+        /// 生科基因遗传接管出生逻辑的条件。
+        /// </summary>
+        public static bool UseBiotechGeneInheritance(this Pawn pawn)
+        {
+            return ModsConfig.BiotechActive
+                && RWrd_DefOf.RWrd_Gene_Gifted != null
+                && pawn != null
+                && pawn.genes != null;
+        }
+        /// <summary>
         /// 判断是否被锁
         /// </summary>
         /// <param name="pawn"></param>
@@ -531,6 +584,24 @@ namespace Electromagnetic.Core
             Ability ability = pawn.GetRWrdTendAbility(patient);
             if (ability == null) return null;
             return ability.GetJob(new LocalTargetInfo(patient), new LocalTargetInfo(patient));
+        }
+
+        public static bool HasRWrdTreatableCondition(this Pawn pawn)
+        {
+            if (pawn == null || pawn.health == null || pawn.health.hediffSet == null)
+            {
+                return false;
+            }
+            List<Hediff> hediffs = pawn.health.hediffSet.hediffs;
+            for (int i = 0; i < hediffs.Count; i++)
+            {
+                Hediff hediff = hediffs[i];
+                if (hediff.TendableNow(false) || CompAbilityEffect_CellRecombination.IsCurableHediff(hediff.def))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

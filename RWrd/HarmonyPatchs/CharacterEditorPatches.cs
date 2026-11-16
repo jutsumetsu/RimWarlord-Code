@@ -34,6 +34,7 @@ namespace Electromagnetic.HarmonyPatchs
                         Hediff hediff = HediffMaker.MakeHediff(RWrd_DefOf.Hediff_RWrd_PowerRoot, pawn);
                         pawn.health.AddHediff(hediff);
                     }
+                    pawn.TryAddGiftedGene();
                 }
             }
         }
