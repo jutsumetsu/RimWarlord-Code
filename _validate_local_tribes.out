@@ -1,0 +1,13 @@
+[rw] 校验开始（版本目录 2 个 mod）
+[rw] → RimWarlord
+[rw] → baak-imperial-family
+
+================ 体检结果 ================
+错误 0   警告 1   提示 1
+扫描 205 个 Def / 55 个贴图引用 / 729 条语言键
+
+  [loadfolders] 目录 1.5 不会被加载（不在当前版本的 LoadFolders 里）  <1.5>
+
+  [info] lang-parity: 1 条
+
+报告：D:\Desktop\RimWorldMods\RWrd\tools\reports\validate-20261117-220531.md

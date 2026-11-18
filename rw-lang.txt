@@ -1,0 +1,18 @@
+[rw] 语言检查（lang）：对照原版中文 DefInjected 白名单
+[rw] 白名单：151 个 DefType / 852 条字段路径（26814 个原版键：数字索引 3527 / 命名句柄 5059 / 普通字段 18228；6 个 tar）
+
+== RimWarlord ==
+  Def 167 个；简体 322 键 / 47 文件；繁体 322 键 / 47 文件
+  缺键 0
+  孤儿键 0
+  简繁不一致：仅简体 0，仅繁体 0
+  无原版参考（跳过字段判定）：Electromagnetic.Core.WarlordBackstoryDef(21)，FleckDef(8)，Electromagnetic.Core.RWrd_RouteDef(2)，Electromagnetic.GameComponents.DirectorSceneDef(2)，SoundDef(2)，AbilityCategoryDef(1)，IdeoColorDef(1)，Electromagnetic.UI.RWrd_ItemFilterDef(1)
+
+== baak-imperial-family ==
+  Def 29 个；简体 54 键 / 7 文件；繁体 54 键 / 7 文件
+  缺键 0
+  孤儿键 0
+  简繁不一致：仅简体 0，仅繁体 0
+  无原版参考（跳过字段判定）：ThingSetMakerDef(1)
+
+合计：缺键 0，孤儿键 0

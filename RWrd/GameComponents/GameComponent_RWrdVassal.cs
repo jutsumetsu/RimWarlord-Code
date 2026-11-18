@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Electromagnetic.GameComponent
+namespace Electromagnetic.GameComponents
 {
     public class GameComponent_RWrdVassal : Verse.GameComponent
     {

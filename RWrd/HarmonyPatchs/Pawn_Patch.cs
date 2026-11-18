@@ -683,6 +683,20 @@ namespace Electromagnetic.HarmonyPatchs
                 return true;
             }
         }
+        //自动记录损毁衣物
+        [HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Notify_ApparelRemoved))]
+        public static class Pawn_ApparelTracker_Notify_ApparelRemoved_Patch
+        {
+            public static void Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
+            {
+                Pawn pawn = __instance?.pawn;
+                if (pawn == null || pawn.Dead || pawn.Destroyed) return;
+                if (apparel == null || !apparel.Destroyed) return;
+                Hediff_RWrd_PowerRoot root = pawn.GetPowerRoot();
+                if (root == null) return;
+                root.GetComp<HediffComp_ApparelRestock>()?.TryRecord(apparel);
+            }
+        }
         //磁场力量遗传（原版）
         [HarmonyPatch(typeof(QuestManager))]
         [HarmonyPatch("Notify_PawnBorn")]
@@ -764,6 +778,164 @@ namespace Electromagnetic.HarmonyPatchs
 
                 applied = true;
                 return true;
+            }
+        }
+        private static readonly string[] NoTitleNamers =
+        {
+            "NamerPersonWarlord",
+            "NamerPersonWarlordFemale",
+            "NamerPersonBaak",
+            "NamerPersonBaakFemale"
+        };
+
+        private static readonly string[] LocalTribeWargodNamers =
+        {
+            "NamerPersonWargod",
+            "NamerPersonWargodFemale"
+        };
+
+        private static readonly string[] FactionNameSuffixes =
+        {
+            "部落",
+            "部族",
+            "联盟",
+            "联邦",
+            "同盟",
+            "族"
+        };
+        /// <summary>
+        /// 是命名器吗
+        /// </summary>
+        /// <param name="namer"></param>
+        /// <param name="names"></param>
+        /// <returns></returns>
+        private static bool IsNamer(RulePackDef namer, string[] names)
+        {
+            return namer != null && Array.IndexOf(names, namer.defName) >= 0;
+        }
+        /// <summary>
+        /// 没有头衔吗
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
+        private static bool IsNoTitleKind(PawnKindDef kind)
+        {
+            return kind != null
+                && (IsNamer(kind.nameMaker, NoTitleNamers)
+                    || IsNamer(kind.nameMakerFemale, NoTitleNamers));
+        }
+        /// <summary>
+        /// 是本地部族武神吗
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
+        private static bool IsLocalTribeWargodKind(PawnKindDef kind)
+        {
+            return kind != null
+                && (IsNamer(kind.nameMaker, LocalTribeWargodNamers)
+                    || IsNamer(kind.nameMakerFemale, LocalTribeWargodNamers));
+        }
+        /// <summary>
+        /// 修正小人名字
+        /// </summary>
+        /// <param name="pawn"></param>
+        public static void FixPawnName(Pawn pawn)
+        {
+            if (pawn == null || !IsNoTitleKind(pawn.kindDef))
+            {
+                return;
+            }
+
+            NameTriple name = pawn.Name as NameTriple;
+            if (name == null || name.NickSet || name.First.NullOrEmpty())
+            {
+                return;
+            }
+
+            pawn.Name = new NameTriple(name.First, name.First, name.Last);
+        }
+        /// <summary>
+        /// 获取部族领袖称号
+        /// </summary>
+        /// <param name="factionName"></param>
+        /// <returns></returns>
+        private static string LeaderNickFromFaction(string factionName)
+        {
+            if (factionName.NullOrEmpty())
+            {
+                return null;
+            }
+
+            string name = factionName.Trim();
+            for (int i = 0; i < FactionNameSuffixes.Length; i++)
+            {
+                string suffix = FactionNameSuffixes[i];
+                if (name.EndsWith(suffix, StringComparison.Ordinal) && name.Length > suffix.Length)
+                {
+                    return name.Substring(0, name.Length - suffix.Length).Trim();
+                }
+            }
+
+            int space = name.LastIndexOf(' ');
+            if (space > 0)
+            {
+                return name.Substring(0, space).Trim();
+            }
+
+            return name;
+        }
+        /// <summary>
+        /// 修正领袖名字
+        /// </summary>
+        /// <param name="faction"></param>
+        public static void FixLeaderName(RimWorld.Faction faction)
+        {
+            if (faction == null || faction.leader == null)
+            {
+                return;
+            }
+
+            Pawn leader = faction.leader;
+            if (!IsLocalTribeWargodKind(leader.kindDef))
+            {
+                return;
+            }
+
+            NameTriple name = leader.Name as NameTriple;
+            if (name == null)
+            {
+                return;
+            }
+
+            string nick = LeaderNickFromFaction(faction.Name);
+            if (nick.NullOrEmpty() || nick == name.Nick)
+            {
+                return;
+            }
+
+            leader.Name = new NameTriple(name.First, nick, name.Last);
+        }
+        [HarmonyPatch(typeof(PawnGenerator), nameof(PawnGenerator.GeneratePawn),
+        new Type[] { typeof(PawnGenerationRequest) })]
+        internal static class PawnGenerator_GeneratePawn_NoTitleNamePatch
+        {
+            [HarmonyPostfix]
+            private static void Postfix(Pawn __result)
+            {
+                Pawn_Patch.FixPawnName(__result);
+            }
+        }
+
+        [HarmonyPatch(typeof(RimWorld.Faction), nameof(RimWorld.Faction.TryGenerateNewLeader))]
+        internal static class Faction_TryGenerateNewLeader_WargodNamePatch
+        {
+            [HarmonyPostfix]
+            private static void Postfix(RimWorld.Faction __instance, bool __result)
+            {
+                if (__result)
+                {
+                    Pawn_Patch.FixLeaderName(__instance);
+                }
             }
         }
     }

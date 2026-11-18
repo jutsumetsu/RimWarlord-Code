@@ -699,6 +699,10 @@ namespace Electromagnetic.Core
                 {
                     PowerRootUtillity.powerRootCacheMap[this.pawn] = this;
                 }
+                if (this.energy == null)
+                {
+                    this.energy = new Pawn_EnergyTracker(this.pawn);
+                }
                 this.energy.pawn = this.pawn;
                 this.RefreshSkillTree();
             }

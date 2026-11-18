@@ -419,16 +419,58 @@ namespace Electromagnetic.Core
         /// <param name="ideo"></param>
         public static void resolveRWrdIdeoCustom(this Ideo ideo, IdeoCustom ideoCustom)
         {
-            List<PreceptDef> forcedPrecepts = ideoCustom.forcedPrecepts;
-            for (int i = 0; i < forcedPrecepts.Count; i++)
+            if (ideo == null || ideoCustom == null) return;
+
+            List<PreceptDef> forced = ideoCustom.forcedPrecepts ?? new List<PreceptDef>();
+            HashSet<IssueDef> exclusiveIssues = new HashSet<IssueDef>();
+            for (int i = 0; i < forced.Count; i++)
             {
-                ideo.AddPrecept(PreceptMaker.MakePrecept(forcedPrecepts[i]), true);
+                PreceptDef def = forced[i];
+                if (def == null || def.issue == null) continue;
+                if (def.allowDuplicates || def.maxCount != 1) continue;
+                if (typeof(Precept_Role).IsAssignableFrom(def.preceptClass)) continue;
+                exclusiveIssues.Add(def.issue);
             }
-            List<ThingDef> softDesire = ideoCustom.apparelDesiredSoft;
+
+            if (exclusiveIssues.Count > 0)
+            {
+                List<Precept> remove = ideo.PreceptsListForReading
+                    .Where(p => p.def.issue != null
+                        && exclusiveIssues.Contains(p.def.issue)
+                        && !forced.Contains(p.def))
+                    .ToList();
+                for (int i = 0; i < remove.Count; i++)
+                {
+                    ideo.RemovePrecept(remove[i], replacing: true);
+                }
+            }
+
+            for (int i = 0; i < forced.Count; i++)
+            {
+                PreceptDef def = forced[i];
+                if (def == null) continue;
+                if (ideo.PreceptsListForReading.Any(p => p.def == def)) continue;
+                ideo.AddPrecept(PreceptMaker.MakePrecept(def), true);
+            }
+
+            List<ThingDef> softDesire = ideoCustom.apparelDesiredSoft ?? new List<ThingDef>();
             for (int i = 0; i < softDesire.Count; i++)
             {
+                ThingDef apparel = softDesire[i];
+                if (apparel == null) continue;
+
+                List<Precept_Apparel> sameApparel = ideo.PreceptsListForReading
+                    .OfType<Precept_Apparel>()
+                    .Where(p => p.apparelDef == apparel)
+                    .ToList();
+                for (int j = 0; j < sameApparel.Count; j++)
+                {
+                    ideo.RemovePrecept(sameApparel[j], replacing: true);
+                }
+
                 Precept_Apparel desireSoft = PreceptMaker.MakePrecept(RWrd_DefOf.ApparelDesired_Soft_Subordinate) as Precept_Apparel;
-                desireSoft.apparelDef = softDesire[i];
+                if (desireSoft == null) continue;
+                desireSoft.apparelDef = apparel;
                 ideo.AddPrecept(desireSoft, true);
             }
         }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
-namespace Electromagnetic.Quest
+namespace Electromagnetic.Quests
 {
     public class QuestNode_Root_BaakBounty : QuestNode
     {
@@ -23,7 +23,7 @@ namespace Electromagnetic.Quest
         protected override void RunInt()
         {
             Slate slate = QuestGen.slate;
-            RimWorld.Quest quest = QuestGen.quest;
+            Quest quest = QuestGen.quest;
             Map map = slate.Get<Map>("map") ?? Find.CurrentMap;
             if (map == null)
             {

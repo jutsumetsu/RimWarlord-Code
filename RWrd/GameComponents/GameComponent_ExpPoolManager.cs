@@ -3,12 +3,12 @@ using RimWorld;
 using Verse;
 using UnityEngine;
 
-namespace Electromagnetic
+namespace Electromagnetic.GameComponents
 {
     /// <summary>
     /// 全局经验池
     /// </summary>
-    public class GameComponent_ExpPoolManager : Verse.GameComponent
+    public class GameComponent_ExpPoolManager : GameComponent
     {
         public float globalExp = 0f;              // 当前全局经验
         public float maxGlobalExp = 50000f;       // 最大上限

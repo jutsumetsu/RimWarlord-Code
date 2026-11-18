@@ -1,5 +1,5 @@
 ﻿using Electromagnetic.Setting;
-using Electromagnetic.Faction;
+using Electromagnetic.Factions;
 using RimWorld;
 using System;
 using System.Collections.Generic;

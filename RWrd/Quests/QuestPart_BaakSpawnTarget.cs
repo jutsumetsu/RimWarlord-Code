@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Verse.AI.Group;
 using Verse;
 
-namespace Electromagnetic.Quest
+namespace Electromagnetic.Quests
 {
     public class QuestPart_BaakSpawnTarget : QuestPart
     {

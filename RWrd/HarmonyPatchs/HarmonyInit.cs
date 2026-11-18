@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Electromagnetic.Compatibility;
 using Electromagnetic.Core;
 using HarmonyLib;
 using Verse;
@@ -16,6 +17,7 @@ namespace Electromagnetic.HarmonyPatchs
             static PatchMain()
             {
                 HarmonyInit.PatchMain.instance.PatchAll(Assembly.GetExecutingAssembly());
+                LegacyTypeCompatibility.Install(HarmonyInit.PatchMain.instance);
                 DevourPatch.ApplyBigSmallPatches(HarmonyInit.PatchMain.instance);
                 LongEventHandler.QueueLongEvent(SafePatchGeneInheritance, "RWrd_GeneInheritancePatch", false, null);
                 // 延迟应用RJW相关补丁

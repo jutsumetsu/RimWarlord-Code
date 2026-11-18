@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace Electromagnetic.GameComponent
+namespace Electromagnetic.GameComponents
 {
     public static class DebugActions_Director
     {

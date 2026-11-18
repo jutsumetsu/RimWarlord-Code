@@ -2,7 +2,7 @@
 using Verse;
 using UnityEngine;
 
-namespace Electromagnetic
+namespace Electromagnetic.GameComponents
 {
     /// <summary>
     /// 地图级经验池系统

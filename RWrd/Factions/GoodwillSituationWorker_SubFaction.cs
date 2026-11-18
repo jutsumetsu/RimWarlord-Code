@@ -7,11 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Electromagnetic.ModExtension;
 
-namespace Electromagnetic.Faction
+namespace Electromagnetic.Factions
 {
     public class GoodwillSituationWorker_SubFaction : GoodwillSituationWorker
     {
-        public override int GetNaturalGoodwillOffset(RimWorld.Faction other)
+        public override int GetNaturalGoodwillOffset(Faction other)
         {
             if (!Apply(other))
             {
@@ -19,9 +19,9 @@ namespace Electromagnetic.Faction
             }
             return this.def.naturalGoodwillOffset;
         }
-        public bool Apply(RimWorld.Faction other)
+        public bool Apply(Faction other)
         {
-            return RWrd_FactionUtility.GetOverlord(RimWorld.Faction.OfPlayer) == other;
+            return RWrd_FactionUtility.GetOverlord(Faction.OfPlayer) == other;
         }
     }
 }

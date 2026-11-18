@@ -50,6 +50,7 @@ namespace Electromagnetic.Core
         /// <returns></returns>
         public static Hediff_RWrd_PowerRoot GetPowerRoot(this Pawn pawn)
         {
+            if (pawn == null || pawn.health == null || pawn.health.hediffSet == null) return null;
             if (powerRootCacheMap.ContainsKey(pawn))
             {
                 return powerRootCacheMap[pawn];
@@ -143,6 +144,7 @@ namespace Electromagnetic.Core
         }
         public static Hediff_HeavenLock GetHeavenLock(this Pawn pawn)
         {
+            if (pawn == null || pawn.health == null || pawn.health.hediffSet == null) return null;
             if (lockedCacheMap.ContainsKey(pawn))
             {
                 return lockedCacheMap[pawn];
@@ -585,7 +587,11 @@ namespace Electromagnetic.Core
             if (ability == null) return null;
             return ability.GetJob(new LocalTargetInfo(patient), new LocalTargetInfo(patient));
         }
-
+        /// <summary>
+        /// 需要治疗吗
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <returns></returns>
         public static bool HasRWrdTreatableCondition(this Pawn pawn)
         {
             if (pawn == null || pawn.health == null || pawn.health.hediffSet == null)
@@ -602,6 +608,35 @@ namespace Electromagnetic.Core
                 }
             }
             return false;
+        }
+        /// <summary>
+        /// 存在破损衣物
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <returns></returns>
+        public static bool HasDamagedWornApparel(this Pawn pawn)
+        {
+            if (pawn?.apparel == null) return false;
+            foreach (Apparel a in pawn.apparel.WornApparel)
+            {
+                if (a == null || !a.def.useHitPoints || !a.def.apparel.careIfDamaged) continue;
+                if (pawn.apparel.IsLocked(a)) continue;
+                int max = a.MaxHitPoints;
+                if (max <= 0) continue;
+                if ((float)a.HitPoints / max < 0.5f) return true;
+            }
+            return false;
+        }
+
+        public static Ability GetRWrdMatterHardeningAbility(this Pawn pawn)
+        {
+            if (pawn == null || !pawn.IsHavePowerRoot()) return null;
+            Ability ability = pawn.abilities.GetAbility(RWrd_DefOf.RWrd_Ability_MatterHardening);
+            if (ability == null || !ability.CanCast) return null;
+            if (!ability.CanApplyOn(new LocalTargetInfo(pawn))) return null;
+            CompAbilityEffect_ReduceEnergy reduce = ability.CompOfType<CompAbilityEffect_ReduceEnergy>();
+            if (reduce != null && reduce.GizmoDisabled(out string reason)) return null;
+            return ability;
         }
     }
 }

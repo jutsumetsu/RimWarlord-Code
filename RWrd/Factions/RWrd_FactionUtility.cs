@@ -1,4 +1,4 @@
-﻿using Electromagnetic.GameComponent;
+﻿using Electromagnetic.GameComponents;
 using Electromagnetic.ModExtension;
 using RimWorld;
 using System;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace Electromagnetic.Faction
+namespace Electromagnetic.Factions
 {
     public static class RWrd_FactionUtility
     {
@@ -17,7 +17,7 @@ namespace Electromagnetic.Faction
         /// </summary>
         /// <param name="vassal"></param>
         /// <returns></returns>
-        public static RimWorld.Faction GetOverlord(RimWorld.Faction vassal)
+        public static Faction GetOverlord(Faction vassal)
         {
             if (vassal == null)
             {
@@ -43,7 +43,7 @@ namespace Electromagnetic.Faction
             RelationCustom ext = vassal.def.GetModExtension<RelationCustom>();
             if (ext != null && ext.overlord != null)
             {
-                RimWorld.Faction staticOverlord = Find.FactionManager.FirstFactionOfDef(ext.overlord);
+                Faction staticOverlord = Find.FactionManager.FirstFactionOfDef(ext.overlord);
                 if (staticOverlord != null && !staticOverlord.defeated)
                 {
                     return staticOverlord;
@@ -57,7 +57,7 @@ namespace Electromagnetic.Faction
         /// <param name="overlord"></param>
         /// <param name="vassal"></param>
         /// <returns></returns>
-        public static bool IsOverlordOf(RimWorld.Faction overlord, RimWorld.Faction vassal)
+        public static bool IsOverlordOf(Faction overlord, Faction vassal)
         {
             return overlord != null && GetOverlord(vassal) == overlord;
         }
@@ -65,7 +65,7 @@ namespace Electromagnetic.Faction
         /// 设置玩家宗主
         /// </summary>
         /// <param name="faction"></param>
-        public static void SetPlayerOverlord(RimWorld.Faction faction)
+        public static void SetPlayerOverlord(Faction faction)
         {
             GameComponent_RWrdVassal comp = Current.Game.GetComponent<GameComponent_RWrdVassal>();
             if (comp == null)
@@ -86,7 +86,7 @@ namespace Electromagnetic.Faction
                 return;
             }
 
-            RimWorld.Faction oldOverlord = comp.overlord ?? GetOverlord(RimWorld.Faction.OfPlayer);
+            Faction oldOverlord = comp.overlord ?? GetOverlord(RimWorld.Faction.OfPlayer);
             comp.overlord = null;
 
             RelationCustom ext = RimWorld.Faction.OfPlayer.def.GetModExtension<RelationCustom>();
@@ -105,7 +105,7 @@ namespace Electromagnetic.Faction
         /// </summary>
         /// <param name="player"></param>
         /// <param name="overlord"></param>
-        private static void SetNeutralZero(RimWorld.Faction player, RimWorld.Faction overlord)
+        private static void SetNeutralZero(Faction player, Faction overlord)
         {
             FactionRelation a = player.RelationWith(overlord, true);
             FactionRelation b = overlord.RelationWith(player, true);

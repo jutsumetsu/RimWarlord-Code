@@ -1,4 +1,4 @@
-﻿using Electromagnetic.GameComponent;
+﻿using Electromagnetic.GameComponents;
 using Electromagnetic.Setting;
 using RimWorld;
 using System;

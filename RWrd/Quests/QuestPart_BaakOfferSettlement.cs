@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace Electromagnetic.Quest
+namespace Electromagnetic.Quests
 {
     public class QuestPart_BaakOfferSettlement : QuestPart
     {

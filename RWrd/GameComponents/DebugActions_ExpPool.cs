@@ -2,7 +2,7 @@
 using RimWorld;
 using Verse;
 
-namespace Electromagnetic
+namespace Electromagnetic.GameComponents
 {
     public static class DebugActions_ExpPool
     {

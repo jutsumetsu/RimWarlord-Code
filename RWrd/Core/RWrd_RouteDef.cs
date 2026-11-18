@@ -27,32 +27,35 @@ namespace Electromagnetic.Core
         }
         private bool PawnHasCorrectBackstory(Pawn pawn)
         {
+            bool AdultCorrect = false;
+            bool ChildCorrect = false;
             if (this.backstoryFilter != null)
             {
-                bool flag;
-                bool flag2;
                 if (pawn.story.Adulthood != null)
                 {
-                    flag = this.backstoryFilter.Matches(pawn.story.Adulthood);
-                }
-                else
-                {
-                    flag = false;
+                    AdultCorrect = this.backstoryFilter.Matches(pawn.story.Adulthood);
                 }
                 if (pawn.story.Childhood != null)
                 {
-                    flag2 = this.backstoryFilter.Matches(pawn.story.Childhood);
+                    ChildCorrect = this.backstoryFilter.Matches(pawn.story.Childhood);
                 }
-                else
-                {
-                    flag2 = false;
-                }
-                return flag || flag2;
             }
-            else
+            else if(this.backstoryKeyWord != null)
             {
-                return false;
+                if (pawn.story.Adulthood != null && !AdultCorrect)
+                {
+                    AdultCorrect = HasCorrectBackstoryKey(pawn.story.Adulthood, backstoryKeyWord);
+                }
+                if (pawn.story.Childhood != null && !ChildCorrect)
+                {
+                    ChildCorrect = HasCorrectBackstoryKey(pawn.story.Childhood, backstoryKeyWord);
+                }
             }
+            return AdultCorrect || ChildCorrect;
+        }
+        private bool HasCorrectBackstoryKey(BackstoryDef backstory, string key)
+        {
+            return backstory.spawnCategories.Any((string k) => k.Contains(key));
         }
         public override void ResolveReferences()
         {
@@ -171,5 +174,6 @@ namespace Electromagnetic.Core
         public bool unlockNoRequired = false;
         [NoTranslate]
         public BackstoryCategoryFilter backstoryFilter;
+        public string backstoryKeyWord;
     }
 }

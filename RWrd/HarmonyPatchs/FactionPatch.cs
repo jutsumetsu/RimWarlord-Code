@@ -1,5 +1,5 @@
 ﻿using Electromagnetic.Core;
-using Electromagnetic.Faction;
+using Electromagnetic.Factions;
 using Electromagnetic.ModExtension;
 using Electromagnetic.UI;
 using HarmonyLib;
@@ -61,6 +61,21 @@ namespace Electromagnetic.HarmonyPatchs
             } 
 
         }
+        private static void ApplyIdeoCustom(Ideo ideo, IdeoGenerationParms parms)
+        {
+            if (!ModsConfig.IdeologyActive) return;
+            if (ideo == null || parms.forFaction == null) return;
+            if (ideo.GetPrecept(RWrd_DefOf.IdeoRole_Leader) is Precept_RoleSingle leader)
+            {
+                leader.ApparelRequirements.Clear();
+            }
+            if (ideo.GetPrecept(RWrd_DefOf.IdeoRole_Moralist) is Precept_RoleSingle moralist)
+            {
+                moralist.ApparelRequirements.Clear();
+            }
+            IdeoCustom custom = parms.forFaction.GetModExtension<IdeoCustom>();
+            if (custom != null) ideo.resolveRWrdIdeoCustom(custom);
+        }
         //派系文化修正补丁
         [HarmonyPatch(typeof(IdeoGenerator), nameof(IdeoGenerator.MakeFixedIdeo))]
         class FactionIdeoPatch
@@ -83,13 +98,8 @@ namespace Electromagnetic.HarmonyPatchs
                                     __result.RemovePrecept(rituals[i]);
                                 }
                             }
-                            if (__result.GetPrecept(RWrd_DefOf.IdeoRole_Leader) is Precept_RoleSingle leader)
-                            {
-                                leader.ApparelRequirements.Clear();
-                            }
                             if (__result.GetPrecept(RWrd_DefOf.IdeoRole_Moralist) is Precept_RoleSingle moralist)
                             {
-                                moralist.ApparelRequirements.Clear();
                                 moralist.SetName("RWrd_BaakMoralist".Translate());
                             }
                             if (__result.GetPrecept(PreceptDefOf.Funeral) is Precept_Ritual funeral)
@@ -109,13 +119,18 @@ namespace Electromagnetic.HarmonyPatchs
                             __result.SetIcon(RWrd_DefOf.DownBurst, RWrd_DefOf.BaakRed);
                         }
                     }
-                    if (parms.forFaction != null)
-                    {
-                        if (parms.forFaction.GetModExtension<IdeoCustom>() is IdeoCustom custom) __result.resolveRWrdIdeoCustom(custom);
-                    }
+                    FactionPatch.ApplyIdeoCustom(__result, parms);
                 }
             }
-
+        }
+        [HarmonyPatch(typeof(IdeoGenerator), nameof(IdeoGenerator.GenerateIdeo))]
+        class GeneratedIdeoPatch
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Ideo __result, IdeoGenerationParms parms)
+            {
+                ApplyIdeoCustom(__result, parms);
+            }
         }
         //派系初始关系补丁
         [HarmonyPatch(typeof(RimWorld.Faction), nameof(RimWorld.Faction.TryMakeInitialRelationsWith))]

@@ -9,7 +9,7 @@ using Electromagnetic.UI;
 using UnityEngine;
 using System.Linq;
 
-namespace Electromagnetic.GameComponent
+namespace Electromagnetic.GameComponents
 {
     public class GameComponent_RWrdDirector : Verse.GameComponent
     {

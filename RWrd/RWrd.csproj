@@ -78,17 +78,23 @@
     <Compile Update="Electromagnetic\**\*.cs">
       <Namespace>Electromagnetic.$(RelativeDir.Replace('Electromagnetic\', '').Replace('\', '.').TrimEnd('.'))</Namespace>
     </Compile>
+    <Compile Include="Abilities\ApparelRestockUtility.cs" />
     <Compile Include="Abilities\CompAbilityEffect_WorldTeleportAnomaly.cs" />
+    <Compile Include="Abilities\HediffComp_ApparelRestock.cs" />
+    <Compile Include="Compatibility\LegacyTypeCompatibility.cs" />
+    <Compile Include="Core\JobDriver_EMApparelRestock.cs" />
+    <Compile Include="Core\JobGiver_EMApparelRepair.cs" />
+    <Compile Include="Core\JobGiver_EMApparelRestock.cs" />
     <Compile Include="Core\ThoughtWorker_Precept_EMPowerPresentAlter.cs" />
     <Compile Include="Core\ThoughtWorker_Precept_EMPowerPresent.cs" />
     <Compile Include="Core\WorkGiver_EMSelfHeal.cs" />
     <Compile Include="Core\WorkGiver_EMTendPatient.cs" />
-    <Compile Include="Faction\RWrd_FactionUtility.cs" />
-    <Compile Include="Faction\GoodwillSituationWorker_SubFaction.cs" />
-    <Compile Include="GameComponent\DebugActions_Director.cs" />
-    <Compile Include="GameComponent\DirectorData.cs" />
-    <Compile Include="GameComponent\GameComponent_RWrdDirector.cs" />
-    <Compile Include="GameComponent\GameComponent_RWrdVassal.cs" />
+    <Compile Include="Factions\RWrd_FactionUtility.cs" />
+    <Compile Include="Factions\GoodwillSituationWorker_SubFaction.cs" />
+    <Compile Include="GameComponents\DebugActions_Director.cs" />
+    <Compile Include="GameComponents\DirectorData.cs" />
+    <Compile Include="GameComponents\GameComponent_RWrdDirector.cs" />
+    <Compile Include="GameComponents\GameComponent_RWrdVassal.cs" />
     <Compile Include="HarmonyPatchs\DevourPatch.cs" />
     <Compile Include="HarmonyPatchs\QuestPatch.cs" />
     <Compile Include="ModExtension\IdeoCustom.cs" />
@@ -96,10 +102,14 @@
     <Compile Include="HarmonyPatchs\FactionPatch.cs" />
     <Compile Include="ModExtension\PawnKindBaseCustom.cs" />
     <Compile Include="ModExtension\RelationCustom.cs" />
-    <Compile Include="Quest\QuestNode_Root_BaakBounty.cs" />
-    <Compile Include="Quest\QuestNode_Root_BaakTribute.cs" />
-    <Compile Include="Quest\QuestPart_BaakOfferSettlement.cs" />
-    <Compile Include="Quest\QuestPart_BaakSpawnTarget.cs" />
+    <Compile Include="ModExtension\WarlordFactionExtension.cs" />
+    <Compile Include="Quests\QuestNode_Root_BaakBounty.cs" />
+    <Compile Include="Quests\QuestNode_Root_TributeSettlement.cs" />
+    <Compile Include="Quests\QuestNode_Root_WarlordRefugee.cs" />
+    <Compile Include="Quests\QuestPart_BaakOfferSettlement.cs" />
+    <Compile Include="Quests\QuestPart_BaakSpawnTarget.cs" />
+    <Compile Include="Quests\QuestPart_TributeSettlement.cs" />
+    <Compile Include="Quests\QuestPart_WarlordBounty.cs" />
     <Compile Include="UI\BodyTool.cs" />
     <Compile Include="UI\ColorTool.cs" />
     <Compile Include="UI\ColorType.cs" />
@@ -227,10 +237,10 @@
     <Compile Include="Core\RimWarlord.cs" />
     <Compile Include="Core\RWrd_DefOf.cs" />
     <Compile Include="Core\RWrd_RouteDef.cs" />
-    <Compile Include="GameComponent\Alert_ExpPoolInfo.cs" />
-    <Compile Include="GameComponent\DebugActions_ExpPool.cs" />
-    <Compile Include="GameComponent\GameComponent_ExpPoolManager.cs" />
-    <Compile Include="GameComponent\MapComponent_ExpPool.cs" />
+    <Compile Include="GameComponents\Alert_ExpPoolInfo.cs" />
+    <Compile Include="GameComponents\DebugActions_ExpPool.cs" />
+    <Compile Include="GameComponents\GameComponent_ExpPoolManager.cs" />
+    <Compile Include="GameComponents\MapComponent_ExpPool.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
-namespace Electromagnetic.GameComponent
+namespace Electromagnetic.GameComponents
 {
     public enum DirectorEmotion
     {

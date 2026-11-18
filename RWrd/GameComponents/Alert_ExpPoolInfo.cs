@@ -3,7 +3,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace Electromagnetic
+namespace Electromagnetic.GameComponents
 {
     /// <summary>
     /// 警报提示：显示当前地图的经验池信息

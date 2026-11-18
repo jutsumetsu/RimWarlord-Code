@@ -1,5 +1,5 @@
 ﻿using Electromagnetic.Core;
-using Electromagnetic.Quest;
+using Electromagnetic.Quests;
 using HarmonyLib;
 using RimWorld.Planet;
 using RimWorld;

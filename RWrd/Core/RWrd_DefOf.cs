@@ -18,6 +18,8 @@ namespace Electromagnetic.Core
         public static StorytellerDef RWrd_Storytellers_SaatAmtin;
         // 小人类型
         public static PawnKindDef RWrd_Pawn_BaakSide;
+        public static PawnKindDef RWrd_Pawn_WanderingWarlord;
+        public static PawnKindDef RWrd_Pawn_WanderingWarlordElite;
         //修炼主干
         public static HediffDef Hediff_RWrd_PowerRoot;
         public static TraitDef RWrd_Gifted;
@@ -26,6 +28,8 @@ namespace Electromagnetic.Core
         public static RWrd_RouteDef SixSecret;
         //能力
         public static AbilityDef RWrd_Ability_CellRecombination;
+        public static AbilityDef RWrd_Ability_MatterHardening;
+        public static AbilityDef RWrd_Ability_AtomSplit;
         public static AbilityDef RWrd_Ability_ProtectiveForce;
         public static AbilityDef RWrd_Ability_Flight;
         //基因
@@ -50,6 +54,7 @@ namespace Electromagnetic.Core
         [MayRequireIdeology]
         public static ThingDef Pew;
         //派系
+        public static FactionDef RWrd_Faction_Wanderers;
         [MayRequire("jm.rimwarlord.baak")]
         public static FactionDef RWrd_Faction_Empire_Baak;
         //颜色

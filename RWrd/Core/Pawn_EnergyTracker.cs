@@ -351,9 +351,11 @@ namespace Electromagnetic.Core
         public void EnergyRecharge()
         {
             bool flag = this.MaxEnergy > 5000;
+            if (this.pawn == null) return;
             Hediff_RWrd_PowerRoot root = this.pawn.GetPowerRoot();
+            if (root == null) return;
             bool attacking = root.meleeAttackCounter >= 3 || root.nonMeleeCounter <= 10 || root.hasBeatenBefore;
-            bool NPC = this.pawn.Faction != RimWorld.Faction.OfPlayer;
+            bool NPC = this.pawn.Faction != Faction.OfPlayer;
             if (!NPC)
             {
                 if (!flag)
